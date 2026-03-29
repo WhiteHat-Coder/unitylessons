@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 4: Master C# methods and functions - parameters, return values, scope, and code organization.">
+    <meta name="keywords" content="C# methods, functions, parameters, return values, scope">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Lesson 4: Methods & Functions | Unity Tutorial</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>💻 Lesson 4: Methods & Functions</h1>
+            <p>Learn to organize code with reusable methods</p>
+        </header>
+
+        <div class="content">
+
+            <!-- Introduction -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ What methods/functions are and why they're essential</li>
+                    <li>✅ Creating methods with parameters</li>
+                    <li>✅ Returning values from methods</li>
+                    <li>✅ Method overloading</li>
+                    <li>✅ Understanding scope and variable lifetime</li>
+                    <li>✅ Best practices for organizing code</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: What are Methods? -->
+            <div class="topic">
+                <h2>1. What are Methods? 🔧</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Method/Function</strong> = a reusable block of code that performs a specific task</p>
+                    <p>Think of it as a recipe: you write the recipe once, then use it many times</p>
+                </div>
+
+                <h3>📝 Why Use Methods?</h3>
+                <div class="key-points">
+                    <h4>Benefits:</h4>
+                    <ul>
+                        <li>🔄 <strong>Reusability:</strong> Write once, use many times</li>
+                        <li>📖 <strong>Readability:</strong> Code is easier to understand</li>
+                        <li>🐛 <strong>Debugging:</strong> Fix bugs in one place</li>
+                        <li>📦 <strong>Organization:</strong> Break large programs into smaller pieces</li>
+                    </ul>
+                </div>
+
+                <h3>❌ Without Methods (Repetitive):</h3>
+                <div class="example">
+                    <div class="example-header">Bad: Repeating Code</div>
+                    <code>
+Debug.Log("Player took damage!");<br>
+int playerHealth = 100;<br>
+playerHealth -= 10;<br>
+Debug.Log("Health: " + playerHealth);<br>
+<br>
+// Same code again for enemy<br>
+Debug.Log("Enemy took damage!");<br>
+int enemyHealth = 50;<br>
+enemyHealth -= 10;<br>
+Debug.Log("Health: " + enemyHealth);<br>
+<br>
+// ... more repetition ...
+                    </code>
+                </div>
+
+                <h3>✅ With Methods (Clean & Reusable):</h3>
+                <div class="example">
+                    <div class="example-header">Good: Using Methods</div>
+                    <code>
+void TakeDamage(string name, int health, int damage)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " took damage!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;health -= damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Health: " + health);<br>
+}<br>
+<br>
+// Now just call the method!<br>
+TakeDamage("Player", 100, 10);<br>
+TakeDamage("Enemy", 50, 10);
+                    </code>
+                </div>
+            </div>
+
+            <!-- Topic 2: Creating Basic Methods -->
+            <div class="topic">
+                <h2>2. Creating Basic Methods 📝</h2>
+
+                <div class="concept">
+                    <h3>Method Syntax:</h3>
+                    <code
+                        style="display: block; padding: 15px; background: #2d2d2d; color: #f8f8f2; border-radius: 5px; margin-top: 10px;">
+<span style="color: #ff79c6;">returnType</span> <span style="color: #50fa7b;">MethodName</span>(parameters)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// method body<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ff79c6;">return</span> value; // if returnType is not void<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Void Method (No Return Value):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Simple Greeting</div>
+                    <code>
+void SayHello()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Hello, Unity!");<br>
+}<br>
+<br>
+// Call the method<br>
+SayHello();<br>
+SayHello();<br>
+SayHello();
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Hello, Unity!<br>
+                        Hello, Unity!<br>
+                        Hello, Unity!
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>🧠 Understanding the Parts:</h4>
+                    <ul>
+                        <li><code>void</code> = return type (void means "returns nothing")</li>
+                        <li><code>SayHello</code> = method name (use PascalCase)</li>
+                        <li><code>()</code> = parameters (empty means no parameters)</li>
+                        <li><code>{}</code> = method body (code that runs)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 3: Parameters -->
+            <div class="topic">
+                <h2>3. Parameters (Input Values) 📥</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Parameters</strong> = values you pass into a method to customize its behavior</p>
+                </div>
+
+                <h3>📝 Method with One Parameter:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Personalized Greeting</div>
+                    <code>
+void GreetPlayer(string playerName)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Welcome, " + playerName + "!");<br>
+}<br>
+<br>
+// Call with different names<br>
+GreetPlayer("Alex");<br>
+GreetPlayer("Jordan");<br>
+GreetPlayer("Sam");
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Welcome, Alex!<br>
+                        Welcome, Jordan!<br>
+                        Welcome, Sam!
+                    </div>
+                </div>
+
+                <h3>📝 Multiple Parameters:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Calculate Damage</div>
+                    <code>
+void DealDamage(string attacker, string target, int damage)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(attacker + " attacks " + target + " for " + damage + " damage!");<br>
+}<br>
+<br>
+DealDamage("Player", "Goblin", 25);<br>
+DealDamage("Dragon", "Player", 50);
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Player attacks Goblin for 25 damage!<br>
+                        Dragon attacks Player for 50 damage!
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Parameter Order Matters:</strong> You must pass arguments in the same order as the
+                    parameters are defined!
+                </div>
+            </div>
+
+            <!-- Topic 4: Return Values -->
+            <div class="topic">
+                <h2>4. Return Values (Output) 📤</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Return value</strong> = the result a method sends back after executing</p>
+                    <p>Use <code>return</code> keyword to send back a value</p>
+                </div>
+
+                <h3>📝 Returning a Value:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Add Two Numbers</div>
+                    <code>
+int Add(int a, int b)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int result = a + b;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return result;<br>
+}<br>
+<br>
+int sum = Add(5, 3);<br>
+Debug.Log("Sum: " + sum);<br>
+<br>
+// Can use directly<br>
+Debug.Log("10 + 20 = " + Add(10, 20));
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Sum: 8<br>
+                        10 + 20 = 30
+                    </div>
+                </div>
+
+                <h3>📝 Game Example - Calculate Experience:</h3>
+                <div class="example">
+                    <div class="example-header">Example: XP Calculation</div>
+                    <code>
+int CalculateXP(int enemyLevel, bool isBoss)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int baseXP = enemyLevel * 10;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (isBoss)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;baseXP *= 5;  // bosses give 5x XP<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return baseXP;<br>
+}<br>
+<br>
+int xp1 = CalculateXP(5, false);<br>
+Debug.Log("Normal enemy XP: " + xp1);<br>
+<br>
+int xp2 = CalculateXP(10, true);<br>
+Debug.Log("Boss XP: " + xp2);
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Normal enemy XP: 50<br>
+                        Boss XP: 500
+                    </div>
+                </div>
+
+                <h3>📝 Returning Boolean (True/False):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Check if Player Can Afford</div>
+                    <code>
+bool CanAfford(int playerGold, int itemCost)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return playerGold &gt;= itemCost;<br>
+}<br>
+<br>
+int gold = 100;<br>
+<br>
+if (CanAfford(gold, 50))<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Purchase successful!");<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Not enough gold!");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Purchase successful!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 5: Method Overloading -->
+            <div class="topic">
+                <h2>5. Method Overloading 🔀</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Method overloading</strong> = multiple methods with the same name but different
+                        parameters</p>
+                    <p>C# chooses the right method based on the arguments you pass</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Multiple Add Methods</div>
+                    <code>
+// Add two integers<br>
+int Add(int a, int b)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return a + b;<br>
+}<br>
+<br>
+// Add three integers<br>
+int Add(int a, int b, int c)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return a + b + c;<br>
+}<br>
+<br>
+// Add two floats<br>
+float Add(float a, float b)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return a + b;<br>
+}<br>
+<br>
+Debug.Log(Add(5, 3));           // calls first method<br>
+Debug.Log(Add(5, 3, 2));        // calls second method<br>
+Debug.Log(Add(5.5f, 3.2f));     // calls third method
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        8<br>
+                        10<br>
+                        8.7
+                    </div>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Game Damage System</div>
+                    <code>
+// Basic damage<br>
+void TakeDamage(int damage)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Took " + damage + " damage");<br>
+}<br>
+<br>
+// Damage with type<br>
+void TakeDamage(int damage, string damageType)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Took " + damage + " " + damageType + " damage");<br>
+}<br>
+<br>
+// Damage with type and attacker<br>
+void TakeDamage(int damage, string damageType, string attacker)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(attacker + " dealt " + damage + " " + damageType + " damage");<br>
+}<br>
+<br>
+TakeDamage(10);<br>
+TakeDamage(15, "Fire");<br>
+TakeDamage(20, "Ice", "Dragon");
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Took 10 damage<br>
+                        Took 15 Fire damage<br>
+                        Dragon dealt 20 Ice damage
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 6: Scope -->
+            <div class="topic">
+                <h2>6. Variable Scope 🔭</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Scope</strong> = where a variable can be accessed in your code</p>
+                </div>
+
+                <h3>📝 Local Scope (Inside Method):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Local Variables</div>
+                    <code>
+void MethodA()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int localVar = 10;  // only exists in MethodA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("MethodA: " + localVar);<br>
+}<br>
+<br>
+void MethodB()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// localVar doesn't exist here!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Debug.Log(localVar);  ← ERROR!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("MethodB has no access to localVar");<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Class Scope (Available to All Methods):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Class-Level Variables</div>
+                    <code>
+public class Player : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int health = 100;  // class-level variable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void TakeDamage(int damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;health -= damage;  // can access health<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Health: " + health);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Heal(int amount)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;health += amount;  // can also access health<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Health: " + health);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Scope Rules:</h4>
+                    <ul>
+                        <li>Variables declared <strong>inside</strong> a method = local to that method only</li>
+                        <li>Variables declared <strong>at class level</strong> = accessible by all methods in the class
+                        </li>
+                        <li>Parameters = local to the method</li>
+                        <li>Variables inside <code>{}</code> blocks (if, for, etc.) are local to that block</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic"
+                style="background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); padding: 30px; border-radius: 10px;">
+                <h2 style="color: #856404;">🧪 Practice Exercises</h2>
+
+                <div class="key-points" style="background: white;">
+                    <h4>Exercise 1: Temperature Converter</h4>
+                    <p><strong>Task:</strong> Create a method <code>CelsiusToFahrenheit</code> that converts Celsius to
+                        Fahrenheit.</p>
+                    <p><strong>Formula:</strong> F = (C × 9/5) + 32</p>
+                    <p><strong>Test:</strong> 0°C should return 32°F, 100°C should return 212°F</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 2: Is Even</h4>
+                    <p><strong>Task:</strong> Create a method that returns <code>true</code> if a number is even,
+                        <code>false</code> if odd.</p>
+                    <p><strong>Hint:</strong> Use the modulo operator <code>%</code></p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 3: Find Maximum</h4>
+                    <p><strong>Task:</strong> Create overloaded methods to find the maximum:</p>
+                    <ul>
+                        <li><code>GetMax(int a, int b)</code> - returns larger of two numbers</li>
+                        <li><code>GetMax(int a, int b, int c)</code> - returns largest of three</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 4: String Printer</h4>
+                    <p><strong>Task:</strong> Create a method that prints a string a specified number of times.</p>
+                    <p><strong>Example:</strong> <code>PrintMultiple("Hello", 3)</code> should print "Hello" three times
+                    </p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 5: Level Up Calculator</h4>
+                    <p><strong>Task:</strong> Create a method that calculates required XP for next level.</p>
+                    <p><strong>Formula:</strong> XP needed = currentLevel × 100</p>
+                    <p><strong>Example:</strong> Level 5 needs 500 XP to reach level 6</p>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">📚 Lesson 4 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);">You've learned:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>Methods:</strong> Reusable blocks of code</li>
+                    <li>✅ <strong>Parameters:</strong> Inputs to customize method behavior</li>
+                    <li>✅ <strong>Return values:</strong> Outputs from methods</li>
+                    <li>✅ <strong>Method overloading:</strong> Same name, different parameters</li>
+                    <li>✅ <strong>Scope:</strong> Where variables can be accessed</li>
+                </ul>
+                <p style="color: white; margin-top: 20px; font-size: 1.2em; text-align: center;">
+                    <strong>🎉 You can now organize code like a professional!</strong>
+                </p>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Methods are the building blocks of organized code - master them! 🏗️</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

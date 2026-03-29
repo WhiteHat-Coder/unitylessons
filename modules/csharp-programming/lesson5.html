@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 5: Master C# arrays and collections - store and manage multiple values efficiently.">
+    <meta name="keywords" content="C# arrays, lists, collections, inventory system, data structures">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Lesson 5: Arrays & Collections | Unity Tutorial</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>💻 Lesson 5: Arrays & Collections</h1>
+            <p>Learn to store and manage multiple values efficiently</p>
+        </header>
+
+        <div class="content">
+
+            <!-- Introduction -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Store multiple values in arrays</li>
+                    <li>✅ Access and modify array elements</li>
+                    <li>✅ Loop through arrays efficiently</li>
+                    <li>✅ Create 2D arrays for grids and boards</li>
+                    <li>✅ Use Lists for dynamic collections</li>
+                    <li>✅ Build game systems (inventory, scores, enemies)</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: What are Arrays? -->
+            <div class="topic">
+                <h2>1. What are Arrays? 📦</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Array</strong> = a container that holds multiple values of the same type</p>
+                    <p>Instead of creating variables like <code>score1, score2, score3...</code>, use one array!</p>
+                </div>
+
+                <h3>❌ Without Arrays:</h3>
+                <div class="example">
+                    <div class="example-header">Bad: Individual Variables</div>
+                    <code>
+int score1 = 100;<br>
+int score2 = 85;<br>
+int score3 = 92;<br>
+int score4 = 78;<br>
+int score5 = 95;<br>
+// What if you need 100 scores? 😱
+                    </code>
+                </div>
+
+                <h3>✅ With Arrays:</h3>
+                <div class="example">
+                    <div class="example-header">Good: Using Arrays</div>
+                    <code>
+int[] scores = {100, 85, 92, 78, 95};<br>
+// All scores in one variable! Access by index
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Real-World Analogy:</h4>
+                    <p>Think of an array like an apartment building:</p>
+                    <ul>
+                        <li>🏢 The building = the array</li>
+                        <li>🚪 Room numbers (0, 1, 2, 3...) = indices</li>
+                        <li>👤 People in rooms = values stored</li>
+                        <li>📍 Address "Room 3" = <code>array[3]</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 2: Creating Arrays -->
+            <div class="topic">
+                <h2>2. Creating and Initializing Arrays 🔨</h2>
+
+                <h3>📝 Method 1: Declare with Values:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Initialize with Values</div>
+                    <code>
+string[] weapons = {"Sword", "Bow", "Staff", "Axe"};<br>
+int[] levels = {1, 5, 10, 15, 20};<br>
+float[] prices = {9.99f, 19.99f, 4.99f};
+                    </code>
+                </div>
+
+                <h3>📝 Method 2: Declare Size, Then Assign:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Create Empty Array</div>
+                    <code>
+int[] playerScores = new int[5];  // creates array for 5 integers<br>
+<br>
+// Assign values later<br>
+playerScores[0] = 100;<br>
+playerScores[1] = 85;<br>
+playerScores[2] = 92;<br>
+playerScores[3] = 78;<br>
+playerScores[4] = 95;
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🧠 Understanding Array Syntax:</h4>
+                    <ul>
+                        <li><code>int[]</code> = type of array (int array)</li>
+                        <li><code>new int[5]</code> = creates array with 5 slots</li>
+                        <li>Indices start at <strong>0</strong> (not 1!)</li>
+                        <li>Last index = <code>length - 1</code></li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Important:</strong> Array size is FIXED once created. You cannot add more elements later!
+                </div>
+            </div>
+
+            <!-- Topic 3: Accessing Elements -->
+            <div class="topic">
+                <h2>3. Accessing Array Elements 🎯</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Access elements using <strong>index</strong> in square brackets: <code>arrayName[index]</code>
+                    </p>
+                    <p><strong>Remember:</strong> Indices start at 0!</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Accessing Elements</div>
+                    <code>
+string[] enemies = {"Goblin", "Orc", "Dragon", "Zombie"};<br>
+<br>
+Debug.Log(enemies[0]);  // First element<br>
+Debug.Log(enemies[1]);  // Second element<br>
+Debug.Log(enemies[2]);  // Third element<br>
+Debug.Log(enemies[3]);  // Fourth element<br>
+// Debug.Log(enemies[4]);  ← ERROR! Out of bounds
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Goblin<br>
+                        Orc<br>
+                        Dragon<br>
+                        Zombie
+                    </div>
+                </div>
+
+                <h3>📝 Modifying Elements:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Change Values</div>
+                    <code>
+int[] health = {100, 80, 60};<br>
+Debug.Log("Before: " + health[1]);<br>
+<br>
+health[1] = 90;  // change second element<br>
+Debug.Log("After: " + health[1]);
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Before: 80<br>
+                        After: 90
+                    </div>
+                </div>
+
+                <h3>📝 Array Length Property:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Get Array Size</div>
+                    <code>
+string[] items = {"Potion", "Key", "Map", "Coin", "Gem"};<br>
+<br>
+Debug.Log("Inventory has " + items.Length + " items");<br>
+Debug.Log("Last item: " + items[items.Length - 1]);
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Inventory has 5 items<br>
+                        Last item: Gem
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 4: Looping Through Arrays -->
+            <div class="topic">
+                <h2>4. Looping Through Arrays 🔄</h2>
+
+                <h3>📝 Method 1: For Loop (Traditional):</h3>
+                <div class="example">
+                    <div class="example-header">Example: For Loop with Index</div>
+                    <code>
+int[] scores = {85, 92, 78, 95, 88};<br>
+<br>
+for (int i = 0; i < scores.Length; i++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Player " + (i+1) + ": " + scores[i] + " points");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Player 1: 85 points<br>
+                        Player 2: 92 points<br>
+                        Player 3: 78 points<br>
+                        Player 4: 95 points<br>
+                        Player 5: 88 points
+                    </div>
+                </div>
+
+                <h3>📝 Method 2: Foreach Loop (Simpler):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Foreach Loop</div>
+                    <code>
+string[] weapons = {"Sword", "Bow", "Staff"};<br>
+<br>
+foreach (string weapon in weapons)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("⚔️ Equipped: " + weapon);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        ⚔️ Equipped: Sword<br>
+                        ⚔️ Equipped: Bow<br>
+                        ⚔️ Equipped: Staff
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 For vs Foreach:</h4>
+                    <table>
+                        <tr>
+                            <th>For Loop</th>
+                            <th>Foreach Loop</th>
+                        </tr>
+                        <tr>
+                            <td>Need index position</td>
+                            <td>Just need values</td>
+                        </tr>
+                        <tr>
+                            <td>Can modify elements</td>
+                            <td>Read-only</td>
+                        </tr>
+                        <tr>
+                            <td>More flexible</td>
+                            <td>Simpler syntax</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>📝 Calculate Array Sum:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Sum All Elements</div>
+                    <code>
+int[] numbers = {10, 20, 30, 40, 50};<br>
+int total = 0;<br>
+<br>
+foreach (int num in numbers)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;total += num;<br>
+}<br>
+<br>
+Debug.Log("Total: " + total);<br>
+Debug.Log("Average: " + (total / numbers.Length));
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Total: 150<br>
+                        Average: 30
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 5: 2D Arrays -->
+            <div class="topic">
+                <h2>5. Multi-Dimensional Arrays (2D) 🎮</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>2D Array</strong> = array of arrays (like a grid or table)</p>
+                    <p>Perfect for: game boards, tile maps, grids</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: 3x3 Game Board</div>
+                    <code>
+int[,] board = <br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{1, 2, 3},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{4, 5, 6},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{7, 8, 9}<br>
+};<br>
+<br>
+Debug.Log("Center tile: " + board[1, 1]);<br>
+Debug.Log("Top-left: " + board[0, 0]);<br>
+Debug.Log("Bottom-right: " + board[2, 2]);
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Center tile: 5<br>
+                        Top-left: 1<br>
+                        Bottom-right: 9
+                    </div>
+                </div>
+
+                <h3>📝 Loop Through 2D Array:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Print Grid</div>
+                    <code>
+string[,] dungeon = <br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{"🚪", "⬜", "⬜"},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{"⬜", "👹", "⬜"},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{"⬜", "⬜", "🏆"}<br>
+};<br>
+<br>
+for (int row = 0; row < 3; row++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;string line = "";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for (int col = 0; col < 3; col++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;line += dungeon[row, col] + " ";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(line);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        🚪 ⬜ ⬜<br>
+                        ⬜ 👹 ⬜<br>
+                        ⬜ ⬜ 🏆
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 6: Lists -->
+            <div class="topic">
+                <h2>6. Lists (Dynamic Collections) 📋</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>List</strong> = like an array, but can grow and shrink</p>
+                    <p>Use <code>System.Collections.Generic.List&lt;T&gt;</code></p>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Array vs List:</h4>
+                    <table>
+                        <tr>
+                            <th>Array</th>
+                            <th>List</th>
+                        </tr>
+                        <tr>
+                            <td>Fixed size</td>
+                            <td>Dynamic size</td>
+                        </tr>
+                        <tr>
+                            <td>Faster</td>
+                            <td>More flexible</td>
+                        </tr>
+                        <tr>
+                            <td>Use when size is known</td>
+                            <td>Use when size changes</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>📝 Creating and Using Lists:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Inventory System</div>
+                    <code>
+using System.Collections.Generic;<br>
+<br>
+List&lt;string&gt; inventory = new List&lt;string&gt;();<br>
+<br>
+// Add items<br>
+inventory.Add("Sword");<br>
+inventory.Add("Potion");<br>
+inventory.Add("Key");<br>
+Debug.Log("Items: " + inventory.Count);<br>
+<br>
+// Remove item<br>
+inventory.Remove("Potion");<br>
+Debug.Log("Items after removal: " + inventory.Count);<br>
+<br>
+// Check if contains<br>
+if (inventory.Contains("Sword"))<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Has sword!");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Items: 3<br>
+                        Items after removal: 2<br>
+                        Has sword!
+                    </div>
+                </div>
+
+                <h3>📝 List Methods:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Common List Operations</div>
+                    <code>
+List&lt;int&gt; scores = new List&lt;int&gt;() {85, 92, 78};<br>
+<br>
+scores.Add(95);              // Add to end<br>
+scores.Insert(0, 100);       // Insert at index 0<br>
+scores.RemoveAt(2);          // Remove at index 2<br>
+scores.Clear();              // Remove all<br>
+Debug.Log("Count: " + scores.Count);
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Count: 0
+                    </div>
+                </div>
+
+                <h3>📝 Game Example - Enemy Spawner:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Dynamic Enemy List</div>
+                    <code>
+List&lt;string&gt; activeEnemies = new List&lt;string&gt;();<br>
+<br>
+// Spawn enemies<br>
+activeEnemies.Add("Goblin");<br>
+activeEnemies.Add("Orc");<br>
+activeEnemies.Add("Troll");<br>
+Debug.Log("Enemies spawned: " + activeEnemies.Count);<br>
+<br>
+// Enemy defeated<br>
+activeEnemies.Remove("Orc");<br>
+Debug.Log("Enemies remaining: " + activeEnemies.Count);<br>
+<br>
+// List all enemies<br>
+foreach (string enemy in activeEnemies)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("⚔️ Fighting: " + enemy);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Enemies spawned: 3<br>
+                        Enemies remaining: 2<br>
+                        ⚔️ Fighting: Goblin<br>
+                        ⚔️ Fighting: Troll
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic"
+                style="background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); padding: 30px; border-radius: 10px;">
+                <h2 style="color: #856404;">🧪 Practice Exercises</h2>
+
+                <div class="key-points" style="background: white;">
+                    <h4>Exercise 1: High Score Tracker</h4>
+                    <p><strong>Task:</strong> Create an array of 5 scores. Find and print the highest score.</p>
+                    <p><strong>Scores:</strong> {78, 92, 85, 95, 88}</p>
+                    <p><strong>Hint:</strong> Loop through and compare each score</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 2: Reverse Array</h4>
+                    <p><strong>Task:</strong> Print array elements in reverse order.</p>
+                    <p><strong>Example:</strong> {A, B, C, D} → D, C, B, A</p>
+                    <p><strong>Hint:</strong> Loop from <code>Length-1</code> down to 0</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 3: Count Specific Element</h4>
+                    <p><strong>Task:</strong> Count how many times "Potion" appears in an inventory array.</p>
+                    <p><strong>Array:</strong> {"Sword", "Potion", "Key", "Potion", "Shield", "Potion"}</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 4: Shopping Cart</h4>
+                    <p><strong>Task:</strong> Use a List to create a shopping cart system.</p>
+                    <ul>
+                        <li>Add 3 items</li>
+                        <li>Remove 1 item</li>
+                        <li>Print all remaining items</li>
+                        <li>Print total item count</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 5: Tic-Tac-Toe Board</h4>
+                    <p><strong>Task:</strong> Create a 3x3 2D array for tic-tac-toe.</p>
+                    <ul>
+                        <li>Initialize with empty spaces</li>
+                        <li>Place X at position (1,1)</li>
+                        <li>Place O at position (0,0)</li>
+                        <li>Print the board</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">📚 Lesson 5 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);">You've mastered:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>Arrays:</strong> Fixed-size collections of same type</li>
+                    <li>✅ <strong>Indexing:</strong> Accessing elements with [index]</li>
+                    <li>✅ <strong>Looping:</strong> For and foreach loops</li>
+                    <li>✅ <strong>2D Arrays:</strong> Grids and tables</li>
+                    <li>✅ <strong>Lists:</strong> Dynamic collections that grow/shrink</li>
+                    <li>✅ <strong>Game Systems:</strong> Inventory, scores, enemies</li>
+                </ul>
+                <p style="color: white; margin-top: 20px; font-size: 1.2em; text-align: center;">
+                    <strong>🎉 You can now manage collections like a pro!</strong>
+                </p>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Arrays and Lists are fundamental to game development - practice them! 📦</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

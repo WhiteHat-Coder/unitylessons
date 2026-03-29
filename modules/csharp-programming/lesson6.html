@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 6: Master Object-Oriented Programming in C# - classes, objects, inheritance, and polymorphism for Unity.">
+    <meta name="keywords" content="C# OOP, classes, objects, inheritance, polymorphism, encapsulation">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Lesson 6: Object-Oriented Programming | Unity Tutorial</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>💻 Lesson 6: Object-Oriented Programming (OOP)</h1>
+            <p>Learn the foundation of modern game development</p>
+        </header>
+
+        <div class="content">
+
+            <!-- Introduction -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ What Object-Oriented Programming is and why it matters</li>
+                    <li>✅ Creating classes and objects (blueprints and instances)</li>
+                    <li>✅ Properties, fields, and methods</li>
+                    <li>✅ Constructors for initializing objects</li>
+                    <li>✅ Encapsulation (hiding data)</li>
+                    <li>✅ Inheritance (code reuse)</li>
+                    <li>✅ Polymorphism (method overriding)</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: What is OOP? -->
+            <div class="topic">
+                <h2>1. What is Object-Oriented Programming? 🎭</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Object-Oriented Programming (OOP)</strong> = organizing code around objects that
+                        represent real-world things</p>
+                    <p>Instead of writing everything in one place, you create <strong>classes</strong> (blueprints) and
+                        <strong>objects</strong> (instances)</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Real-World Analogy:</h4>
+                    <p><strong>Car Blueprint (Class):</strong></p>
+                    <ul>
+                        <li>🎨 Defines properties: color, speed, fuel</li>
+                        <li>⚙️ Defines actions: accelerate(), brake(), honk()</li>
+                    </ul>
+                    <p><strong>Actual Cars (Objects):</strong></p>
+                    <ul>
+                        <li>🚗 My red car (speed: 100 km/h)</li>
+                        <li>🚙 Your blue car (speed: 120 km/h)</li>
+                        <li>🚕 Friend's yellow car (speed: 90 km/h)</li>
+                    </ul>
+                    <p>Same blueprint, different instances with different values!</p>
+                </div>
+
+                <div class="key-points" style="background: #e7f3ff;">
+                    <h4>🎮 Game Example:</h4>
+                    <p><strong>Enemy Class (Blueprint):</strong></p>
+                    <ul>
+                        <li>Properties: health, damage, speed</li>
+                        <li>Methods: Attack(), TakeDamage(), Move()</li>
+                    </ul>
+                    <p><strong>Enemy Objects:</strong></p>
+                    <ul>
+                        <li>👹 Goblin (health: 50, damage: 10)</li>
+                        <li>🐉 Dragon (health: 500, damage: 100)</li>
+                        <li>🧟 Zombie (health: 30, damage: 5)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 2: Classes and Objects -->
+            <div class="topic">
+                <h2>2. Classes and Objects 🏗️</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <ul>
+                        <li><strong>Class</strong> = blueprint/template that defines properties and behaviors</li>
+                        <li><strong>Object</strong> = specific instance created from a class</li>
+                    </ul>
+                </div>
+
+                <h3>📝 Creating Your First Class:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Player Class</div>
+                    <code>
+public class Player<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Fields (variables inside class)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string playerName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int health;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int level;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void ShowInfo()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Name: " + playerName);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Health: " + health);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Level: " + level);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Creating Objects from the Class:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Create Player Objects</div>
+                    <code>
+// Create first player<br>
+Player player1 = new Player();<br>
+player1.playerName = "Alex";<br>
+player1.health = 100;<br>
+player1.level = 5;<br>
+<br>
+// Create second player<br>
+Player player2 = new Player();<br>
+player2.playerName = "Jordan";<br>
+player2.health = 80;<br>
+player2.level = 3;<br>
+<br>
+// Use the objects<br>
+player1.ShowInfo();<br>
+player2.ShowInfo();
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Name: Alex<br>
+                        Health: 100<br>
+                        Level: 5<br>
+                        Name: Jordan<br>
+                        Health: 80<br>
+                        Level: 3
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>🧠 Understanding the Syntax:</h4>
+                    <ul>
+                        <li><code>public class Player</code> → defines the class</li>
+                        <li><code>Player player1 = new Player();</code> → creates an object</li>
+                        <li><code>new</code> → keyword to create a new instance</li>
+                        <li><code>player1.health</code> → access field using dot notation</li>
+                        <li><code>player1.ShowInfo()</code> → call method on object</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 3: Constructors -->
+            <div class="topic">
+                <h2>3. Constructors 🔧</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Constructor</strong> = special method that runs when you create an object</p>
+                    <p>Used to initialize values automatically</p>
+                </div>
+
+                <h3>📝 Class with Constructor:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Enemy Class with Constructor</div>
+                    <code>
+public class Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string name;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int health;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Constructor (same name as class, no return type)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public Enemy(string enemyName, int enemyHealth, int enemyDamage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name = enemyName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;health = enemyHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;damage = enemyDamage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " spawned!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " attacks for " + damage + " damage!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Using the Constructor:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Create Enemies Easily</div>
+                    <code>
+// Much cleaner! Values set immediately<br>
+Enemy goblin = new Enemy("Goblin", 50, 10);<br>
+Enemy dragon = new Enemy("Dragon", 500, 100);<br>
+Enemy zombie = new Enemy("Zombie", 30, 5);<br>
+<br>
+goblin.Attack();<br>
+dragon.Attack();
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Goblin spawned!<br>
+                        Dragon spawned!<br>
+                        Zombie spawned!<br>
+                        Goblin attacks for 10 damage!<br>
+                        Dragon attacks for 100 damage!
+                    </div>
+                </div>
+
+                <h3>📝 Default Constructor:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Multiple Constructors</div>
+                    <code>
+public class Weapon<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string name;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Default constructor<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public Weapon()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name = "Fists";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;damage = 5;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Constructor with parameters<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public Weapon(string weaponName, int weaponDamage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name = weaponName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;damage = weaponDamage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+Weapon defaultWeapon = new Weapon();           // Uses default<br>
+Weapon sword = new Weapon("Sword", 50);        // Uses parameterized
+                    </code>
+                </div>
+            </div>
+
+            <!-- Topic 4: Encapsulation -->
+            <div class="topic">
+                <h2>4. Encapsulation (Data Hiding) 🔒</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Encapsulation</strong> = hiding internal data and controlling access through methods</p>
+                    <p>Use <code>private</code> fields and <code>public</code> properties/methods</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Access Modifiers:</h4>
+                    <table>
+                        <tr>
+                            <th>Modifier</th>
+                            <th>Meaning</th>
+                            <th>When to Use</th>
+                        </tr>
+                        <tr>
+                            <td><code>public</code></td>
+                            <td>Accessible from anywhere</td>
+                            <td>Methods, properties you want others to use</td>
+                        </tr>
+                        <tr>
+                            <td><code>private</code></td>
+                            <td>Only accessible inside the class</td>
+                            <td>Internal data, helper methods</td>
+                        </tr>
+                        <tr>
+                            <td><code>protected</code></td>
+                            <td>Accessible in class and subclasses</td>
+                            <td>Data for inheritance</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>📝 Without Encapsulation (Bad):</h3>
+                <div class="example">
+                    <div class="example-header">Bad: Direct Access</div>
+                    <code>
+public class BankAccount<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int balance;  // Anyone can modify!<br>
+}<br>
+<br>
+BankAccount account = new BankAccount();<br>
+account.balance = 1000;<br>
+account.balance = -500;    // ❌ Negative balance! Bug!
+                    </code>
+                </div>
+
+                <h3>📝 With Encapsulation (Good):</h3>
+                <div class="example">
+                    <div class="example-header">Good: Controlled Access</div>
+                    <code>
+public class BankAccount<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private int balance;  // Hidden<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void Deposit(int amount)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (amount > 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;balance += amount;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Deposited: " + amount);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public bool Withdraw(int amount)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (amount > 0 && balance >= amount)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;balance -= amount;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Insufficient funds");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int GetBalance()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return balance;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Properties (C# Shortcut):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Using Properties</div>
+                    <code>
+public class Player<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private int health;  // Private field<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Public property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int Health<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get { return health; }  // Read<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (value >= 0 && value <= 100)  // Validate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;health = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+Player player = new Player();<br>
+player.Health = 80;      // Uses set<br>
+player.Health = 150;     // Rejected (over 100)<br>
+Debug.Log(player.Health); // Uses get
+                    </code>
+                </div>
+            </div>
+
+            <!-- Topic 5: Inheritance -->
+            <div class="topic">
+                <h2>5. Inheritance (Code Reuse) 🧬</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Inheritance</strong> = creating new classes based on existing ones</p>
+                    <p>Child class inherits all properties and methods from parent class</p>
+                </div>
+
+                <h3>📝 Base Class (Parent):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Character Base Class</div>
+                    <code>
+public class Character<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string name;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int health;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void TakeDamage(int amount)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;health -= amount;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " took " + amount + " damage. Health: " + health);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void Attack(Character target)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " attacks " + target.name);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.TakeDamage(damage);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Derived Classes (Children):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Specialized Character Classes</div>
+                    <code>
+// Warrior inherits from Character<br>
+public class Warrior : Character<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int armor;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void Shield()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " raises shield! Armor: " + armor);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Mage inherits from Character<br>
+public class Mage : Character<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int mana;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void CastSpell()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (mana >= 10)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mana -= 10;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " casts fireball!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Using Inherited Classes:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Warrior and Mage Objects</div>
+                    <code>
+Warrior warrior = new Warrior();<br>
+warrior.name = "Conan";<br>
+warrior.health = 150;<br>
+warrior.damage = 30;<br>
+warrior.armor = 50;<br>
+<br>
+Mage mage = new Mage();<br>
+mage.name = "Gandalf";<br>
+mage.health = 80;<br>
+mage.damage = 50;<br>
+mage.mana = 100;<br>
+<br>
+// Use inherited methods<br>
+warrior.Attack(mage);  // From Character<br>
+warrior.Shield();      // Warrior-specific<br>
+<br>
+mage.CastSpell();      // Mage-specific
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Conan attacks Gandalf<br>
+                        Gandalf took 30 damage. Health: 50<br>
+                        Conan raises shield! Armor: 50<br>
+                        Gandalf casts fireball!
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Inheritance Benefits:</h4>
+                    <ul>
+                        <li>✅ **Code reuse** - don't repeat common code</li>
+                        <li>✅ **Organization** - clear hierarchy</li>
+                        <li>✅ **Maintainability** - fix/change in one place</li>
+                        <li>✅ **Extensibility** - easy to add new types</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 6: Polymorphism -->
+            <div class="topic">
+                <h2>6. Polymorphism (Many Forms) 🎭</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Polymorphism</strong> = same method name, different implementations in child classes</p>
+                    <p>Use <code>virtual</code> in parent, <code>override</code> in child</p>
+                </div>
+
+                <h3>📝 Virtual Method in Base Class:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Base Animal Class</div>
+                    <code>
+public class Animal<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string name;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Virtual method (can be overridden)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public virtual void MakeSound()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Some generic animal sound");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Override in Derived Classes:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Different Animal Sounds</div>
+                    <code>
+public class Dog : Animal<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public override void MakeSound()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " says: Woof! 🐕");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+public class Cat : Animal<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public override void MakeSound()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " says: Meow! 🐈");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+public class Cow : Animal<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public override void MakeSound()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " says: Moo! 🐄");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 The Magic of Polymorphism:</h3>
+                <div class="example">
+                    <div class="example-header">Example: One Array, Many Types</div>
+                    <code>
+// Create different animals<br>
+Animal[] animals = new Animal[3];<br>
+<br>
+animals[0] = new Dog() { name = "Buddy" };<br>
+animals[1] = new Cat() { name = "Whiskers" };<br>
+animals[2] = new Cow() { name = "Bessie" };<br>
+<br>
+// Same method call, different behavior!<br>
+foreach (Animal animal in animals)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;animal.MakeSound();  // Calls the correct override<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Buddy says: Woof! 🐕<br>
+                        Whiskers says: Meow! 🐈<br>
+                        Bessie says: Moo! 🐄
+                    </div>
+                </div>
+
+                <h3>📝 Game Example - Enemy AI:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Different Enemy Behaviors</div>
+                    <code>
+public class Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string name;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public virtual void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " attacks!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+public class MeleeEnemy : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public override void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " swings sword! ⚔️");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+public class RangedEnemy : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public override void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " shoots arrow! 🏹");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+public class MagicEnemy : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public override void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(name + " casts spell! 🔮");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Game loop<br>
+List&lt;Enemy&gt; enemies = new List&lt;Enemy&gt;();<br>
+enemies.Add(new MeleeEnemy() { name = "Knight" });<br>
+enemies.Add(new RangedEnemy() { name = "Archer" });<br>
+enemies.Add(new MagicEnemy() { name = "Wizard" });<br>
+<br>
+foreach (Enemy enemy in enemies)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enemy.Attack();  // Each enemy attacks differently!<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Knight swings sword! ⚔️<br>
+                        Archer shoots arrow! 🏹<br>
+                        Wizard casts spell! 🔮
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic"
+                style="background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); padding: 30px; border-radius: 10px;">
+                <h2 style="color: #856404;">🧪 Practice Exercises</h2>
+
+                <div class="key-points" style="background: white;">
+                    <h4>Exercise 1: Create an Item Class</h4>
+                    <p><strong>Task:</strong> Create an Item class with:</p>
+                    <ul>
+                        <li>Properties: name, price, weight</li>
+                        <li>Constructor to initialize values</li>
+                        <li>Method: DisplayInfo()</li>
+                        <li>Create 3 item objects (sword, potion, armor)</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 2: Bank Account System</h4>
+                    <p><strong>Task:</strong> Create a BankAccount class with:</p>
+                    <ul>
+                        <li>Private field: balance</li>
+                        <li>Public methods: Deposit(), Withdraw(), GetBalance()</li>
+                        <li>Validation: no negative amounts, can't withdraw morethe than balance</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 3: Vehicle Hierarchy</h4>
+                    <p><strong>Task:</strong> Create inheritance chain:</p>
+                    <ul>
+                        <li>Base class: Vehicle (name, speed, Move() method)</li>
+                        <li>Derived classes: Car (doors), Motorcycle (hasHelmet), Truck (cargoCapacity)</li>
+                        <li>Each has unique method showing their special feature</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 4: Shape Polymorphism</h4>
+                    <p><strong>Task:</strong> Create Shape base class with virtual CalculateArea() method.</p>
+                    <p>Derived classes: Circle, Rectangle, Triangle - each calculates area differently.</p>
+                    <p>Create array of shapes and calculate all areas in a loop.</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 5: RPG Character System</h4>
+                    <p><strong>Task:</strong> Build a complete character system:</p>
+                    <ul>
+                        <li>Base Character class (name, health, level)</li>
+                        <li>3 classes: Warrior (armor), Archer (arrows), Mage (mana)</li>
+                        <li>Each has unique Attack() method (polymorphism)</li>
+                        <li>Create party of 3 different characters and make them all attack</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">📚 Lesson 6 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);">You've mastered OOP fundamentals:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>Classes & Objects:</strong> Blueprints and instances</li>
+                    <li>✅ <strong>Constructors:</strong> Initialize objects automatically</li>
+                    <li>✅ <strong>Encapsulation:</strong> Hide data, control access</li>
+                    <li>✅ <strong>Inheritance:</strong> Reuse code from parent classes</li>
+                    <li>✅ <strong>Polymorphism:</strong> Same interface, different implementations</li>
+                    <li>✅ <strong>Unity Ready:</strong> These concepts power all Unity scripts!</li>
+                </ul>
+                <p style="color: white; margin-top: 20px; font-size: 1.2em; text-align: center;">
+                    <strong>🎉 You're now ready for professional Unity development!</strong>
+                </p>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>OOP is the foundation of Unity - every MonoBehaviour is a class! 🏗️</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

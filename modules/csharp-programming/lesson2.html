@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 2: Master control flow in C# - if-else statements, switch statements, and decision making.">
+    <meta name="keywords" content="C# control flow, if-else, switch statement, conditional logic">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Lesson 2: Control Flow & Decision Making | Unity Tutorial</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>💻 Lesson 2: Control Flow & Decision Making</h1>
+            <p>Learn how to make your programs think and make decisions</p>
+        </header>
+
+        <div class="content">
+
+            <!-- Introduction -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Make decisions with if-else statements</li>
+                    <li>✅ Use comparison and logical operators</li>
+                    <li>✅ Handle multiple conditions with switch statements</li>
+                    <li>✅ Write complex conditional logic</li>
+                    <li>✅ Build interactive programs</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: Comparison Operators -->
+            <div class="topic">
+                <h2>1. Comparison Operators 🔍</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Comparison operators</strong> compare two values and return <code>true</code> or
+                        <code>false</code>.</p>
+                </div>
+
+                <table>
+                    <tr>
+                        <th>Operator</th>
+                        <th>Meaning</th>
+                        <th>Example</th>
+                        <th>Result</th>
+                    </tr>
+                    <tr>
+                        <td><code>==</code></td>
+                        <td>Equal to</td>
+                        <td><code>5 == 5</code></td>
+                        <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>!=</code></td>
+                        <td>Not equal to</td>
+                        <td><code>5 != 3</code></td>
+                        <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>&gt;</code></td>
+                        <td>Greater than</td>
+                        <td><code>5 &gt; 3</code></td>
+                        <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>&lt;</code></td>
+                        <td>Less than</td>
+                        <td><code>5 &lt; 3</code></td>
+                        <td><code>false</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>&gt;=</code></td>
+                        <td>Greater than or equal</td>
+                        <td><code>5 &gt;= 5</code></td>
+                        <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>&lt;=</code></td>
+                        <td>Less than or equal</td>
+                        <td><code>3 &lt;= 5</code></td>
+                        <td><code>true</code></td>
+                    </tr>
+                </table>
+
+                <div class="example">
+                    <div class="example-header">Example: Using Comparison Operators</div>
+                    <code>
+int playerHealth = 50;<br>
+int maxHealth = 100;<br>
+<br>
+Debug.Log(playerHealth == maxHealth);  // false<br>
+Debug.Log(playerHealth &lt; maxHealth);   // true<br>
+Debug.Log(playerHealth &gt;= 25);         // true
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        False<br>
+                        True<br>
+                        True
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Common Mistake:</strong> Don't confuse <code>=</code> (assignment) with <code>==</code>
+                    (comparison)!<br>
+                    <code>x = 5</code> → assigns 5 to x<br>
+                    <code>x == 5</code> → checks if x equals 5
+                </div>
+            </div>
+
+            <!-- Topic 2: If-Else Statements -->
+            <div class="topic">
+                <h2>2. If-Else Statements 🚦</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>If-else statements</strong> execute different code based on conditions.</p>
+                    <p><strong>Syntax:</strong></p>
+                    <code
+                        style="display: block; padding: 10px; background: #2d2d2d; color: #f8f8f2; border-radius: 5px; margin-top: 10px;">
+if (condition)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// code runs if condition is true<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// code runs if condition is false<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Simple If Statement:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Check Player Health</div>
+                    <code>
+int playerHealth = 30;<br>
+<br>
+if (playerHealth &lt; 50)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Warning: Low health!");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Warning: Low health!
+                    </div>
+                </div>
+
+                <h3>📝 If-Else Statement:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Check Game Status</div>
+                    <code>
+int score = 85;<br>
+<br>
+if (score &gt;= 50)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("You passed! 🎉");<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Try again!");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        You passed! 🎉
+                    </div>
+                </div>
+
+                <h3>📝 If-Else If-Else (Multiple Conditions):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Grade System</div>
+                    <code>
+int score = 75;<br>
+<br>
+if (score &gt;= 90)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Grade: A");<br>
+}<br>
+else if (score &gt;= 80)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Grade: B");<br>
+}<br>
+else if (score &gt;= 70)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Grade: C");<br>
+}<br>
+else if (score &gt;= 60)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Grade: D");<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Grade: F");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Grade: C
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 How It Works:</h4>
+                    <ol>
+                        <li>Program checks first condition (score >= 90) → false, skip</li>
+                        <li>Checks second condition (score >= 80) → false, skip</li>
+                        <li>Checks third condition (score >= 70) → <strong>true</strong>, executes this block</li>
+                        <li>Skips all remaining conditions</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Topic 3: Logical Operators -->
+            <div class="topic">
+                <h2>3. Logical Operators 🧠</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Logical operators</strong> combine multiple conditions.</p>
+                </div>
+
+                <table>
+                    <tr>
+                        <th>Operator</th>
+                        <th>Name</th>
+                        <th>Meaning</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><code>&amp;&amp;</code></td>
+                        <td>AND</td>
+                        <td>Both must be true</td>
+                        <td><code>a &gt; 5 &amp;&amp; b &lt; 10</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>||</code></td>
+                        <td>OR</td>
+                        <td>At least one must be true</td>
+                        <td><code>a == 5 || b == 10</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>!</code></td>
+                        <td>NOT</td>
+                        <td>Reverses true/false</td>
+                        <td><code>!(a &gt; 5)</code></td>
+                    </tr>
+                </table>
+
+                <h3>📝 AND Operator (&&):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Check Multiple Conditions</div>
+                    <code>
+int health = 80;<br>
+int ammo = 15;<br>
+<br>
+if (health &gt; 50 &amp;&amp; ammo &gt; 10)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Ready for combat! ⚔️");<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Not ready!");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Ready for combat! ⚔️
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 AND Truth Table:</h4>
+                    <p>Both conditions must be true:</p>
+                    <ul>
+                        <li><code>true &amp;&amp; true</code> = <code>true</code></li>
+                        <li><code>true &amp;&amp; false</code> = <code>false</code></li>
+                        <li><code>false &amp;&amp; true</code> = <code>false</code></li>
+                        <li><code>false &amp;&amp; false</code> = <code>false</code></li>
+                    </ul>
+                </div>
+
+                <h3>📝 OR Operator (||):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Multiple Win Conditions</div>
+                    <code>
+int score = 100;<br>
+int timeBonus = 0;<br>
+<br>
+if (score &gt;= 100 || timeBonus &gt; 0)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Victory! 🏆");<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Keep playing!");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Victory! 🏆
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 OR Truth Table:</h4>
+                    <p>At least one condition must be true:</p>
+                    <ul>
+                        <li><code>true || true</code> = <code>true</code></li>
+                        <li><code>true || false</code> = <code>true</code></li>
+                        <li><code>false || true</code> = <code>true</code></li>
+                        <li><code>false || false</code> = <code>false</code></li>
+                    </ul>
+                </div>
+
+                <h3>📝 NOT Operator (!):</h3>
+                <div class="example">
+                    <div class="example-header">Example: Reverse Condition</div>
+                    <code>
+bool isGameOver = false;<br>
+<br>
+if (!isGameOver)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Game is still running");<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Game over");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Game is still running
+                    </div>
+                </div>
+
+                <h3>📝 Combining Logical Operators:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Complex Conditions</div>
+                    <code>
+int age = 25;<br>
+bool hasLicense = true;<br>
+int drivingExperience = 3;<br>
+<br>
+if ((age &gt;= 18 &amp;&amp; hasLicense) &amp;&amp; drivingExperience &gt; 2)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Can rent a sports car! 🏎️");<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Not eligible");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Can rent a sports car! 🏎️
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 4: Nested If Statements -->
+            <div class="topic">
+                <h2>4. Nested If Statements 📦</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Nested if statements</strong> = if statements inside other if statements</p>
+                    <p>Used when you need to check multiple levels of conditions</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Game Login System</div>
+                    <code>
+string username = "player123";<br>
+string password = "pass456";<br>
+bool hasInternet = true;<br>
+<br>
+if (hasInternet)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Connected to server");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (username == "player123")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (password == "pass456")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("✅ Login successful!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("❌ Wrong password");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("❌ Username not found");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("❌ No internet connection");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Connected to server<br>
+                        ✅ Login successful!
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Better Alternative:</strong> You can rewrite nested ifs using logical operators:<br>
+                    <code
+                        style="display: block; margin-top: 10px; background: #2d2d2d; padding: 10px; border-radius: 5px;">
+if (hasInternet &amp;&amp; username == "player123" &amp;&amp; password == "pass456")<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("✅ Login successful!");<br>
+}
+                    </code>
+                </div>
+            </div>
+
+            <!-- Topic 5: Switch Statement -->
+            <div class="topic">
+                <h2>5. Switch Statements 🔀</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Switch statement</strong> = cleaner way to handle multiple specific values</p>
+                    <p>Use when you have many <code>if-else if</code> statements checking the same variable</p>
+                </div>
+
+                <h3>📝 Basic Switch Statement:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Day of the Week</div>
+                    <code>
+int day = 3;<br>
+<br>
+switch (day)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case 1:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Monday");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case 2:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Tuesday");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case 3:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Wednesday");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case 4:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Thursday");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case 5:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Friday");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;default:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Weekend!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Wednesday
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>🧠 Switch Statement Structure:</h4>
+                    <ul>
+                        <li><code>switch (variable)</code> - variable to check</li>
+                        <li><code>case value:</code> - specific value to match</li>
+                        <li><code>break;</code> - exit the switch (REQUIRED!)</li>
+                        <li><code>default:</code> - runs if no cases match (optional)</li>
+                    </ul>
+                </div>
+
+                <h3>📝 Switch with Strings:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Weapon Selection</div>
+                    <code>
+string weapon = "sword";<br>
+<br>
+switch (weapon)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case "sword":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("⚔️ Melee damage: 50");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case "bow":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("🏹 Ranged damage: 40");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case "staff":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("🪄 Magic damage: 60");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;default:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("✊ Fist damage: 10");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        ⚔️ Melee damage: 50
+                    </div>
+                </div>
+
+                <h3>📝 Multiple Cases, Same Action:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Enemy Type</div>
+                    <code>
+string enemy = "zombie";<br>
+<br>
+switch (enemy)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case "zombie":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case "skeleton":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case "ghost":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Weak enemy - 10 XP");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case "dragon":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case "demon":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Boss enemy - 100 XP");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;default:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Unknown enemy");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Weak enemy - 10 XP
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Important:</strong> Always include <code>break;</code> after each case! Without it, the
+                    code "falls through" to the next case (usually not what you want).
+                </div>
+            </div>
+
+            <!-- Topic 6: Ternary Operator -->
+            <div class="topic">
+                <h2>6. Ternary Operator (Shortcut) ⚡</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Ternary operator</strong> = shorthand for simple if-else statements</p>
+                    <p><strong>Syntax:</strong> <code>condition ? valueIfTrue : valueIfFalse</code></p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Compare If-Else vs Ternary</div>
+                    <code>
+// Traditional if-else<br>
+int age = 20;<br>
+string status;<br>
+<br>
+if (age &gt;= 18)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status = "Adult";<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status = "Minor";<br>
+}<br>
+<br>
+// Ternary operator (same thing, shorter!)<br>
+string status2 = (age &gt;= 18) ? "Adult" : "Minor";<br>
+<br>
+Debug.Log(status2);
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Adult
+                    </div>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Game Status</div>
+                    <code>
+int health = 75;<br>
+<br>
+string message = (health &gt; 50) ? "Healthy" : "Damaged";<br>
+Debug.Log(message);<br>
+<br>
+// Can use directly in method calls<br>
+Debug.Log((health == 0) ? "You died!" : "Still alive");
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Healthy<br>
+                        Still alive
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 When to Use Ternary:</h4>
+                    <ul>
+                        <li>✅ Simple assignments based on one condition</li>
+                        <li>✅ Quick true/false decisions</li>
+                        <li>❌ Don't use for complex logic (hard to read)</li>
+                        <li>❌ Don't nest ternary operators</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic"
+                style="background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); padding: 30px; border-radius: 10px;">
+                <h2 style="color: #856404;">🧪 Practice Exercises</h2>
+
+                <div class="key-points" style="background: white;">
+                    <h4>Exercise 1: Age Checker</h4>
+                    <p><strong>Task:</strong> Write a program that checks age and prints different messages:</p>
+                    <ul>
+                        <li>0-12: "Child"</li>
+                        <li>13-19: "Teenager"</li>
+                        <li>20-59: "Adult"</li>
+                        <li>60+: "Senior"</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 2: Game Login</h4>
+                    <p><strong>Task:</strong> Create a login system that checks username AND password.</p>
+                    <p>Username: "gamer", Password: "1234"</p>
+                    <p>Print "Login successful!" or "Access denied!"</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 3: Grade Calculator</h4>
+                    <p><strong>Task:</strong> Use a switch statement to convert letter grades to points:</p>
+                    <ul>
+                        <li>A = 4.0</li>
+                        <li>B = 3.0</li>
+                        <li>C = 2.0</li>
+                        <li>D = 1.0</li>
+                        <li>F = 0.0</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 4: Even or Odd</h4>
+                    <p><strong>Task:</strong> Use the ternary operator to check if a number is even or odd.</p>
+                    <p><strong>Hint:</strong> Use the modulo operator (<code>%</code>). If <code>number % 2 == 0</code>,
+                        it's even.</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 5: Game Difficulty</h4>
+                    <p><strong>Task:</strong> Based on player level, set game difficulty:</p>
+                    <ul>
+                        <li>Level 1-10: "Easy" (enemies have 50 HP)</li>
+                        <li>Level 11-20: "Medium" (enemies have 100 HP)</li>
+                        <li>Level 21+: "Hard" (enemies have 200 HP)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">📚 Lesson 2 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);">You've learned:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>Comparison operators:</strong> ==, !=, &gt;, &lt;, &gt;=, &lt;=</li>
+                    <li>✅ <strong>If-else statements:</strong> Making decisions in code</li>
+                    <li>✅ <strong>Logical operators:</strong> && (AND), || (OR), ! (NOT)</li>
+                    <li>✅ <strong>Nested if statements:</strong> Checking multiple levels</li>
+                    <li>✅ <strong>Switch statements:</strong> Handling multiple specific values</li>
+                    <li>✅ <strong>Ternary operator:</strong> Shortcut for simple conditions</li>
+                </ul>
+                <p style="color: white; margin-top: 20px; font-size: 1.2em; text-align: center;">
+                    <strong>🎉 Great job! You can now make your programs think!</strong>
+                </p>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Practice these concepts - they're the foundation of all programming logic! 💪</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

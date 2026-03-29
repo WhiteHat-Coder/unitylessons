@@ -1,0 +1,64 @@
+{
+    "name": "programming-lectures",
+    "version": "1.0.0",
+    "description": "A production-ready, beginner-friendly programming education website with interactive lectures and code examples",
+    "main": "index.html",
+    "scripts": {
+        "start": "python -m http.server 8000 || python -m SimpleHTTPServer 8000",
+        "dev": "live-server --port=8000 --entry-file=index.html",
+        "serve": "npx http-server -p 8000 -c-1",
+        "lint:html": "htmlhint **/*.html",
+        "lint:css": "stylelint **/*.css",
+        "lint:js": "eslint assets/js/*.js",
+        "format:css": "prettier --write 'assets/css/**/*.css'",
+        "format:js": "prettier --write 'assets/js/**/*.js'",
+        "format:html": "prettier --write '**/*.html'",
+        "validate": "npm run lint:html && npm run lint:css && npm run lint:js",
+        "lighthouse": "lighthouse http://localhost:8000 --view",
+        "deploy:netlify": "netlify deploy --prod",
+        "deploy:vercel": "vercel --prod",
+        "deploy:surge": "surge . programming-lectures.surge.sh",
+        "deploy:firebase": "firebase deploy --only hosting"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yourusername/programming-lectures.git"
+    },
+    "keywords": [
+        "programming",
+        "education",
+        "tutorials",
+        "learning",
+        "coding",
+        "beginner",
+        "static-website",
+        "pwa"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/yourusername/programming-lectures/issues"
+    },
+    "homepage": "https://github.com/yourusername/programming-lectures#readme",
+    "devDependencies": {
+        "eslint": "^8.0.0",
+        "htmlhint": "^1.1.0",
+        "lighthouse": "^10.0.0",
+        "live-server": "^1.2.2",
+        "prettier": "^3.0.0",
+        "stylelint": "^15.0.0",
+        "stylelint-config-standard": "^34.0.0"
+    },
+    "browserslist": [
+        "last 2 Chrome versions",
+        "last 2 Firefox versions",
+        "last 2 Safari versions",
+        "last 2 Edge versions",
+        "iOS >= 12",
+        "Android >= 5"
+    ],
+    "engines": {
+        "node": ">=14.0.0",
+        "npm": ">=6.0.0"
+    }
+}

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 3: Master loops in C# - for loops, while loops, do-while loops, and iteration.">
+    <meta name="keywords" content="C# loops, for loop, while loop, iteration, break, continue">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Lesson 3: Loops & Iteration | Unity Tutorial</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>💻 Lesson 3: Loops & Iteration</h1>
+            <p>Learn how to repeat code efficiently with loops</p>
+        </header>
+
+        <div class="content">
+
+            <!-- Introduction -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Why loops are essential in programming</li>
+                    <li>✅ For loops - when you know how many times to repeat</li>
+                    <li>✅ While loops - when you repeat based on a condition</li>
+                    <li>✅ Do-while loops - when you need at least one execution</li>
+                    <li>✅ Break and continue statements</li>
+                    <li>✅ Nested loops for complex patterns</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: What is a Loop? -->
+            <div class="topic">
+                <h2>1. What is a Loop? 🔄</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Loop</strong> = repeat code multiple times without writing it over and over</p>
+                    <p>Imagine you want to print "Hello" 100 times. Without loops, you'd need 100 lines of code. With
+                        loops, just 3 lines!</p>
+                </div>
+
+                <h3>❌ Without Loops (Bad):</h3>
+                <div class="example">
+                    <div class="example-header">Without Loops - Repetitive Code</div>
+                    <code>
+Debug.Log("Hello 1");<br>
+Debug.Log("Hello 2");<br>
+Debug.Log("Hello 3");<br>
+Debug.Log("Hello 4");<br>
+Debug.Log("Hello 5");<br>
+// ... 95 more lines 😱
+                    </code>
+                </div>
+
+                <h3>✅ With Loops (Good):</h3>
+                <div class="example">
+                    <div class="example-header">With Loops - Clean Code</div>
+                    <code>
+for (int i = 1; i &lt;= 100; i++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Hello " + i);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Hello 1<br>
+                        Hello 2<br>
+                        Hello 3<br>
+                        ...<br>
+                        Hello 100
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Real-World Uses:</h4>
+                    <ul>
+                        <li>🎮 Spawn 10 enemies in a game</li>
+                        <li>📊 Process all items in an inventory</li>
+                        <li>🔢 Calculate scores for all players</li>
+                        <li>🎨 Create grid patterns (tiles, buttons)</li>
+                        <li>⏱️ Game loop (runs every frame)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 2: For Loop -->
+            <div class="topic">
+                <h2>2. For Loop 🔢</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>For loop</strong> = repeat code a specific number of times</p>
+                    <p>Use when you know exactly how many times to loop</p>
+                    <p><strong>Syntax:</strong></p>
+                    <code
+                        style="display: block; padding: 10px; background: #2d2d2d; color: #f8f8f2; border-radius: 5px; margin-top: 10px;">
+for (initialization; condition; increment)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// code to repeat<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Basic For Loop:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Count 1 to 5</div>
+                    <code>
+for (int i = 1; i &lt;= 5; i++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Count: " + i);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Count: 1<br>
+                        Count: 2<br>
+                        Count: 3<br>
+                        Count: 4<br>
+                        Count: 5
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>🧠 Understanding For Loop Parts:</h4>
+                    <ul>
+                        <li><code>int i = 1</code> → <strong>Initialization:</strong> Start at 1</li>
+                        <li><code>i &lt;= 5</code> → <strong>Condition:</strong> Continue while i is 5 or less</li>
+                        <li><code>i++</code> → <strong>Increment:</strong> Add 1 after each loop</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>Flow:</strong></p>
+                    <ol>
+                        <li>Set i = 1</li>
+                        <li>Check: is i &lt;= 5? Yes → run code</li>
+                        <li>Increase i by 1 (i = 2)</li>
+                        <li>Check: is i &lt;= 5? Yes → run code</li>
+                        <li>Repeat until i = 6 (condition false)</li>
+                    </ol>
+                </div>
+
+                <h3>📝 Loop Starting from 0:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Count 0 to 4 (Common in Programming)</div>
+                    <code>
+for (int i = 0; i &lt; 5; i++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Index: " + i);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Index: 0<br>
+                        Index: 1<br>
+                        Index: 2<br>
+                        Index: 3<br>
+                        Index: 4
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Why Start at 0?</strong> Most programming (including arrays) starts counting at 0. Get
+                    used to thinking "0 to 4" = 5 items!
+                </div>
+
+                <h3>📝 Counting Backwards:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Countdown</div>
+                    <code>
+for (int i = 10; i &gt;= 1; i--)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(i);<br>
+}<br>
+Debug.Log("Liftoff! 🚀");
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        10<br>
+                        9<br>
+                        8<br>
+                        ...<br>
+                        1<br>
+                        Liftoff! 🚀
+                    </div>
+                </div>
+
+                <h3>📝 Different Increment Values:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Count by 2s (Even Numbers)</div>
+                    <code>
+for (int i = 0; i &lt;= 10; i += 2)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Even: " + i);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Even: 0<br>
+                        Even: 2<br>
+                        Even: 4<br>
+                        Even: 6<br>
+                        Even: 8<br>
+                        Even: 10
+                    </div>
+                </div>
+
+                <h3>📝 Real Game Example - Spawn Enemies:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Spawn 5 Enemies</div>
+                    <code>
+for (int i = 0; i &lt; 5; i++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Spawning enemy #" + (i+1));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// In Unity, you would do:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Instantiate(enemyPrefab, position, rotation);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Spawning enemy #1<br>
+                        Spawning enemy #2<br>
+                        Spawning enemy #3<br>
+                        Spawning enemy #4<br>
+                        Spawning enemy #5
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 3: While Loop -->
+            <div class="topic">
+                <h2>3. While Loop ⚡</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>While loop</strong> = repeat code while a condition is true</p>
+                    <p>Use when you don't know how many times to loop in advance</p>
+                    <p><strong>Syntax:</strong></p>
+                    <code
+                        style="display: block; padding: 10px; background: #2d2d2d; color: #f8f8f2; border-radius: 5px; margin-top: 10px;">
+while (condition)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// code to repeat<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// make sure condition eventually becomes false!<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Basic While Loop:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Count with While</div>
+                    <code>
+int count = 1;<br>
+<br>
+while (count &lt;= 5)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Count: " + count);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;count++;  // IMPORTANT: increment to avoid infinite loop!<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Count: 1<br>
+                        Count: 2<br>
+                        Count: 3<br>
+                        Count: 4<br>
+                        Count: 5
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Infinite Loop Warning:</strong> Always make sure the condition can become false! If you
+                    forget to increment, the loop runs forever and crashes your game!
+                </div>
+
+                <h3>📝 Game Example - Health System:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Player Takes Damage Until Health is Low</div>
+                    <code>
+int health = 100;<br>
+int turnCount = 0;<br>
+<br>
+while (health &gt; 0)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;turnCount++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;health -= 25;  // lose 25 health each turn<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Turn " + turnCount + ": Health = " + health);<br>
+}<br>
+<br>
+Debug.Log("Game Over! Survived " + turnCount + " turns");
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Turn 1: Health = 75<br>
+                        Turn 2: Health = 50<br>
+                        Turn 3: Health = 25<br>
+                        Turn 4: Health = 0<br>
+                        Game Over! Survived 4 turns
+                    </div>
+                </div>
+
+                <h3>📝 User Input Example:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Keep Asking Until Correct Answer</div>
+                    <code>
+string password = "";<br>
+<br>
+while (password != "1234")<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Enter password:");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// In real Unity, you'd get input from UI<br>
+&nbsp;&nbsp;&nbsp;&nbsp;password = "1234";  // simulating correct input<br>
+}<br>
+<br>
+Debug.Log("Access granted! ✅");
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Enter password:<br>
+                        Access granted! ✅
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 For vs While:</h4>
+                    <table>
+                        <tr>
+                            <th>Use For Loop When...</th>
+                            <th>Use While Loop When...</th>
+                        </tr>
+                        <tr>
+                            <td>You know the exact number of iterations</td>
+                            <td>You don't know how many iterations</td>
+                        </tr>
+                        <tr>
+                            <td>Example: "Loop 10 times"</td>
+                            <td>Example: "Loop until health = 0"</td>
+                        </tr>
+                        <tr>
+                            <td>Example: Processing all items in a list</td>
+                            <td>Example: Waiting for player input</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Topic 4: Do-While Loop -->
+            <div class="topic">
+                <h2>4. Do-While Loop 🔁</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Do-while loop</strong> = like while loop, but ALWAYS runs at least once</p>
+                    <p>Checks condition AFTER running the code</p>
+                    <p><strong>Syntax:</strong></p>
+                    <code
+                        style="display: block; padding: 10px; background: #2d2d2d; color: #f8f8f2; border-radius: 5px; margin-top: 10px;">
+do<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// code runs at least once<br>
+} while (condition);
+                    </code>
+                </div>
+
+                <h3>📝 Do-While Example:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Menu Loop</div>
+                    <code>
+int choice = 0;<br>
+<br>
+do<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("=== Game Menu ===");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("1. Start Game");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("2. Options");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("3. Quit");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Your choice: ");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Simulate user selecting option 3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;choice = 3;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+} while (choice != 3);<br>
+<br>
+Debug.Log("Goodbye!");
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        === Game Menu ===<br>
+                        1. Start Game<br>
+                        2. Options<br>
+                        3. Quit<br>
+                        Your choice: <br>
+                        Goodbye!
+                    </div>
+                </div>
+
+                <h3>📝 Difference: While vs Do-While:</h3>
+                <div class="example">
+                    <div class="example-header">Example: While Loop (May Not Run)</div>
+                    <code>
+int x = 10;<br>
+<br>
+while (x &lt; 5)  // false from start<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("This never runs");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        (no output - condition false from start)
+                    </div>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Do-While (Always Runs Once)</div>
+                    <code>
+int x = 10;<br>
+<br>
+do<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("This runs once even though x &gt;= 5");<br>
+} while (x &lt; 5);  // false but already ran once
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        This runs once even though x >= 5
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 When to use Do-While:</strong> When you need the code to run at least once before
+                    checking the condition (like showing a menu, asking for input, etc.)
+                </div>
+            </div>
+
+            <!-- Topic 5: Break and Continue -->
+            <div class="topic">
+                <h2>5. Break and Continue ⏸️ ⏭️</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <ul>
+                        <li><code><strong>break;</strong></code> → Exit the loop immediately</li>
+                        <li><code><strong>continue;</strong></code> → Skip rest of current iteration, go to next</li>
+                    </ul>
+                </div>
+
+                <h3>📝 Break Statement:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Find and Stop</div>
+                    <code>
+for (int i = 1; i &lt;= 10; i++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (i == 5)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Found 5! Stopping...");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;  // exit loop immediately<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(i);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        1<br>
+                        2<br>
+                        3<br>
+                        4<br>
+                        Found 5! Stopping...
+                    </div>
+                </div>
+
+                <h3>📝 Continue Statement:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Skip Even Numbers</div>
+                    <code>
+for (int i = 1; i &lt;= 10; i++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (i % 2 == 0)  // if even<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue;  // skip rest, go to next iteration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Odd number: " + i);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Odd number: 1<br>
+                        Odd number: 3<br>
+                        Odd number: 5<br>
+                        Odd number: 7<br>
+                        Odd number: 9
+                    </div>
+                </div>
+
+                <h3>📝 Game Example - Search for Item:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Find Weapon in Inventory</div>
+                    <code>
+string[] inventory = {"potion", "key", "sword", "shield", "map"};<br>
+<br>
+for (int i = 0; i &lt; 5; i++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Checking slot " + i + ": " + inventory[i]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (inventory[i] == "sword")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("⚔️ Found sword at slot " + i + "!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;  // stop searching<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Checking slot 0: potion<br>
+                        Checking slot 1: key<br>
+                        Checking slot 2: sword<br>
+                        ⚔️ Found sword at slot 2!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 6: Nested Loops -->
+            <div class="topic">
+                <h2>6. Nested Loops 📦📦</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Nested loop</strong> = a loop inside another loop</p>
+                    <p>Used for working with 2D grids, tables, or multiple dimensions</p>
+                </div>
+
+                <h3>📝 Basic Nested Loop:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Multiplication Table</div>
+                    <code>
+for (int i = 1; i &lt;= 3; i++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for (int j = 1; j &lt;= 3; j++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(i + " x " + j + " = " + (i * j));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("---");  // separator<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        1 x 1 = 1<br>
+                        1 x 2 = 2<br>
+                        1 x 3 = 3<br>
+                        ---<br>
+                        2 x 1 = 2<br>
+                        2 x 2 = 4<br>
+                        2 x 3 = 6<br>
+                        ---<br>
+                        3 x 1 = 3<br>
+                        3 x 2 = 6<br>
+                        3 x 3 = 9<br>
+                        ---
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>🧠 How Nested Loops Work:</h4>
+                    <p>For each iteration of the outer loop, the inner loop runs completely.</p>
+                    <ol>
+                        <li>Outer loop: i = 1</li>
+                        <li>&nbsp;&nbsp;&nbsp;&nbsp;Inner loop runs: j = 1, 2, 3</li>
+                        <li>Outer loop: i = 2</li>
+                        <li>&nbsp;&nbsp;&nbsp;&nbsp;Inner loop runs again: j = 1, 2, 3</li>
+                        <li>Outer loop: i = 3</li>
+                        <li>&nbsp;&nbsp;&nbsp;&nbsp;Inner loop runs again: j = 1, 2, 3</li>
+                    </ol>
+                </div>
+
+                <h3>📝 2D Grid Pattern:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Create 3x3 Grid</div>
+                    <code>
+for (int row = 0; row &lt; 3; row++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;string rowText = "";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for (int col = 0; col &lt; 3; col++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rowText += "* ";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(rowText);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        * * * <br>
+                        * * * <br>
+                        * * *
+                    </div>
+                </div>
+
+                <h3>📝 Game Example - Spawn Enemy Grid:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Spawn 3x3 Grid of Enemies</div>
+                    <code>
+int rows = 3;<br>
+int cols = 3;<br>
+<br>
+for (int row = 0; row &lt; rows; row++)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for (int col = 0; col &lt; cols; col++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Spawning enemy at position (" + row + ", " + col + ")");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// In Unity:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Vector3 pos = new Vector3(col * 2, 0, row * 2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Instantiate(enemyPrefab, pos, Quaternion.identity);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Spawning enemy at position (0, 0)<br>
+                        Spawning enemy at position (0, 1)<br>
+                        Spawning enemy at position (0, 2)<br>
+                        Spawning enemy at position (1, 0)<br>
+                        ...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic"
+                style="background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); padding: 30px; border-radius: 10px;">
+                <h2 style="color: #856404;">🧪 Practice Exercises</h2>
+
+                <div class="key-points" style="background: white;">
+                    <h4>Exercise 1: Sum Calculator</h4>
+                    <p><strong>Task:</strong> Use a for loop to calculate the sum of numbers 1 to 100.</p>
+                    <p><strong>Expected output:</strong> 5050</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 2: Factorial</h4>
+                    <p><strong>Task:</strong> Calculate factorial of 5 (5! = 5 × 4 × 3 × 2 × 1 = 120)</p>
+                    <p><strong>Hint:</strong> Start with result = 1, then multiply in a loop</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 3: Print Only Multiples of 3</h4>
+                    <p><strong>Task:</strong> Loop from 1 to 30, but only print numbers divisible by 3.</p>
+                    <p><strong>Hint:</strong> Use continue to skip numbers that aren't divisible by 3</p>
+                    <p><strong>Expected:</strong> 3, 6, 9, 12, 15, 18, 21, 24, 27, 30</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 4: Number Pattern</h4>
+                    <p><strong>Task:</strong> Use nested loops to create this pattern:</p>
+                    <pre style="background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px;">
+1
+1 2
+1 2 3
+1 2 3 4
+1 2 3 4 5</pre>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 5: Find First Negative Number</h4>
+                    <p><strong>Task:</strong> Loop through these numbers: 5, 10, 15, -3, 20, -8</p>
+                    <p>Print each number until you find the first negative. Use <code>break</code> to exit.</p>
+                    <p><strong>Expected:</strong> Print 5, 10, 15, then "Found negative: -3" and stop</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 6: Countdown Timer</h4>
+                    <p><strong>Task:</strong> Create a countdown from 10 to 0 using a while loop.</p>
+                    <p>When it reaches 0, print "Explosion! 💥"</p>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">📚 Lesson 3 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);">You've mastered:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>For loops:</strong> Repeat a known number of times</li>
+                    <li>✅ <strong>While loops:</strong> Repeat while condition is true</li>
+                    <li>✅ <strong>Do-while loops:</strong> Always run at least once</li>
+                    <li>✅ <strong>Break:</strong> Exit loop early</li>
+                    <li>✅ <strong>Continue:</strong> Skip to next iteration</li>
+                    <li>✅ <strong>Nested loops:</strong> Loops inside loops for 2D structures</li>
+                </ul>
+                <p style="color: white; margin-top: 20px; font-size: 1.2em; text-align: center;">
+                    <strong>🎉 You can now control repetition like a pro!</strong>
+                </p>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Loops are everywhere in game development - practice them until they feel natural! 🔄</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

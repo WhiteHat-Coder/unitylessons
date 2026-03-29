@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Lectures - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .intro h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .lecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .lecture-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .lecture-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .lecture-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .lecture-card p {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .lecture-card .topics {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .topics-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .topics-list li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .topics-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Programming Lectures</h1>
+            <p>Learn to Code - From Beginner to Advanced</p>
+        </header>
+
+        <div class="content">
+            <div class="intro">
+                <h2>Welcome to Your Programming Journey!</h2>
+                <p>Start learning programming with easy-to-understand lectures, practical examples, and hands-on coding
+                    exercises.</p>
+            </div>
+
+            <h2 style="color: #667eea; margin-bottom: 20px;">Available Lectures</h2>
+
+            <div class="lecture-grid">
+                <a href="day1.html" class="lecture-card">
+                    <h3>Day 1: Introduction to Programming</h3>
+                    <p><strong>Duration:</strong> 2-3 hours</p>
+                    <p><strong>Level:</strong> Beginner</p>
+                    <div class="topics">
+                        <strong>Topics Covered:</strong>
+                        <ul class="topics-list">
+                            <li>What is Programming?</li>
+                            <li>Variables and Data Types</li>
+                            <li>Basic Operations</li>
+                            <li>Input and Output</li>
+                            <li>Comments and Code Structure</li>
+                        </ul>
+                    </div>
+                    <div class="btn">Start Day 1 →</div>
+                </a>
+
+                <div class="lecture-card" style="opacity: 0.6;">
+                    <h3>Day 2: Control Flow</h3>
+                    <p><strong>Duration:</strong> 2-3 hours</p>
+                    <p><strong>Level:</strong> Beginner</p>
+                    <div class="topics">
+                        <strong>Coming Soon:</strong>
+                        <ul class="topics-list">
+                            <li>If-Else Statements</li>
+                            <li>Loops (For, While)</li>
+                            <li>Switch Statements</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lecture-card" style="opacity: 0.6;">
+                    <h3>Day 3: Functions</h3>
+                    <p><strong>Duration:</strong> 2-3 hours</p>
+                    <p><strong>Level:</strong> Beginner</p>
+                    <div class="topics">
+                        <strong>Coming Soon:</strong>
+                        <ul class="topics-list">
+                            <li>Creating Functions</li>
+                            <li>Parameters and Return Values</li>
+                            <li>Scope and Lifetime</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Programming Lectures. Happy Coding! 💻</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 1: Learn programming fundamentals - variables, data types, operations, and more.">
+    <meta name="keywords" content="programming basics, variables, data types, beginner coding">
+    <meta name="author" content="Programming Lectures">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Lesson 1: C# Programming Fundamentals | Unity Tutorial</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>💻 Lesson 1: C# Programming Fundamentals</h1>
+            <p>Learn programming concepts essential for Unity game development</p>
+        </header>
+
+        <div class="content">
+
+            <!-- Topic 1: What is Programming? -->
+            <div class="topic">
+                <h2>1. What is Programming? 🤔</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Programming</strong> is giving instructions to a computer to perform specific tasks. Just
+                        like you follow a recipe to cook food, a computer follows your code (instructions) to do
+                        something.</p>
+                    <p>Think of it as teaching a robot to do exactly what you want - but you need to be very clear and
+                        precise!</p>
+                </div>
+
+                <h3>Real-World Example:</h3>
+                <p>Making a sandwich:</p>
+                <ul>
+                    <li>Step 1: Get two slices of bread</li>
+                    <li>Step 2: Put butter on one slice</li>
+                    <li>Step 3: Add cheese</li>
+                    <li>Step 4: Cover with the other slice</li>
+                </ul>
+                <p>Similarly, programming is writing step-by-step instructions for the computer!</p>
+
+                <div class="example">
+                    <div class="example-header">Example: Your First Program</div>
+                    <code>
+// This is a simple program that displays a message<br>
+print("Hello, World!")<br>
+print("Welcome to programming!")<br>
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Hello, World!<br>
+                        Welcome to programming!
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> The line starting with <code>//</code> is a comment. Comments help explain
+                    your code to other programmers (or yourself later!). The computer ignores comments.
+                </div>
+            </div>
+
+            <!-- Topic 2: Variables and Data Types -->
+            <div class="topic">
+                <h2>2. Variables and Data Types 📦</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Variables</strong> are like containers that store information. Think of them as labeled
+                        boxes where you can keep different things.</p>
+                    <p><strong>Data Types</strong> tell us what kind of information is stored in the variable (numbers,
+                        text, true/false, etc.).</p>
+                </div>
+
+                <h3>Common Data Types:</h3>
+                <table>
+                    <tr>
+                        <th>Data Type</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Integer</strong></td>
+                        <td>Whole numbers</td>
+                        <td>5, -3, 0, 100</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Float/Decimal</strong></td>
+                        <td>Numbers with decimal points</td>
+                        <td>3.14, -0.5, 2.0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>String</strong></td>
+                        <td>Text (words or sentences)</td>
+                        <td>"Hello", "Programming"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Boolean</strong></td>
+                        <td>True or False values</td>
+                        <td>true, false</td>
+                    </tr>
+                </table>
+
+                <div class="example">
+                    <div class="example-header">Example: Creating Variables</div>
+                    <code>
+// Integer variable - storing a whole number<br>
+age = 25<br>
+print("Age:", age)<br>
+<br>
+// String variable - storing text<br>
+name = "Alice"<br>
+print("Name:", name)<br>
+<br>
+// Float variable - storing a decimal number<br>
+temperature = 36.5<br>
+print("Temperature:", temperature, "degrees")<br>
+<br>
+// Boolean variable - storing true or false<br>
+isStudent = true<br>
+print("Is student?", isStudent)<br>
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Age: 25<br>
+                        Name: Alice<br>
+                        Temperature: 36.5 degrees<br>
+                        Is student? true
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Points:</h4>
+                    <ul>
+                        <li>Variable names should be meaningful (use <code>age</code> instead of <code>x</code>)</li>
+                        <li>Text (strings) must be in quotes: "like this"</li>
+                        <li>Variable names cannot start with numbers</li>
+                        <li>Use meaningful names: <code>studentName</code> is better than <code>n</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 3: Basic Operations -->
+            <div class="topic">
+                <h2>3. Basic Operations ➕➖✖️➗</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Operations</strong> are actions you perform on data. The most common operations are
+                        mathematical calculations and combining text.</p>
+                </div>
+
+                <h3>Arithmetic Operations:</h3>
+                <table>
+                    <tr>
+                        <th>Operator</th>
+                        <th>Operation</th>
+                        <th>Example</th>
+                        <th>Result</th>
+                    </tr>
+                    <tr>
+                        <td>+</td>
+                        <td>Addition</td>
+                        <td>5 + 3</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td>Subtraction</td>
+                        <td>10 - 4</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td>*</td>
+                        <td>Multiplication</td>
+                        <td>6 * 7</td>
+                        <td>42</td>
+                    </tr>
+                    <tr>
+                        <td>/</td>
+                        <td>Division</td>
+                        <td>20 / 4</td>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <td>%</td>
+                        <td>Remainder (Modulo)</td>
+                        <td>10 % 3</td>
+                        <td>1</td>
+                    </tr>
+                </table>
+
+                <div class="example">
+                    <div class="example-header">Example: Math Operations</div>
+                    <code>
+// Basic arithmetic<br>
+a = 10<br>
+b = 3<br>
+<br>
+sum = a + b<br>
+print("Sum:", sum)<br>
+<br>
+difference = a - b<br>
+print("Difference:", difference)<br>
+<br>
+product = a * b<br>
+print("Product:", product)<br>
+<br>
+quotient = a / b<br>
+print("Quotient:", quotient)<br>
+<br>
+remainder = a % b<br>
+print("Remainder:", remainder)<br>
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Sum: 13<br>
+                        Difference: 7<br>
+                        Product: 30<br>
+                        Quotient: 3.333333<br>
+                        Remainder: 1
+                    </div>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Real-World Calculation</div>
+                    <code>
+// Calculate total price after discount<br>
+originalPrice = 100<br>
+discount = 20  // 20% off<br>
+<br>
+discountAmount = originalPrice * (discount / 100)<br>
+finalPrice = originalPrice - discountAmount<br>
+<br>
+print("Original Price:", originalPrice)<br>
+print("Discount:", discount, "%")<br>
+print("You Save:", discountAmount)<br>
+print("Final Price:", finalPrice)<br>
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Original Price: 100<br>
+                        Discount: 20 %<br>
+                        You Save: 20<br>
+                        Final Price: 80
+                    </div>
+                </div>
+
+                <h3>String Operations:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Combining Text</div>
+                    <code>
+// Concatenation - joining strings together<br>
+firstName = "John"<br>
+lastName = "Smith"<br>
+<br>
+fullName = firstName + " " + lastName<br>
+print("Full Name:", fullName)<br>
+<br>
+// Combining strings with numbers<br>
+age = 25<br>
+message = "I am " + str(age) + " years old"<br>
+print(message)<br>
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Full Name: John Smith<br>
+                        I am 25 years old
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topic 4: Input and Output -->
+            <div class="topic">
+                <h2>4. Input and Output 💬</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Input</strong> is data that the user provides to the program (like typing your name).</p>
+                    <p><strong>Output</strong> is data that the program displays to the user (like showing results on
+                        screen).</p>
+                    <p>Think of it like a conversation: you ask questions (input) and get answers (output).</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Interactive Program</div>
+                    <code>
+// Getting input from the user<br>
+print("What is your name?")<br>
+name = input()  // User types their name<br>
+<br>
+print("How old are you?")<br>
+age = input()   // User types their age<br>
+<br>
+// Displaying output<br>
+print("Hello, " + name + "!")<br>
+print("You are " + age + " years old.")<br>
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output Example (when user types "Emma" and "20"):</div>
+                        What is your name?<br>
+                        <span style="color: #4af626;">Emma</span><br>
+                        How old are you?<br>
+                        <span style="color: #4af626;">20</span><br>
+                        Hello, Emma!<br>
+                        You are 20 years old.
+                    </div>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Simple Calculator</div>
+                    <code>
+// A simple calculator program<br>
+print("=== Simple Calculator ===")<br>
+<br>
+print("Enter first number:")<br>
+num1 = float(input())<br>
+<br>
+print("Enter second number:")<br>
+num2 = float(input())<br>
+<br>
+// Perform calculations<br>
+sum = num1 + num2<br>
+product = num1 * num2<br>
+<br>
+// Display results<br>
+print("Sum:", sum)<br>
+print("Product:", product)<br>
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output Example (when user enters 5 and 3):</div>
+                        === Simple Calculator ===<br>
+                        Enter first number:<br>
+                        <span style="color: #4af626;">5</span><br>
+                        Enter second number:<br>
+                        <span style="color: #4af626;">3</span><br>
+                        Sum: 8<br>
+                        Product: 15
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> When getting numbers from input, use <code>int(input())</code> for whole
+                    numbers or <code>float(input())</code> for decimal numbers. This converts the text input into a
+                    number you can do math with!
+                </div>
+            </div>
+
+            <!-- Topic 5: Comments and Code Structure -->
+            <div class="topic">
+                <h2>5. Comments and Code Structure 📝</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Comments</strong> are notes in your code that explain what the code does. They help other
+                        programmers (and future you!) understand your code better.</p>
+                    <p><strong>Code Structure</strong> means organizing your code in a clean, readable way.</p>
+                </div>
+
+                <h3>Types of Comments:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Using Comments</div>
+                    <code>
+// This is a single-line comment<br>
+// It starts with two slashes<br>
+<br>
+/*<br>
+&nbsp;&nbsp;This is a multi-line comment.<br>
+&nbsp;&nbsp;You can write multiple lines of explanation<br>
+&nbsp;&nbsp;between /* and */<br>
+*/<br>
+<br>
+// Calculate area of a rectangle<br>
+length = 10  // in meters<br>
+width = 5    // in meters<br>
+area = length * width<br>
+<br>
+print("Area:", area, "square meters")<br>
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Good Coding Practices:</h4>
+                    <ul>
+                        <li><strong>Use meaningful variable names:</strong> <code>price</code> instead of <code>p</code>
+                        </li>
+                        <li><strong>Add comments:</strong> Explain complex parts of your code</li>
+                        <li><strong>Keep it simple:</strong> Break complex problems into smaller steps</li>
+                        <li><strong>Use spacing:</strong> Add blank lines to separate different sections</li>
+                        <li><strong>Be consistent:</strong> If you use camelCase, use it everywhere</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Well-Structured Program</div>
+                    <code>
+// ===== Temperature Converter =====<br>
+// This program converts Celsius to Fahrenheit<br>
+<br>
+// Get temperature from user<br>
+print("Enter temperature in Celsius:")<br>
+celsius = float(input())<br>
+<br>
+// Convert to Fahrenheit using the formula: F = (C * 9/5) + 32<br>
+fahrenheit = (celsius * 9/5) + 32<br>
+<br>
+// Display the result<br>
+print(celsius, "°C is equal to", fahrenheit, "°F")<br>
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output Example (when user enters 25):</div>
+                        Enter temperature in Celsius:<br>
+                        <span style="color: #4af626;">25</span><br>
+                        25 °C is equal to 77 °F
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practice Exercise -->
+            <div class="topic">
+                <h2>🎯 Practice Exercise</h2>
+
+                <div class="key-points">
+                    <h4>Try This Yourself!</h4>
+                    <p>Create a program that:</p>
+                    <ol>
+                        <li>Asks for your name</li>
+                        <li>Asks for your favorite number</li>
+                        <li>Multiplies your number by 2</li>
+                        <li>Displays a message with your name and the result</li>
+                    </ol>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Challenge:</strong> Try to add comments to explain each step of your program!
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points">
+                <h4>📚 Lesson 1 Summary</h4>
+                <p>Today you learned:</p>
+                <ul>
+                    <li>✅ What programming is and why it's useful</li>
+                    <li>✅ How to create and use variables</li>
+                    <li>✅ Different data types (integers, strings, floats, booleans)</li>
+                    <li>✅ How to perform basic operations (+, -, *, /)</li>
+                    <li>✅ How to get input from users and display output</li>
+                    <li>✅ How to write comments and structure your code</li>
+                </ul>
+                <p><strong>Great job! You're now ready to move on to Day 2!</strong> 🎉</p>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Keep practicing! The more you code, the better you get! 💪</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

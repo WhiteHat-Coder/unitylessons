@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 2: Learn C# variables, Unity lifecycle, functions, and create player movement from scratch.">
+    <meta name="keywords" content="Unity variables, C# basics, Unity lifecycle, player movement, Input system">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Lesson 2: Variables, Input & Movement | Unity 3D Tutorial</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🎮 Lesson 2: Variables, Input & Movement</h1>
+            <p>Learn C# basics and create your first playable character</p>
+        </header>
+
+        <div class="content">
+
+            <!-- Introduction -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ C# variables and data types</li>
+                    <li>✅ Unity lifecycle methods (Awake, Start, Update)</li>
+                    <li>✅ Creating and using functions</li>
+                    <li>✅ Reading player input</li>
+                    <li>✅ Moving a character with keyboard controls</li>
+                    <li>✅ Writing clean, maintainable code</li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95); margin-top: 15px; font-size: 1.1em;">
+                    <strong>📚 Teaching Philosophy:</strong> Practice over theory. We'll learn by building!
+                </p>
+            </div>
+
+            <!-- Topic 1: Variables -->
+            <div class="topic">
+                <h2>1. C# Variables - Your Data Storage 📦</h2>
+
+                <div class="concept">
+                    <h3>What is a Variable?</h3>
+                    <p><strong>Variable</strong> = a labeled box that stores data</p>
+                    <p><strong>Real-life analogy:</strong> Think of your phone's contacts. Each contact has:</p>
+                    <ul>
+                        <li>A <strong>name</strong> (label) → "Mom"</li>
+                        <li>A <strong>phone number</strong> (data) → "555-1234"</li>
+                        <li>A <strong>type</strong> (what kind of data) → Phone Number</li>
+                    </ul>
+                    <p>Variables work the same way in coding!</p>
+                </div>
+
+                <h3>📝 Variable Syntax:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Declaring a Variable</div>
+                    <code>
+public string playerName = "Bob";
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🧠 Breaking Down the Syntax:</h4>
+                    <ul>
+                        <li><code><strong>public</strong></code> → Access modifier (who can see this variable)</li>
+                        <li><code><strong>string</strong></code> → Type (what kind of data: text in this case)</li>
+                        <li><code><strong>playerName</strong></code> → Name (the label for your box)</li>
+                        <li><code><strong>= "Bob"</strong></code> → Value (the actual data stored)</li>
+                    </ul>
+                </div>
+
+                <h3>📋 The 4 Core Data Types:</h3>
+
+                <h4>1️⃣ string → Text/Words</h4>
+                <div class="example">
+                    <div class="example-header">Example: String Variables</div>
+                    <code>
+public string playerName = "Bob";<br>
+public string weaponType = "Sword";<br>
+public string enemyName = "Goblin";<br>
+<br>
+void Start()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(playerName + " equipped a " + weaponType);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Bob equipped a Sword
+                    </div>
+                </div>
+
+                <h4>2️⃣ int → Whole Numbers (no decimals)</h4>
+                <div class="example">
+                    <div class="example-header">Example: Integer Variables</div>
+                    <code>
+public int playerAge = 25;<br>
+public int currentHP = 100;<br>
+public int score = 0;<br>
+<br>
+void Start()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Health: " + currentHP);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;currentHP = currentHP - 25;  // Take damage<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Health after damage: " + currentHP);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Health: 100<br>
+                        Health after damage: 75
+                    </div>
+                </div>
+
+                <h4>3️⃣ float → Decimal Numbers</h4>
+                <div class="example">
+                    <div class="example-header">Example: Float Variables</div>
+                    <code>
+public float moveSpeed = 2.5f;  // 'f' at end means float!<br>
+public float jumpHeight = 3.2f;<br>
+public float temperature = 98.6f;<br>
+<br>
+void Start()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Move speed: " + moveSpeed);<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Move speed: 2.5
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Important:</strong> Always add <code>f</code> at the end of float numbers!<br>
+                    ✅ Correct: <code>2.5f</code><br>
+                    ❌ Wrong: <code>2.5</code> (Unity thinks it's a double, not float)
+                </div>
+
+                <h4>4️⃣ bool → True/False</h4>
+                <div class="example">
+                    <div class="example-header">Example: Boolean Variables</div>
+                    <code>
+public bool isGameOver = false;<br>
+public bool hasKey = true;<br>
+public bool isGrounded = true;<br>
+<br>
+void Start()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (hasKey)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Player can open the door!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Player can open the door!
+                    </div>
+                </div>
+
+                <h3>❌ Common Errors:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Type Mismatch Errors</div>
+                    <code>
+// ❌ ERROR: Can't store text in an int<br>
+public int age = "25";  // Wrong!<br>
+<br>
+// ❌ ERROR: Can't store number in a string<br>
+public string name = 25;  // Wrong!<br>
+<br>
+// ❌ ERROR: Missing 'f' for float<br>
+public float speed = 2.5;  // Wrong!<br>
+<br>
+// ✅ CORRECT:<br>
+public int age = 25;<br>
+public string name = "Bob";<br>
+public float speed = 2.5f;
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Quick Reference Table:</h4>
+                    <table>
+                        <tr>
+                            <th>Type</th>
+                            <th>Stores</th>
+                            <th>Example</th>
+                        </tr>
+                        <tr>
+                            <td><code>string</code></td>
+                            <td>Text</td>
+                            <td><code>"Hello"</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>int</code></td>
+                            <td>Whole numbers</td>
+                            <td><code>42</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>float</code></td>
+                            <td>Decimals</td>
+                            <td><code>3.14f</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>bool</code></td>
+                            <td>True/False</td>
+                            <td><code>true</code></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Topic 2: Unity Lifecycle -->
+            <div class="topic">
+                <h2>2. Unity Execution Order (Lifecycle) 🔄</h2>
+
+                <div class="concept">
+                    <h3>What is the Unity Lifecycle?</h3>
+                    <p>Unity calls specific functions automatically at different times. You just fill in what happens!
+                    </p>
+                    <p><strong>Think of it like a daily routine:</strong></p>
+                    <ul>
+                        <li>🌅 Wake up (Awake)</li>
+                        <li>🍳 Eat breakfast (Start)</li>
+                        <li>📝 Work all day, every minute (Update)</li>
+                        <li>⏰ Regular breaks every hour (FixedUpdate)</li>
+                    </ul>
+                </div>
+
+                <h3>📝 The 4 Important Functions:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Lifecycle Methods</div>
+                    <code>
+using UnityEngine;<br>
+<br>
+public class LifecycleExample : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("1. Awake - Called FIRST, before anything else");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("2. Start - Called after Awake, before first Update");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("3. Update - Called EVERY FRAME (60+ times per second!)");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void FixedUpdate()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("4. FixedUpdate - Called at FIXED intervals (50 times/sec)");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output (first 2 frames):</div>
+                        1. Awake - Called FIRST, before anything else<br>
+                        2. Start - Called after Awake, before first Update<br>
+                        3. Update - Called EVERY FRAME<br>
+                        4. FixedUpdate - Called at FIXED intervals<br>
+                        3. Update - Called EVERY FRAME<br>
+                        3. Update - Called EVERY FRAME<br>
+                        ...
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>🧠 When to Use Each Method:</h4>
+                    <table>
+                        <tr>
+                            <th>Method</th>
+                            <th>When Called</th>
+                            <th>Use For</th>
+                        </tr>
+                        <tr>
+                            <td><code>Awake()</code></td>
+                            <td>Once at start (first)</td>
+                            <td>Getting components, initial setup</td>
+                        </tr>
+                        <tr>
+                            <td><code>Start()</code></td>
+                            <td>Once before first frame</td>
+                            <td>Initialization after Awake</td>
+                        </tr>
+                        <tr>
+                            <td><code>Update()</code></td>
+                            <td>Every frame</td>
+                            <td>Input, movement, game logic</td>
+                        </tr>
+                        <tr>
+                            <td><code>FixedUpdate()</code></td>
+                            <td>Fixed time intervals</td>
+                            <td>Physics (Rigidbody movement)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>⚠️ The FPS Problem:</h3>
+                <div class="concept">
+                    <p><strong>Problem:</strong> Update() runs every frame. Different computers have different frame
+                        rates!</p>
+                    <ul>
+                        <li>💻 Gaming PC: 144 FPS → Update runs 144 times/second</li>
+                        <li>📱 Old phone: 30 FPS → Update runs 30 times/second</li>
+                    </ul>
+                    <p><strong>This means:</strong> Same movement code runs at different speeds on different devices!
+                    </p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Why Update Can Be Problematic</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ BAD: Moves faster on high FPS computers!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform.position += Vector3.forward * 5;<br>
+}<br>
+<br>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ GOOD: Same speed on all computers!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform.position += Vector3.forward * 5 * Time.deltaTime;<br>
+}
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Golden Rule:</strong><br>
+                    • Use <code>Update()</code> for input and general logic<br>
+                    • Use <code>FixedUpdate()</code> for physics (Rigidbody)<br>
+                    • Always multiply movement by <code>Time.deltaTime</code> in Update!
+                </div>
+
+                <h3>🔍 What is MonoBehaviour?</h3>
+                <div class="concept">
+                    <p><code>MonoBehaviour</code> is the base class all Unity scripts inherit from.</p>
+                    <p><strong>Think of it like this:</strong> MonoBehaviour gives your script superpowers!</p>
+                    <ul>
+                        <li>✅ Lets Unity call Awake(), Start(), Update()</li>
+                        <li>✅ Allows script to be attached to GameObjects</li>
+                        <li>✅ Gives access to transform, gameObject, etc.</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: MonoBehaviour is Required</div>
+                    <code>
+// ✅ CORRECT: Inherits from MonoBehaviour<br>
+public class Player : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start() { }  // Unity can call this!<br>
+}<br>
+<br>
+// ❌ WRONG: Can't attach to GameObject without MonoBehaviour<br>
+public class Player<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start() { }  // Unity won't call this!<br>
+}
+                    </code>
+                </div>
+            </div>
+
+            <!-- Topic 3: Functions -->
+            <div class="topic">
+                <h2>3. Functions (Methods) - Code Reusability 🔧</h2>
+
+                <div class="concept">
+                    <h3>What is a Function?</h3>
+                    <p><strong>Function</strong> = a reusable block of code that performs a specific task</p>
+                    <p><strong>Real-life analogy:</strong> Making a sandwich</p>
+                    <ul>
+                        <li>📖 Recipe (function definition): How to make it</li>
+                        <li>🍞 Making sandwich (calling function): Actually doing it</li>
+                    </ul>
+                    <p>You write the recipe once, but can make sandwiches many times!</p>
+                </div>
+
+                <h3>📝 Basic Function:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Simple Function</div>
+                    <code>
+public class Player : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Define the function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void GetPlayerInfo()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Player Name: Bob");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Player Level: 5");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Call the function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetPlayerInfo();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetPlayerInfo();  // Can call multiple times!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Player Name: Bob<br>
+                        Player Level: 5<br>
+                        Player Name: Bob<br>
+                        Player Level: 5
+                    </div>
+                </div>
+
+                <h3>📥 Functions with Parameters:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Function with Input</div>
+                    <code>
+public class Player : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int currentHP = 100;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Function takes 'damage' as input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void TakeDamage(int damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentHP = currentHP - damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Took " + damage + " damage! HP: " + currentHP);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TakeDamage(25);  // Take 25 damage<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TakeDamage(10);  // Take 10 more damage<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Took 25 damage! HP: 75<br>
+                        Took 10 damage! HP: 65
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 DRY Principle (Don't Repeat Yourself):</h4>
+                    <p><strong>Without Functions:</strong> Copy-paste same code everywhere</p>
+                    <code
+                        style="display: block; background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px;">
+currentHP = currentHP - 25;<br>
+Debug.Log("HP: " + currentHP);<br>
+<br>
+currentHP = currentHP - 10;<br>
+Debug.Log("HP: " + currentHP);<br>
+<br>
+currentHP = currentHP - 30;<br>
+Debug.Log("HP: " + currentHP);
+                    </code>
+                    <p style="margin-top: 15px;"><strong>With Functions:</strong> Clean and reusable</p>
+                    <code
+                        style="display: block; background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px;">
+TakeDamage(25);<br>
+TakeDamage(10);<br>
+TakeDamage(30);
+                    </code>
+                </div>
+            </div>
+
+            <!-- Topic 4: Input & Movement -->
+            <div class="topic">
+                <h2>4. Player Input & Movement 🎮</h2>
+
+                <div class="concept">
+                    <h3>Understanding Movement:</h3>
+                    <p>In 2D games, movement happens on two axes:</p>
+                    <ul>
+                        <li><strong>X-axis</strong> → Left (-) / Right (+)</li>
+                        <li><strong>Y-axis</strong> → Down (-) / Up (+)</li>
+                    </ul>
+                </div>
+
+                <h3>📝 Reading Input:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Detecting Input</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float xInput = Input.GetAxisRaw("Horizontal");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Input: " + xInput);<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎹 Input Values:</h4>
+                    <ul>
+                        <li><code>-1</code> → Left arrow or A key pressed</li>
+                        <li><code>0</code> → No input (nothing pressed)</li>
+                        <li><code>1</code> → Right arrow or D key pressed</li>
+                    </ul>
+                </div>
+
+                <h3>🚀 Building Complete Player Movement:</h3>
+
+                <h4>Step 1: Setup (In Unity Editor)</h4>
+                <div class="key-points" style="background: #e7f3ff;">
+                    <ol>
+                        <li>Create a 2D Sprite (Player)</li>
+                        <li>Add <strong>Rigidbody2D</strong> component</li>
+                        <li>Set Gravity Scale to 1</li>
+                        <li>Add <strong>Box Collider 2D</strong></li>
+                        <li>Create new C# script called "PlayerMovement"</li>
+                        <li>Attach script to Player GameObject</li>
+                    </ol>
+                </div>
+
+                <h4>Step 2: Write the Movement Script</h4>
+                <div class="example">
+                    <div class="example-header">Complete Movement Script</div>
+                    <code>
+using UnityEngine;<br>
+<br>
+public class PlayerMovement : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Reference to Rigidbody component<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private Rigidbody2D rb;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Store input value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private float xInput;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Movement speed (can adjust in Inspector!)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float moveSpeed = 3.5f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Get the Rigidbody2D component<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb = GetComponent&lt;Rigidbody2D&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Read input every frame<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xInput = Input.GetAxisRaw("Horizontal");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void FixedUpdate()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Apply movement to Rigidbody<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>🧠 Breaking Down the Code:</h3>
+
+                <h4>1. Variables:</h4>
+                <div class="concept">
+                    <code>private Rigidbody2D rb;</code>
+                    <p>Stores reference to the Rigidbody2D component</p>
+                </div>
+
+                <div class="concept">
+                    <code>private float xInput;</code>
+                    <p>Stores the input value (-1, 0, or 1)</p>
+                </div>
+
+                <div class="concept">
+                    <code>[SerializeField] private float moveSpeed = 3.5f;</code>
+                    <p>Movement speed - shown in Inspector because of [SerializeField]</p>
+                </div>
+
+                <h4>2. Getting the Component:</h4>
+                <div class="concept">
+                    <code>rb = GetComponent&lt;Rigidbody2D&gt;();</code>
+                    <p>Finds and stores the Rigidbody2D component attached to this GameObject</p>
+                </div>
+
+                <h4>3. Reading Input (Update):</h4>
+                <div class="concept">
+                    <code>xInput = Input.GetAxisRaw("Horizontal");</code>
+                    <p>Checks if A/D or Arrow keys are pressed</p>
+                    <p><strong>Why Update()?</strong> Input should be checked every frame to feel responsive</p>
+                </div>
+
+                <h4>4. Applying Movement (FixedUpdate):</h4>
+                <div class="concept">
+                    <code>rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);</code>
+                    <p><strong>Breaking it down:</strong></p>
+                    <ul>
+                        <li><code>new Vector2(x, y)</code> → Creates a 2D movement vector</li>
+                        <li><code>xInput * moveSpeed</code> → Horizontal movement (left/right)</li>
+                        <li><code>rb.linearVelocity.y</code> → Keeps vertical movement unchanged (for jumping/falling)
+                        </li>
+                    </ul>
+                    <p><strong>Why FixedUpdate()?</strong> Because we're using Rigidbody (physics)</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>⚡ Velocity vs Position:</h4>
+                    <table>
+                        <tr>
+                            <th>Velocity (Speed)</th>
+                            <th>Position</th>
+                        </tr>
+                        <tr>
+                            <td>Smooth, physics-based</td>
+                            <td>Instant teleportation</td>
+                        </tr>
+                        <tr>
+                            <td>Works with collisions</td>
+                            <td>Can pass through walls</td>
+                        </tr>
+                        <tr>
+                            <td>Affected by gravity</td>
+                            <td>Not affected by physics</td>
+                        </tr>
+                        <tr>
+                            <td><strong>✅ Use for player</strong></td>
+                            <td>Use for UI, camera</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>🎯 Test Your Movement:</h3>
+                <div class="key-points" style="background: #d4edda;">
+                    <ol>
+                        <li>Press Play ▶️ in Unity</li>
+                        <li>Press A or ← → Character moves left</li>
+                        <li>Press D or → → Character moves right</li>
+                        <li>Release keys → Character stops</li>
+                        <li>Adjust <code>moveSpeed</code> in Inspector to change speed</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Topic 5: Clean Code -->
+            <div class="topic">
+                <h2>5. Clean Code Practices 🧹</h2>
+
+                <h3>🔐 Access Modifiers:</h3>
+                <div class="key-points">
+                    <h4>Public vs Private:</h4>
+                    <table>
+                        <tr>
+                            <th>public</th>
+                            <th>private</th>
+                        </tr>
+                        <tr>
+                            <td>Visible everywhere</td>
+                            <td>Only visible inside this script</td>
+                        </tr>
+                        <tr>
+                            <td>Other scripts can access</td>
+                            <td>Hidden from other scripts</td>
+                        </tr>
+                        <tr>
+                            <td>Shows in Inspector</td>
+                            <td>Hidden in Inspector</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Access Modifiers</div>
+                    <code>
+public class Player : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int maxHealth = 100;      // ✅ Visible everywhere<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private int currentHealth = 100;  // 🔒 Hidden (internal use only)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void TakeDamage(int damage)  // ✅ Other scripts can call<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReduceHealth(damage);  // Call private helper<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void ReduceHealth(int amount)  // 🔒 Internal helper<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentHealth -= amount;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>🎯 Best Practice: SerializeField</h3>
+                <div class="concept">
+                    <p><strong>Problem:</strong> You want private variables (clean code) BUT also want to edit them in
+                        Inspector</p>
+                    <p><strong>Solution:</strong> Use <code>[SerializeField]</code></p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: SerializeField</div>
+                    <code>
+public class Player : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ BEST: Private but visible in Inspector<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float moveSpeed = 3.5f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private int maxHealth = 100;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ Avoid this (breaks encapsulation)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float moveSpeed = 3.5f;<br>
+}
+                    </code>
+                </div>
+
+                <h3>🔧 Component References:</h3>
+                <div class="concept">
+                    <p>Always get components in <code>Awake()</code> for better performance</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Getting Components</div>
+                    <code>
+private Rigidbody2D rb;<br>
+private SpriteRenderer spriteRenderer;<br>
+private Animator animator;<br>
+<br>
+void Awake()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Get all components once at start<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rb = GetComponent&lt;Rigidbody2D&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;spriteRenderer = GetComponent&lt;SpriteRenderer&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;animator = GetComponent&lt;Animator&gt;();<br>
+}
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Why Awake() for GetComponent?</strong><br>
+                    • Only runs once (efficient)<br>
+                    • Guarantees component is found before Start()<br>
+                    • Better than calling GetComponent every frame
+                </div>
+            </div>
+
+            <!-- Knowledge Check -->
+            <div class="topic"
+                style="background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); padding: 30px; border-radius: 10px;">
+                <h2 style="color: #856404;">❓ Knowledge Check</h2>
+                <p style="font-size: 1.1em; margin-bottom: 20px;">Answer these questions to test your understanding:</p>
+
+                <div class="key-points" style="background: white;">
+                    <h4>Question 1: What is a variable?</h4>
+                    <p><strong>Answer:</strong> A labeled container/box that stores data</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Question 2: What's the difference between int and float?</h4>
+                    <p><strong>Answer:</strong></p>
+                    <ul>
+                        <li><code>int</code> → Whole numbers only (25, 100, -5)</li>
+                        <li><code>float</code> → Decimal numbers (2.5f, 3.14f, 0.5f)</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Question 3: When is Update() called?</h4>
+                    <p><strong>Answer:</strong> Every frame (typically 60+ times per second)</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Question 4: Why use functions?</h4>
+                    <p><strong>Answer:</strong></p>
+                    <ul>
+                        <li>Code reusability (write once, use many times)</li>
+                        <li>Cleaner code structure</li>
+                        <li>Easier to maintain and debug</li>
+                        <li>DRY principle (Don't Repeat Yourself)</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Question 5: Why use FixedUpdate() for physics?</h4>
+                    <p><strong>Answer:</strong> FixedUpdate runs at fixed time intervals, which is required for
+                        consistent physics calculations (Rigidbody movement)</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Question 6: How do you declare a float variable?</h4>
+                    <p><strong>Answer:</strong></p>
+                    <code
+                        style="display: block; background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 5px;">
+public float speed = 5.5f;  // Don't forget the 'f'!
+                    </code>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎉 Lesson 2 Complete!</h4>
+                <p style="color: rgba(255,255,255,0.95);">You've learned:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>Variables:</strong> string, int, float, bool</li>
+                    <li>✅ <strong>Unity Lifecycle:</strong> Awake, Start, Update, FixedUpdate</li>
+                    <li>✅ <strong>Functions:</strong> Reusable code blocks</li>
+                    <li>✅ <strong>Input System:</strong> Reading player input</li>
+                    <li>✅ <strong>Player Movement:</strong> Complete working character controller</li>
+                    <li>✅ <strong>Clean Code:</strong> SerializeField, GetComponent, access modifiers</li>
+                </ul>
+                <p style="color: white; margin-top: 20px; font-size: 1.2em; text-align: center;">
+                    <strong>🚀 You now have a playable character! Practice and experiment!</strong>
+                </p>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="key-points" style="margin-top: 30px; background: #e7f3ff;">
+                <h4>📝 Practice Exercises:</h4>
+                <ol>
+                    <li>Change the <code>moveSpeed</code> value and test different speeds</li>
+                    <li>Add a <code>jumpForce</code> variable (we'll implement jumping next lesson!)</li>
+                    <li>Create a <code>Heal()</code> function that restores health</li>
+                    <li>Experiment with different variable types</li>
+                    <li>Add Debug.Log() statements to understand the execution flow</li>
+                </ol>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Keep practicing - you're building the foundation for all Unity games! 💪🎮</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

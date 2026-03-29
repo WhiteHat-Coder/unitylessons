@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 7: Master Unity-specific C# - MonoBehaviour lifecycle, Input system, GameObject manipulation, and more.">
+    <meta name="keywords" content="Unity C#, MonoBehaviour, Input system, GameObject, Instantiate, Coroutines">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Lesson 7: Unity-Specific C# | Unity Tutorial</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🎮 Lesson 7: Unity-Specific C#</h1>
+            <p>Apply C# knowledge to Unity game development</p>
+        </header>
+
+        <div class="content">
+
+            <!-- Introduction -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ MonoBehaviour lifecycle methods</li>
+                    <li>✅ Unity Input system (keyboard, mouse, gamepad)</li>
+                    <li>✅ GameObject manipulation (Transform, Find, etc.)</li>
+                    <li>✅ Instantiate and Destroy objects</li>
+                    <li>✅ Collision and Trigger events</li>
+                    <li>✅ Coroutines for timing</li>
+                    <li>✅ Build complete game mechanics</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: MonoBehaviour Lifecycle -->
+            <div class="topic">
+                <h2>1. MonoBehaviour Lifecycle 🔄</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>MonoBehaviour</strong> = base class for all Unity scripts</p>
+                    <p>Unity calls specific methods at different times in the game loop</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🕐 Event Execution Order:</h4>
+                    <table>
+                        <tr>
+                            <th>Method</th>
+                            <th>When Called</th>
+                            <th>Use For</th>
+                        </tr>
+                        <tr>
+                            <td><code>Awake()</code></td>
+                            <td>When script first loads</td>
+                            <td>Initialize references, setup</td>
+                        </tr>
+                        <tr>
+                            <td><code>Start()</code></td>
+                            <td>Before first frame</td>
+                            <td>Initialization after Awake</td>
+                        </tr>
+                        <tr>
+                            <td><code>Update()</code></td>
+                            <td>Every frame</td>
+                            <td>Input, movement, game logic</td>
+                        </tr>
+                        <tr>
+                            <td><code>FixedUpdate()</code></td>
+                            <td>Fixed time intervals</td>
+                            <td>Physics calculations</td>
+                        </tr>
+                        <tr>
+                            <td><code>LateUpdate()</code></td>
+                            <td>After all Updates</td>
+                            <td>Camera following, finalization</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Lifecycle Methods in Action</div>
+                    <code>
+using UnityEngine;<br>
+<br>
+public class LifecycleExample : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("1. Awake - Called first");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("2. Start - Called before first Update");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("3. Update - Called every frame (~60 times/second)");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void FixedUpdate()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("4. FixedUpdate - Called at fixed intervals (50 times/second)");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void LateUpdate()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("5. LateUpdate - Called after all Updates");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Best Practices:</strong><br>
+                    • <code>Awake()</code> for finding references between scripts<br>
+                    • <code>Start()</code> for initialization that depends on other objects<br>
+                    • <code>Update()</code> for input and regular updates<br>
+                    • <code>FixedUpdate()</code> for physics (moving with Rigidbody)<br>
+                    • <code>LateUpdate()</code> for camera following
+                </div>
+            </div>
+
+            <!-- Topic 2: Input System -->
+            <div class="topic">
+                <h2>2. Unity Input System ⌨️🖱️🎮</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Input</strong> = reading keyboard, mouse, and gamepad input</p>
+                    <p>Use <code>Input</code> class methods in Update()</p>
+                </div>
+
+                <h3>📝 Keyboard Input:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Basic Keyboard Controls</div>
+                    <code>
+using UnityEngine;<br>
+<br>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Check if key is held down<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKey(KeyCode.W))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Moving forward");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Check if key was pressed this frame<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Jump!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Check if key was released this frame<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyUp(KeyCode.LeftShift))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Stopped sprinting");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎹 Input Methods:</h4>
+                    <table>
+                        <tr>
+                            <th>Method</th>
+                            <th>When True</th>
+                            <th>Example Use</th>
+                        </tr>
+                        <tr>
+                            <td><code>GetKey()</code></td>
+                            <td>While key is held</td>
+                            <td>Continuous movement</td>
+                        </tr>
+                        <tr>
+                            <td><code>GetKeyDown()</code></td>
+                            <td>Frame key is pressed</td>
+                            <td>Jump, shoot, interact</td>
+                        </tr>
+                        <tr>
+                            <td><code>GetKeyUp()</code></td>
+                            <td>Frame key is released</td>
+                            <td>Stop charging attack</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>📝 Axis Input (Smooth Movement):</h3>
+                <div class="example">
+                    <div class="example-header">Example: WASD/Arrow Key Movement</div>
+                    <code>
+public class PlayerMovement : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float speed = 5f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Get input (-1 to 1)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float horizontal = Input.GetAxis("Horizontal"); // A/D or Left/Right<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float vertical = Input.GetAxis("Vertical");     // W/S or Up/Down<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Move the player<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vector3 movement = new Vector3(horizontal, 0, vertical);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.position += movement * speed * Time.deltaTime;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("H: " + horizontal + ", V: " + vertical);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Mouse Input:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Mouse Clicks and Position</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Left mouse button (0), Right (1), Middle (2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetMouseButtonDown(0))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Left click!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Get mouse position<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Vector3 mousePos = Input.mousePosition;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Mouse at: " + mousePos);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Mouse wheel<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float scroll = Input.GetAxis("Mouse ScrollWheel");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (scroll != 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Scrolling: " + scroll);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Important:</strong> Multiply movement by <code>Time.deltaTime</code> to make it
+                    frame-rate independent!<br>
+                    Without it, movement speed varies on different computers.
+                </div>
+            </div>
+
+            <!-- Topic 3: Transform & GameObject -->
+            <div class="topic">
+                <h2>3. GameObject & Transform 📍</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>GameObject</strong> = every object in your scene</p>
+                    <p><strong>Transform</strong> = position, rotation, and scale (every GameObject has one)</p>
+                </div>
+
+                <h3>📝 Manipulating Transform:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Moving, Rotating, Scaling</div>
+                    <code>
+public class TransformExample : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// POSITION<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.position = new Vector3(0, 0, 0);  // Set exact position<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.position += Vector3.up * Time.deltaTime;  // Move up<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.Translate(Vector3.forward * 5f * Time.deltaTime);  // Move forward<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ROTATION<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.rotation = Quaternion.identity;  // Reset rotation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.Rotate(0, 90 * Time.deltaTime, 0);  // Rotate Y-axis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.eulerAngles = new Vector3(0, 45, 0);  // Set exact angles<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// SCALE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.localScale = new Vector3(2, 2, 2);  // Double size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.localScale = Vector3.one * 0.5f;  // Half size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Finding GameObjects:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Find and Reference Objects</div>
+                    <code>
+public class FindExample : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;GameObject player;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Transform target;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Find by name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player = GameObject.Find("Player");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Find by tag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GameObject enemy = GameObject.FindWithTag("Enemy");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Find all with tag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Found " + allEnemies.Length + " enemies");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Get component from GameObject<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rigidbody rb = player.GetComponent&lt;Rigidbody&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Practical Example - Follow Player:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Camera Follow Script</div>
+                    <code>
+public class CameraFollow : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public Transform player;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public Vector3 offset = new Vector3(0, 5, -10);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void LateUpdate()  // LateUpdate for camera!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (player != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Follow player with offset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.position = player.position + offset;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Look at player<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.LookAt(player);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+            </div>
+
+            <!-- Topic 4: Instantiate & Destroy -->
+            <div class="topic">
+                <h2>4. Instantiate & Destroy 🏗️💥</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Instantiate</strong> = create new GameObjects at runtime</p>
+                    <p><strong>Destroy</strong> = remove GameObjects from the scene</p>
+                </div>
+
+                <h3>📝 Instantiate Objects:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Spawn Enemies</div>
+                    <code>
+public class EnemySpawner : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public GameObject enemyPrefab;  // Assign in Inspector<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public Transform spawnPoint;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Spawn at specific position<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vector3 spawnPos = new Vector3(0, 0, 0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Instantiate(enemyPrefab, spawnPos, Quaternion.identity);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Spawn at transform location<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Spawn and keep reference<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GameObject newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newEnemy.name = "Spawned Enemy";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Destroy Objects:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Remove Objects</div>
+                    <code>
+public class DestroyExample : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Destroy immediately<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.X))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject);  // Destroy self<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Destroy after delay<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject, 3f);  // Destroy after 3 seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Destroy another object<br>
+public class Bullet : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void OnCollisionEnter(Collision collision)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Destroy the object we hit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(collision.gameObject);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Destroy self<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Complete Example - Shooting System:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Spawn Bullets on Click</div>
+                    <code>
+public class PlayerShooting : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public GameObject bulletPrefab;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public Transform firePoint;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float bulletSpeed = 20f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetButtonDown("Fire1"))  // Left mouse<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shoot();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Shoot()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Create bullet<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Add velocity<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rigidbody rb = bullet.GetComponent&lt;Rigidbody&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.velocity = firePoint.forward * bulletSpeed;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Auto-destroy after 2 seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(bullet, 2f);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+            </div>
+
+            <!-- Topic 5: Collisions and Triggers -->
+            <div class="topic">
+                <h2>5. Collisions and Triggers 💥</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Collision</strong> = physics-based collisions (objects bounce off each other)</p>
+                    <p><strong>Trigger</strong> = detection zones (objects pass through)</p>
+                    <p>Both require Collider components!</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Collision vs Trigger:</h4>
+                    <table>
+                        <tr>
+                            <th>Collision</th>
+                            <th>Trigger</th>
+                        </tr>
+                        <tr>
+                            <td>Objects physically collide</td>
+                            <td>Objects pass through</td>
+                        </tr>
+                        <tr>
+                            <td>Use for walls, obstacles</td>
+                            <td>Use for pickups, zones</td>
+                        </tr>
+                        <tr>
+                            <td>Requires Rigidbody</td>
+                            <td>Check "Is Trigger" on Collider</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>📝 Collision Events:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Collision Detection</div>
+                    <code>
+public class CollisionExample : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Called when collision starts<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void OnCollisionEnter(Collision collision)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Hit: " + collision.gameObject.name);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Check by tag<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (collision.gameObject.tag == "Enemy")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Hit enemy!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Called every frame during collision<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void OnCollisionStay(Collision collision)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Still touching " + collision.gameObject.name);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Called when collision ends<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void OnCollisionExit(Collision collision)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Stopped touching " + collision.gameObject.name);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Trigger Events:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Pickup System</div>
+                    <code>
+public class CoinPickup : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int coinValue = 10;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void OnTriggerEnter(Collider other)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Check if player picked up coin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (other.CompareTag("Player"))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Collected coin! +" + coinValue);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Add to player score (example)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// player.AddScore(coinValue);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Destroy the coin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Complete Example - Damage System:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Take Damage on Hit</div>
+                    <code>
+public class PlayerHealth : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int maxHealth = 100;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private int currentHealth;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentHealth = maxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void OnCollisionEnter(Collision collision)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (collision.gameObject.tag == "Enemy")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TakeDamage(10);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void TakeDamage(int damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentHealth -= damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Health: " + currentHealth + "/" + maxHealth);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (currentHealth <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Die();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Die()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Player died!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Game Over logic here<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+            </div>
+
+            <!-- Topic 6: Coroutines -->
+            <div class="topic">
+                <h2>6. Coroutines ⏱️</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Coroutine</strong> = function that can pause execution and resume later</p>
+                    <p>Perfect for timers, delays, and animations</p>
+                </div>
+
+                <h3>📝 Basic Coroutine:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Simple Delay</div>
+                    <code>
+using System.Collections;<br>
+<br>
+public class CoroutineExample : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Starting coroutine...");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StartCoroutine(WaitAndPrint());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Coroutine started (but not finished yet)");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IEnumerator WaitAndPrint()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Waiting 2 seconds...");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yield return new WaitForSeconds(2f);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("2 seconds passed!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Output:</div>
+                        Starting coroutine...<br>
+                        Waiting 2 seconds...<br>
+                        Coroutine started (but not finished yet)<br>
+                        (2 seconds later...)<br>
+                        2 seconds passed!
+                    </div>
+                </div>
+
+                <h3>📝 Countdown Timer:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Countdown from 3</div>
+                    <code>
+IEnumerator Countdown()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for (int i = 3; i > 0; i--)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(i);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yield return new WaitForSeconds(1f);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("GO!");<br>
+}
+                    </code>
+                </div>
+
+                <h3>📝 Practical Example - Power-Up Timer:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Temporary Speed Boost</div>
+                    <code>
+public class PowerUp : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float normalSpeed = 5f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float boostSpeed = 10f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float boostDuration = 5f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private float currentSpeed;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentSpeed = normalSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void OnTriggerEnter(Collider other)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (other.CompareTag("SpeedBoost"))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StartCoroutine(ActivateSpeedBoost());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(other.gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IEnumerator ActivateSpeedBoost()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Speed boost activated!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentSpeed = boostSpeed;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yield return new WaitForSeconds(boostDuration);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentSpeed = normalSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Speed boost ended");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Common Yield Types:</h4>
+                    <ul>
+                        <li><code>yield return null;</code> → Wait one frame</li>
+                        <li><code>yield return new WaitForSeconds(time);</code> → Wait X seconds</li>
+                        <li><code>yield return new WaitUntil(() =&gt; condition);</code> → Wait until condition true
+                        </li>
+                        <li><code>yield return new WaitWhile(() =&gt; condition);</code> → Wait while condition true
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic"
+                style="background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); padding: 30px; border-radius: 10px;">
+                <h2 style="color: #856404;">🧪 Practice Exercises</h2>
+
+                <div class="key-points" style="background: white;">
+                    <h4>Exercise 1: Player Movement</h4>
+                    <p><strong>Task:</strong> Create a complete player controller:</p>
+                    <ul>
+                        <li>WASD movement (use Input.GetAxis)</li>
+                        <li>Space to jump (add upward force)</li>
+                        <li>Multiply by Time.deltaTime</li>
+                        <li>Add speed variable you can adjust in Inspector</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 2: Enemy Spawner</h4>
+                    <p><strong>Task:</strong> Create a spawner system:</p>
+                    <ul>
+                        <li>Spawn enemy every 2 seconds (use Coroutine)</li>
+                        <li>Spawn at random positions around spawn point</li>
+                        <li>Maximum 10 enemies at once</li>
+                        <li>Stop spawning when player dies</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 3: Collectible System</h4>
+                    <p><strong>Task:</strong> Build a coin collection system:</p>
+                    <ul>
+                        <li>Coins have trigger colliders</li>
+                        <li>When player touches coin, increment score</li>
+                        <li>Rotate coin slowly for visual effect</li>
+                        <li>Destroy coin after collection</li>
+                        <li>Print total score</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 4: Simple Shooting</h4>
+                    <p><strong>Task:</strong> Create a shooting mechanic:</p>
+                    <ul>
+                        <li>Left mouse button to shoot</li>
+                        <li>Instantiate bullet prefab</li>
+                        <li>Add forward velocity to bullet</li>
+                        <li>Bullets destroy after 3 seconds</li>
+                        <li>Cooldown period (0.5s between shots)</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 5: Health System</h4>
+                    <p><strong>Task:</strong> Complete health management:</p>
+                    <ul>
+                        <li>Player has 100 health</li>
+                        <li>Take damage when hitting enemies (OnCollisionEnter)</li>
+                        <li>Health pickup restores 20 HP (OnTriggerEnter)</li>
+                        <li>Flash red when damaged (coroutine)</li>
+                        <li>Destroy player when health <= 0</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">📚 Lesson 7 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);">You've learned Unity-specific C#:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>MonoBehaviour Lifecycle:</strong> Awake, Start, Update, FixedUpdate</li>
+                    <li>✅ <strong>Input System:</strong> Keyboard, mouse, axes</li>
+                    <li>✅ <strong>Transform:</strong> Position, rotation, scale manipulation</li>
+                    <li>✅ <strong>Instantiate/Destroy:</strong> Creating and removing objects</li>
+                    <li>✅ <strong>Collisions/Triggers:</strong> Physics interactions</li>
+                    <li>✅ <strong>Coroutines:</strong> Timing and delays</li>
+                </ul>
+                <p style="color: white; margin-top: 20px; font-size: 1.2em; text-align: center;">
+                    <strong>🎉 Congratulations! You're ready to build complete Unity games!</strong>
+                </p>
+            </div>
+
+            <div class="key-points" style="margin-top: 30px; background: #e7f3ff;">
+                <h4>🚀 Next Steps:</h4>
+                <p><strong>You've completed the C# fundamentals!</strong> Now practice by building:</p>
+                <ul>
+                    <li>🎮 Simple platformer game</li>
+                    <li>🔫 Top-down shooter</li>
+                    <li>👾 Space invaders clone</li>
+                    <li>🏃 Endless runner</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Remember:</strong> The best way to learn is by building projects.
+                    Start small and gradually add features!</p>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>You've completed the Unity C# course - now go build amazing games! 🎮🚀</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>
