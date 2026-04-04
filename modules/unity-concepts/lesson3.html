@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 3: Learn decision making with if statements and implement player jump mechanics in Unity.">
+    <meta name="keywords" content="if statements, Unity input system, jump mechanics, code refactoring">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Lesson 3: Decision Making & Jump Mechanics | Unity Tutorial</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🎮 Lesson 3: Decision Making & Jump Mechanics</h1>
+            <p>Master if statements and implement player jump functionality in Unity</p>
+        </header>
+
+        <div class="content">
+
+            <!-- Introduction -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Understand and use if statements for decision making</li>
+                    <li>✅ Work with Unity's old Input System</li>
+                    <li>✅ Implement player jump mechanics</li>
+                    <li>✅ Learn code refactoring techniques</li>
+                    <li>✅ Use Extract Method for cleaner code</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: Understanding If Statements -->
+            <div class="topic">
+                <h2>1. Understanding If Statements 🤔</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>If statements</strong> allow your program to make decisions based on conditions. If a condition is true, the code inside the if statement executes.</p>
+                </div>
+
+                <h3>Basic Syntax:</h3>
+                <div class="example">
+                    <div class="example-header">If Statement Structure</div>
+                    <code>
+if (condition)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Code to execute if condition is true<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 How It Works:</h4>
+                    <ol>
+                        <li>Write <code>if</code> followed by parentheses</li>
+                        <li>Inside parentheses, write a condition that returns true or false</li>
+                        <li>Open curly brackets <code>{}</code></li>
+                        <li>Write the code that should run if the condition is true</li>
+                    </ol>
+                </div>
+
+                <h3>Simple Example:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Basic If Statement</div>
+                    <code>
+if (Input.GetKey(KeyCode.Q))<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Someone holding Q key");<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">When Q is pressed:</div>
+                        Someone holding Q key
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> The condition inside the parentheses must evaluate to <code>true</code> or <code>false</code>. If it's true, the code in curly brackets runs. If it's false, the code is skipped.
+                </div>
+            </div>
+
+            <!-- Topic 2: Unity's Old Input System -->
+            <div class="topic">
+                <h2>2. Unity's Old Input System ⌨️</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Unity's old Input System provides methods to detect keyboard and mouse input. There are three main methods for keyboard input:</p>
+                </div>
+
+                <table>
+                    <tr>
+                        <th>Method</th>
+                        <th>When It Returns True</th>
+                        <th>Best For</th>
+                    </tr>
+                    <tr>
+                        <td><code>Input.GetKey()</code></td>
+                        <td>While user holds down the key</td>
+                        <td>Continuous actions (moving)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Input.GetKeyDown()</code></td>
+                        <td>When user first presses the key</td>
+                        <td>Immediate actions (jumping)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Input.GetKeyUp()</code></td>
+                        <td>When user releases the key</td>
+                        <td>Release actions (rare)</td>
+                    </tr>
+                </table>
+
+                <h3>📝 Input.GetKey() - Continuous Press:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Detecting Held Key</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKey(KeyCode.Q))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Someone holding Q key");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">While Q is held:</div>
+                        Someone holding Q key<br>
+                        Someone holding Q key<br>
+                        Someone holding Q key<br>
+                        (Message repeats every frame)
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 When to Use:</h4>
+                    <p><code>GetKey()</code> returns true <strong>every frame</strong> while the key is held. Perfect for continuous movement.</p>
+                </div>
+
+                <h3>📝 Input.GetKeyDown() - Single Press:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Detecting Key Press Start</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Q))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Someone pressed Q key");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">When Q is first pressed:</div>
+                        Someone pressed Q key<br>
+                        (Only once, even if held)
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 When to Use:</h4>
+                    <p><code>GetKeyDown()</code> returns true <strong>only on the frame when the key is first pressed</strong>. Perfect for actions like jumping, shooting, or interacting.</p>
+                </div>
+
+                <h3>📝 Input.GetKeyUp() - Key Release:</h3>
+                <div class="example">
+                    <div class="example-header">Example: Detecting Key Release</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyUp(KeyCode.Q))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Someone released Q key");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                    <div class="output">
+                        <div class="output-label">When Q is released:</div>
+                        Someone released Q key
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 When to Use:</h4>
+                    <p><code>GetKeyUp()</code> returns true <strong>only when the user releases the key</strong>. Rarely used, but useful for charge-up mechanics or bow-and-arrow systems.</p>
+                </div>
+            </div>
+
+            <!-- Topic 3: Implementing Jump Mechanics -->
+            <div class="topic">
+                <h2>3. Implementing Jump Mechanics 🦘</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>To make a player jump, we need to detect when the jump button is pressed and then modify the player's vertical velocity (Y-axis).</p>
+                </div>
+
+                <h3>Step 1: Create Jump Force Variable</h3>
+                <div class="example">
+                    <div class="example-header">Serialize Field for Jump Force</div>
+                    <code>
+[SerializeField] private float jumpForce = 8f;<br>
+private Rigidbody2D rb;
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Why SerializeField?</h4>
+                    <p>Using <code>[SerializeField]</code> allows you to adjust the jump force in Unity's Inspector while keeping the variable private. This gives you flexibility during testing without exposing the variable publicly.</p>
+                </div>
+
+                <h3>Step 2: Detect Jump Input</h3>
+                <div class="example">
+                    <div class="example-header">Detect Spacebar Press</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Make the player jump<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> We use <code>GetKeyDown()</code> instead of <code>GetKey()</code> because we want the jump to happen once per button press, not continuously while the button is held.
+                </div>
+
+                <h3>Step 3: Modify Velocity to Jump</h3>
+                <div class="example">
+                    <div class="example-header">Complete Jump Implementation</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 How It Works:</h4>
+                    <ol>
+                        <li><code>rb.linearVelocity.x</code> - Keep the current horizontal velocity (don't interrupt movement)</li>
+                        <li><code>jumpForce</code> - Set the vertical velocity to the jump force (makes player go up)</li>
+                        <li><code>new Vector2()</code> - Create a new velocity vector with both X and Y components</li>
+                    </ol>
+                </div>
+
+                <h3>Tuning Jump Feel:</h3>
+                <div class="example">
+                    <div class="example-header">Adjusting Jump Parameters</div>
+                    <code>
+// Higher jumps, faster fall<br>
+[SerializeField] private float jumpForce = 25f;<br>
+// Gravity scale in Rigidbody2D: 5<br>
+<br>
+// Floaty jumps, slower fall<br>
+[SerializeField] private float jumpForce = 8f;<br>
+// Gravity scale in Rigidbody2D: 1.5
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Jump Tuning Tips:</h4>
+                    <ul>
+                        <li><strong>Jump Force:</strong> Higher values = higher jumps</li>
+                        <li><strong>Gravity Scale:</strong> Higher values = faster fall, snappier feel</li>
+                        <li><strong>Low Gravity + Low Jump Force:</strong> Floaty, moon-like feel</li>
+                        <li><strong>High Gravity + High Jump Force:</strong> Snappy, responsive feel</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Known Issue:</strong> Multiple jumps (air jumping) is possible with this implementation. We'll fix this later with ground detection. For now, this behavior is expected.
+                </div>
+            </div>
+
+            <!-- Topic 4: Code Organization with Functions -->
+            <div class="topic">
+                <h2>4. Code Organization with Functions 🧹</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Clean code is <strong>readable</strong> and <strong>maintainable</strong>. One key principle: <strong>"If you can extract something into a method, you should do it."</strong></p>
+                </div>
+
+                <h3>Before Refactoring:</h3>
+                <div class="example">
+                    <div class="example-header">Messy Update Method</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Movement input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float xInput = Input.GetAxis("Horizontal");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Jump input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>❌ Problems:</h4>
+                    <ul>
+                        <li>Update method has too many responsibilities</li>
+                        <li>Difficult to read and understand at a glance</li>
+                        <li>Hard to debug and maintain</li>
+                    </ul>
+                </div>
+
+                <h3>Step 1: Extract Jump into Function</h3>
+                <div class="example">
+                    <div class="example-header">Create Jump Method</div>
+                    <code>
+private void Jump()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);<br>
+}<br>
+<br>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Movement input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float xInput = Input.GetAxis("Horizontal");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Jump input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✅ Benefits:</h4>
+                    <ul>
+                        <li>Update is now easier to read: "If space is pressed, Jump()"</li>
+                        <li>Jump logic is separated and reusable</li>
+                        <li>If you need to see jump details, you can look at the Jump() method</li>
+                    </ul>
+                </div>
+
+                <h3>Step 2: Extract Movement into Function</h3>
+                <div class="example">
+                    <div class="example-header">Create HandleMovement Method</div>
+                    <code>
+private void HandleMovement()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float xInput = Input.GetAxis("Horizontal");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);<br>
+}<br>
+<br>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleMovement();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+}
+                    </code>
+                </div>
+
+                <h3>Step 3: Extract All Input into Function</h3>
+                <div class="example">
+                    <div class="example-header">Final Clean Structure</div>
+                    <code>
+private void HandleInput()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Get movement input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;xInput = Input.GetAxis("Horizontal");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Check for jump input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+}<br>
+<br>
+private void HandleMovement()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);<br>
+}<br>
+<br>
+private void Jump()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);<br>
+}<br>
+<br>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleInput();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleMovement();<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✅ Final Structure Benefits:</h4>
+                    <ul>
+                        <li><strong>Update():</strong> Clean overview of what happens each frame</li>
+                        <li><strong>HandleInput():</strong> All input detection in one place</li>
+                        <li><strong>HandleMovement():</strong> Movement logic separated</li>
+                        <li><strong>Jump():</strong> Jump logic separated and reusable</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>📖 Clean Code Principle:</strong> You read code more than you write it. Make it easy to read!
+                </div>
+            </div>
+
+            <!-- Topic 5: Else If and Else Statements -->
+            <div class="topic">
+                <h2>5. Else If and Else Statements 🔀</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Sometimes you need alternative conditions or a default action. That's where <code>else if</code> and <code>else</code> come in.</p>
+                </div>
+
+                <h3>Else If - Alternative Conditions:</h3>
+                <div class="example">
+                    <div class="example-header">Multiple Jump Keys Example</div>
+                    <code>
+if (Input.GetKeyDown(KeyCode.Space))<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+}<br>
+else if (Input.GetKeyDown(KeyCode.UpArrow))<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 How It Works:</h4>
+                    <ol>
+                        <li>First checks if Space was pressed</li>
+                        <li>If not, checks if UpArrow was pressed</li>
+                        <li>Only one condition will execute</li>
+                    </ol>
+                </div>
+
+                <h3>Else - Default Action:</h3>
+                <div class="example">
+                    <div class="example-header">Else Statement Example</div>
+                    <code>
+if (Input.GetKeyDown(KeyCode.Space))<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("No jump button pressed");<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Else Statement:</h4>
+                    <ul>
+                        <li>No condition needed - it's the "default" case</li>
+                        <li>Runs only if all previous conditions are false</li>
+                        <li>Always comes at the end</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> You don't always need else statements. Use them when you need a default action or when all cases must be handled.
+                </div>
+            </div>
+
+            <!-- Topic 6: Single-Line If Statements -->
+            <div class="topic">
+                <h2>6. Single-Line If Statements ✨</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>When an if statement has only <strong>one line of code</strong>, you can skip the curly brackets. This is a stylistic choice.</p>
+                </div>
+
+                <h3>With Curly Brackets:</h3>
+                <div class="example">
+                    <div class="example-header">Standard Format</div>
+                    <code>
+if (Input.GetKeyDown(KeyCode.Space))<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+}
+                    </code>
+                </div>
+
+                <h3>Without Curly Brackets:</h3>
+                <div class="example">
+                    <div class="example-header">Single-Line Format</div>
+                    <code>
+if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Jump();
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>⚠️ Important Rule:</h4>
+                    <p>Only works for <strong>ONE line of code</strong>. If you add a second line, only the first line is part of the if statement!</p>
+                </div>
+
+                <h3>❌ Common Mistake:</h3>
+                <div class="example">
+                    <div class="example-header">This Doesn't Work As Expected!</div>
+                    <code>
+if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Jumped!"); // This ALWAYS runs!
+                    </code>
+                    <div class="output">
+                        <div class="output-label">Result:</div>
+                        The Debug.Log runs every frame, not just when jumping!
+                    </div>
+                </div>
+
+                <h3>✅ Correct Version:</h3>
+                <div class="example">
+                    <div class="example-header">Use Curly Brackets for Multiple Lines</div>
+                    <code>
+if (Input.GetKeyDown(KeyCode.Space))<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Jumped!");<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Style Preference:</h4>
+                    <ul>
+                        <li><strong>No brackets:</strong> Saves space, clean for simple conditions</li>
+                        <li><strong>With brackets:</strong> More consistent, prevents mistakes</li>
+                        <li><strong>Recommendation:</strong> Use whatever style you prefer, but be consistent!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 7: Extract Method Tool -->
+            <div class="topic">
+                <h2>7. Extract Method Tool (VS Code) 🛠️</h2>
+
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Visual Studio Code has a powerful refactoring tool called "Extract Method" that automatically creates functions from selected code.</p>
+                </div>
+
+                <h3>How to Use Extract Method:</h3>
+                <div class="key-points">
+                    <h4>Steps:</h4>
+                    <ol>
+                        <li><strong>Select</strong> the code you want to extract into a method</li>
+                        <li><strong>Right-click</strong> and choose "Quick Actions and Refactorings"</li>
+                        <li>Or press <code>Alt + Enter</code> (Windows) or <code>Ctrl + .</code></li>
+                        <li>Select <strong>"Extract Method"</strong></li>
+                        <li><strong>Name</strong> your new method</li>
+                    </ol>
+                </div>
+
+                <h3>Example - Before:</h3>
+                <div class="example">
+                    <div class="example-header">Original Code</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Select these lines ↓<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float xInput = Input.GetAxis("Horizontal");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+}
+                    </code>
+                </div>
+
+                <h3>Example - After:</h3>
+                <div class="example">
+                    <div class="example-header">After Extract Method → "HandleMovement"</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleMovement();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+}<br>
+<br>
+private void HandleMovement()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float xInput = Input.GetAxis("Horizontal");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Benefits of Extract Method:</h4>
+                    <ul>
+                        <li>Automatically creates the method signature</li>
+                        <li>Handles parameters and return values</li>
+                        <li>Fast and reduces errors</li>
+                        <li>Works in Visual Studio and VS Code</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Mac Users (VS Code):</strong> If Extract Method doesn't work, try installing the "Visual Studio Editor" package in Unity's Package Manager or the "OmniSharp" extension in VS Code. If it still doesn't work, you can always create methods manually!
+                </div>
+            </div>
+
+            <!-- Complete Example -->
+            <div class="topic">
+                <h2>8. Complete Player Controller Example 🎯</h2>
+
+                <div class="example">
+                    <div class="example-header">Full Refactored Player Controller</div>
+                    <code>
+using UnityEngine;<br>
+<br>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float moveSpeed = 5f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float jumpForce = 8f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private Rigidbody2D rb;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private float xInput;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb = GetComponent&lt;Rigidbody2D&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HandleInput();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HandleMovement();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void HandleInput()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xInput = Input.GetAxis("Horizontal");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jump();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void HandleMovement()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Jump()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✅ Clean Code Features:</h4>
+                    <ul>
+                        <li>✅ <strong>Update():</strong> Easy to read overview</li>
+                        <li>✅ <strong>HandleInput():</strong> All input in one place</li>
+                        <li>✅ <strong>HandleMovement():</strong> Movement logic separated</li>
+                        <li>✅ <strong>Jump():</strong> Reusable jump method</li>
+                        <li>✅ <strong>Serialized Fields:</strong> Tunable in Inspector</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>9. Practice Exercises 💪</h2>
+
+                <div class="key-points" style="background: white;">
+                    <h4>Exercise 1: Double Jump</h4>
+                    <p><strong>Task:</strong> Add a double jump feature. The player can jump once in the air.</p>
+                    <p><strong>Hint:</strong> Create a variable to track jump count and reset it when grounded.</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 2: Sprint Feature</h4>
+                    <p><strong>Task:</strong> When the player holds Shift, increase movement speed by 1.5x.</p>
+                    <p><strong>Hint:</strong> Use <code>Input.GetKey(KeyCode.LeftShift)</code> and modify moveSpeed.</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 3: Variable Jump Height</h4>
+                    <p><strong>Task:</strong> Make jump height depend on how long the space key is held.</p>
+                    <p><strong>Hint:</strong> In Update, if Space is held and player is moving up, add upward force.</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 4: Crouch</h4>
+                    <p><strong>Task:</strong> When Down arrow is pressed, reduce player height by 50%.</p>
+                    <p><strong>Hint:</strong> Use <code>transform.localScale</code> to modify the Y scale.</p>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>Exercise 5: Alternative Jump Keys</h4>
+                    <p><strong>Task:</strong> Allow jump with Space, W, or Up Arrow.</p>
+                    <p><strong>Hint:</strong> Use <code>||</code> (OR) operator or multiple <code>else if</code> statements.</p>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">📚 Lesson 3 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);">You've learned:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>If Statements:</strong> Making decisions in code</li>
+                    <li>✅ <strong>Input.GetKey():</strong> Detect held keys (continuous)</li>
+                    <li>✅ <strong>Input.GetKeyDown():</strong> Detect key press (immediate)</li>
+                    <li>✅ <strong>Input.GetKeyUp():</strong> Detect key release</li>
+                    <li>✅ <strong>Jump Mechanics:</strong> Modifying velocity with linearVelocity</li>
+                    <li>✅ <strong>Code Refactoring:</strong> Extracting methods for clean code</li>
+                    <li>✅ <strong>Extract Method:</strong> VS Code refactoring tool</li>
+                    <li>✅ <strong>Else If/Else:</strong> Alternative conditions and defaults</li>
+                </ul>
+                <p style="color: white; margin-top: 20px; font-size: 1.2em; text-align: center;">
+                    <strong>🎉 Excellent! You can now make interactive player controllers!</strong>
+                </p>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="tip" style="margin-top: 30px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-left: 4px solid #f5576c; color: white;">
+                <strong>🚀 Next Steps:</strong>
+                <ul style="margin-top: 10px; color: rgba(255,255,255,0.9);">
+                    <li>Add character visuals and animations</li>
+                    <li>Implement ground detection to prevent air jumping</li>
+                    <li>Learn about collision detection</li>
+                    <li>Fine-tune jump feel based on character animations</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Keep practicing and refining your code! Clean code is happy code! 💻✨</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>
