@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 6: Learn to flip character sprites based on movement direction and understand conditional logic with multiple conditions.">
+    <meta name="keywords" content="Unity sprite flip, character rotation, boolean logic, AND operator, Unity scripting">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+    <title>Lesson 6: Character Flipping & Direction | Unity Tutorial</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔄</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🔄 Lesson 6: Character Flipping & Direction</h1>
+            <p>Make your character face the direction they're moving using rotation and conditional logic</p>
+        </header>
+        <div class="content">
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Understand why character flipping matters</li>
+                    <li>✅ Compare different flipping methods (rotation, scale, flipX)</li>
+                    <li>✅ Implement rotation-based character flipping</li>
+                    <li>✅ Track facing direction with boolean variables</li>
+                    <li>✅ Use [ContextMenu] attribute for testing</li>
+                    <li>✅ Master the AND operator (&&) for multiple conditions</li>
+                    <li>✅ Create smart flip logic based on velocity</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: Why Character Flipping Matters -->
+            <div class="topic">
+                <h2>1. Why Character Flipping Matters 👁️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Character flipping</strong> makes your game feel responsive and realistic. When a player moves left, the character should face left. When they move right, the character should face right.</p>
+                </div>
+
+                <h3>The Problem Without Flipping:</h3>
+                <div class="example">
+                    <div class="example-header">Bad User Experience</div>
+                    <code>
+Player moves LEFT → Character faces RIGHT (moonwalking!)<br>
+Player moves RIGHT → Still faces RIGHT (looks okay)<br>
+<br>
+Result: Confusing, unprofessional, breaks immersion
+                    </code>
+                </div>
+
+                <h3>With Proper Flipping:</h3>
+                <div class="example">
+                    <div class="example-header">Good User Experience</div>
+                    <code>
+Player moves LEFT → Character faces LEFT ✅<br>
+Player moves RIGHT → Character faces RIGHT ✅<br>
+<br>
+Result: Intuitive, polished, professional feel
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎮 Why It Matters:</h4>
+                    <ul>
+                        <li><strong>Visual Feedback:</strong> Players instantly see which direction they're moving</li>
+                        <li><strong>Polish:</strong> Small details like this separate amateur from professional games</li>
+                        <li><strong>Combat/Interaction:</strong> Essential for attacks, interactions facing the right way</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Fun Fact:</strong> In early Super Mario Bros, when Mario didn't flip properly, playtesters got confused about which way they were moving!
+                </div>
+            </div>
+
+            <!-- Topic 2: Different Ways to Flip -->
+            <div class="topic">
+                <h2>2. Different Ways to Flip Sprites 🔀</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Unity offers multiple methods to flip sprites. Each has pros and cons, and choosing the right one depends on your game's structure.</p>
+                </div>
+
+                <h3>Method 1: Rotation (Recommended):</h3>
+                <div class="example">
+                    <div class="example-header">Rotate on Y-Axis</div>
+                    <code>
+// Facing Right (default)<br>
+transform.rotation = Quaternion.Euler(0, 0, 0);<br>
+<br>
+// Facing Left (flipped)<br>
+transform.rotation = Quaternion.Euler(0, 180, 0);<br>
+<br>
+✅ Pros: Clean, works with child objects, predictable<br>
+❌ Cons: None really!
+                    </code>
+                </div>
+
+                <h3>Method 2: Scale (Alternative):</h3>
+                <div class="example">
+                    <div class="example-header">Negative Scale on X-Axis</div>
+                    <code>
+// Facing Right<br>
+transform.localScale = new Vector3(1, 1, 1);<br>
+<br>
+// Facing Left<br>
+transform.localScale = new Vector3(-1, 1, 1);<br>
+<br>
+✅ Pros: Simple, intuitive<br>
+❌ Cons: Can mess up child object positions, physics can act weird
+                    </code>
+                </div>
+
+                <h3>Method 3: SpriteRenderer.flipX (Not Recommended):</h3>
+                <div class="example">
+                    <div class="example-header">Sprite Flip Property</div>
+                    <code>
+SpriteRenderer sr = GetComponent&lt;SpriteRenderer&gt;();<br>
+<br>
+// Flip the sprite<br>
+sr.flipX = true;<br>
+<br>
+✅ Pros: Built specifically for sprites<br>
+❌ Cons: Only flips the visual, not the transform<br>
+❌ Problem: If sprite has offset/empty space, character "teleports"
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>⚖️ Which to Choose?</h4>
+                    <ul>
+                        <li><strong>Rotation (Y: 180):</strong> Best for most 2D games, especially with parent/child setup</li>
+                        <li><strong>Scale (X: -1):</strong> Good for simple sprites without children</li>
+                        <li><strong>flipX:</strong> Avoid unless you have a specific reason (can cause positioning issues)</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Why Rotation Wins:</strong> Since we separated logic (Player parent) from visuals (Graphics child), rotating the Graphics child keeps everything clean!
+                </div>
+            </div>
+
+            <!-- Topic 3: Creating the Flip Method -->
+            <div class="topic">
+                <h2>3. Creating the Flip Method 🔧</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>A dedicated <code>Flip()</code> method handles all the logic for flipping the character. It rotates the Graphics child and updates tracking variables.</p>
+                </div>
+
+                <h3>Basic Flip Method:</h3>
+                <div class="example">
+                    <div class="example-header">Simple Version</div>
+                    <code>
+private void Flip()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Rotate the Graphics child GameObject<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform.Rotate(0, 180, 0);<br>
+}
+                    </code>
+                </div>
+
+                <h3>Understanding Transform.Rotate():</h3>
+                <div class="key-points">
+                    <h4>📐 Rotate Parameters:</h4>
+                    <ul>
+                        <li><strong>X (pitch):</strong> 0 - Don't rotate on X-axis (tilt forward/back)</li>
+                        <li><strong>Y (yaw):</strong> 180 - Rotate 180 degrees on Y-axis (turn left/right)</li>
+                        <li><strong>Z (roll):</strong> 0 - Don't rotate on Z-axis (spin clockwise/counter)</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">What Happens</div>
+                    <code>
+Before Flip:<br>
+Graphics Rotation: (0, 0, 0) → Character faces RIGHT<br>
+<br>
+After First Flip():<br>
+Graphics Rotation: (0, 180, 0) → Character faces LEFT<br>
+<br>
+After Second Flip():<br>
+Graphics Rotation: (0, 360, 0) = (0, 0, 0) → Character faces RIGHT again
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Important:</strong> Make sure you're rotating the <strong>Graphics child</strong>, not the Player parent! The parent needs to stay at (0, 0, 0) for physics to work correctly.
+                </div>
+            </div>
+
+            <!-- Topic 4: Tracking Facing Direction -->
+            <div class="topic">
+                <h2>4. Tracking Facing Direction with Boolean 📍</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The computer can't "see" which way the sprite is facing. We need a <strong>boolean variable</strong> to track whether the character is facing right or left.</p>
+                </div>
+
+                <h3>Why Track Facing Direction?</h3>
+                <div class="key-points">
+                    <h4>🤔 The Problem:</h4>
+                    <ul>
+                        <li>We can visually see the sprite facing left or right</li>
+                        <li>But the code has no idea without us telling it</li>
+                        <li>We need this information to decide when to flip</li>
+                    </ul>
+                </div>
+
+                <h3>Declaring the Boolean:</h3>
+                <div class="example">
+                    <div class="example-header">At Class Level</div>
+                    <code>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private Rigidbody2D rb;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private Animator anim;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>[SerializeField] private bool facingRight = true;</strong><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ... rest of code
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔍 Breaking It Down:</h4>
+                    <ul>
+                        <li><strong>[SerializeField]:</strong> Makes private variable visible in Inspector (for debugging)</li>
+                        <li><strong>private:</strong> Only this class can modify it (encapsulation)</li>
+                        <li><strong>bool:</strong> True (facing right) or False (facing left)</li>
+                        <li><strong>= true:</strong> Character starts facing right by default</li>
+                    </ul>
+                </div>
+
+                <h3>Updating the Flip Method:</h3>
+                <div class="example">
+                    <div class="example-header">With Facing Direction Update</div>
+                    <code>
+private void Flip()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Rotate the character<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform.Rotate(0, 180, 0);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Toggle facing direction<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>facingRight = !facingRight;</strong><br>
+}
+                    </code>
+                </div>
+
+                <h3>Understanding the Toggle:</h3>
+                <div class="example">
+                    <div class="example-header">How !facingRight Works</div>
+                    <code>
+// ! means "NOT" - it flips the boolean to opposite value<br>
+<br>
+If facingRight is true:<br>
+&nbsp;&nbsp;facingRight = !facingRight; → facingRight = !true → facingRight = false<br>
+<br>
+If facingRight is false:<br>
+&nbsp;&nbsp;facingRight = !facingRight; → facingRight = !false → facingRight = true<br>
+<br>
+It's like a light switch - toggles between on and off!
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Why This Works:</strong> Every time we call Flip(), we rotate 180° AND toggle the boolean. They stay in sync!
+                </div>
+            </div>
+
+            <!-- Topic 5: Context Menu for Testing -->
+            <div class="topic">
+                <h2>5. Testing with [ContextMenu] Attribute 🧪</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>[ContextMenu]</strong> attribute adds a button to the Inspector that calls a method. Perfect for testing without writing extra code!</p>
+                </div>
+
+                <h3>Adding Context Menu:</h3>
+                <div class="example">
+                    <div class="example-header">Temporary Testing Code</div>
+                    <code>
+<strong>[ContextMenu("Flip")]</strong><br>
+private void Flip()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform.Rotate(0, 180, 0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;facingRight = !facingRight;<br>
+}
+                    </code>
+                </div>
+
+                <h3>How to Use It:</h3>
+                <div class="key-points">
+                    <h4>📋 Testing Steps:</h4>
+                    <ol>
+                        <li>Add <code>[ContextMenu("Flip")]</code> above the method</li>
+                        <li>Save the script and return to Unity</li>
+                        <li>Enter Play Mode</li>
+                        <li>Select the Player GameObject in Hierarchy</li>
+                        <li>In Inspector, click the three dots (⋮) on the script component</li>
+                        <li>Select "Flip" from the dropdown menu</li>
+                        <li>Character flips! facingRight toggles!</li>
+                    </ol>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">What You'll See</div>
+                    <code>
+Click "Flip" → Character rotates 180°, facingRight becomes false<br>
+Click "Flip" → Character rotates back, facingRight becomes true<br>
+Click "Flip" → Keeps toggling!<br>
+<br>
+Graphics Rotation in Inspector changes: 0 → 180 → 0 → 180...
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Remember:</strong> Remove [ContextMenu] after testing! It's just for debugging, not production code.
+                </div>
+            </div>
+
+            <!-- Topic 6: The AND Operator -->
+            <div class="topic">
+                <h2>6. The AND Operator (&&) 🔗</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>AND operator (&&)</strong> lets you check multiple conditions at once. BOTH conditions must be true for the code to execute.</p>
+                </div>
+
+                <h3>Basic Syntax:</h3>
+                <div class="example">
+                    <div class="example-header">AND Operator Structure</div>
+                    <code>
+if (condition1 && condition2)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Executes ONLY if BOTH conditions are true<br>
+}
+                    </code>
+                </div>
+
+                <h3>Truth Table:</h3>
+                <div class="example">
+                    <div class="example-header">When Does && Execute?</div>
+                    <code>
+Condition 1 = true,  Condition 2 = true  → Execute ✅<br>
+Condition 1 = true,  Condition 2 = false → Skip ❌<br>
+Condition 1 = false, Condition 2 = true  → Skip ❌<br>
+Condition 1 = false, Condition 2 = false → Skip ❌<br>
+<br>
+<strong>Rule: ALL conditions must be true!</strong>
+                    </code>
+                </div>
+
+                <h3>Real-World Examples:</h3>
+                <div class="example">
+                    <div class="example-header">Game Logic Examples</div>
+                    <code>
+// Can player jump?<br>
+if (isGrounded && Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Only jumps if BOTH on ground AND space pressed<br>
+<br>
+// Can player attack?<br>
+if (hasWeapon && enemyInRange)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Only attacks if BOTH has weapon AND enemy nearby<br>
+<br>
+// Is game over?<br>
+if (health <= 0 && lives == 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Game over only if BOTH no health AND no lives left
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔍 Other Logical Operators:</h4>
+                    <ul>
+                        <li><strong>|| (OR):</strong> At least ONE condition must be true</li>
+                        <li><strong>! (NOT):</strong> Reverses the condition (true becomes false)</li>
+                        <li><strong>&& (AND):</strong> ALL conditions must be true</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> You can chain multiple ANDs: <code>if (a && b && c && d)</code> - ALL must be true!
+                </div>
+            </div>
+
+            <!-- Topic 7: Velocity-Based Direction Detection -->
+            <div class="topic">
+                <h2>7. Detecting Movement Direction with Velocity 🎯</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>We check the <strong>velocity.x</strong> value to determine which direction the character is moving. Positive = right, negative = left, zero = standing still.</p>
+                </div>
+
+                <h3>Velocity Direction Logic:</h3>
+                <div class="example">
+                    <div class="example-header">Reading Velocity</div>
+                    <code>
+rb.linearVelocity.x > 0  → Moving RIGHT (positive velocity)<br>
+rb.linearVelocity.x < 0  → Moving LEFT (negative velocity)<br>
+rb.linearVelocity.x == 0 → Standing STILL (no movement)<br>
+<br>
+Examples:<br>
+velocity.x = 5.0  → Moving right fast<br>
+velocity.x = 0.5  → Moving right slowly<br>
+velocity.x = -3.2 → Moving left<br>
+velocity.x = 0.0  → Not moving
+                    </code>
+                </div>
+
+                <h3>When to Flip?</h3>
+                <div class="key-points">
+                    <h4>🤔 The Logic:</h4>
+                    <ul>
+                        <li><strong>Moving RIGHT && Facing LEFT:</strong> Flip to face right!</li>
+                        <li><strong>Moving LEFT && Facing RIGHT:</strong> Flip to face left!</li>
+                        <li><strong>Moving RIGHT && Facing RIGHT:</strong> Don't flip (already correct)</li>
+                        <li><strong>Moving LEFT && Facing LEFT:</strong> Don't flip (already correct)</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Flip Decision Matrix</div>
+                    <code>
+┌──────────────┬──────────────┬──────────┐<br>
+│  Velocity X  │ Facing Right │  Action  │<br>
+├──────────────┼──────────────┼──────────┤<br>
+│   > 0        │    true      │  Nothing │<br>
+│   > 0        │    false     │  FLIP!   │<br>
+│   < 0        │    true      │  FLIP!   │<br>
+│   < 0        │    false     │  Nothing │<br>
+└──────────────┴──────────────┴──────────┘
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Why Velocity?</strong> It's more reliable than checking input because it reflects actual movement (accounts for physics, collisions, etc.)
+                </div>
+            </div>
+
+            <!-- Topic 8: Creating HandleFlip Method -->
+            <div class="topic">
+                <h2>8. Creating the HandleFlip Method 🎮</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <code>HandleFlip()</code> method checks every frame whether the character should flip based on velocity and current facing direction.</p>
+                </div>
+
+                <h3>Complete HandleFlip Method:</h3>
+                <div class="example">
+                    <div class="example-header">Smart Flip Logic</div>
+                    <code>
+private void HandleFlip()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Moving RIGHT but facing LEFT → Flip<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (rb.linearVelocity.x > 0 && !facingRight)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flip();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Moving LEFT but facing RIGHT → Flip<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else if (rb.linearVelocity.x < 0 && facingRight)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flip();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+                    </code>
+                </div>
+
+                <h3>Breaking Down the Conditions:</h3>
+                <div class="example">
+                    <div class="example-header">First Condition (Moving Right)</div>
+                    <code>
+if (rb.linearVelocity.x > 0 && !facingRight)<br>
+<br>
+<strong>rb.linearVelocity.x > 0:</strong><br>
+&nbsp;&nbsp;→ Velocity is positive (moving right)<br>
+<br>
+<strong>!facingRight:</strong><br>
+&nbsp;&nbsp;→ NOT facing right (means facing left)<br>
+<br>
+<strong>Combined (&&):</strong><br>
+&nbsp;&nbsp;→ Moving right AND facing left → FLIP to face right!
+                    </code>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Second Condition (Moving Left)</div>
+                    <code>
+else if (rb.linearVelocity.x < 0 && facingRight)<br>
+<br>
+<strong>rb.linearVelocity.x < 0:</strong><br>
+&nbsp;&nbsp;→ Velocity is negative (moving left)<br>
+<br>
+<strong>facingRight:</strong><br>
+&nbsp;&nbsp;→ Currently facing right<br>
+<br>
+<strong>Combined (&&):</strong><br>
+&nbsp;&nbsp;→ Moving left AND facing right → FLIP to face left!
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🧠 Why Else If?</h4>
+                    <ul>
+                        <li>Only ONE flip can happen per frame</li>
+                        <li>If first condition is true, second is skipped (more efficient)</li>
+                        <li>Prevents double-flipping in edge cases</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Smart Design:</strong> After Flip() executes, facingRight toggles, making the condition false. This prevents infinite flipping!
+                </div>
+            </div>
+
+            <!-- Topic 9: Calling HandleFlip in Update -->
+            <div class="topic">
+                <h2>9. Integrating HandleFlip into Update 🔄</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Like other handle methods, <code>HandleFlip()</code> needs to be called every frame in <code>Update()</code> to continuously check and respond to player movement.</p>
+                </div>
+
+                <h3>Updated Update Method:</h3>
+                <div class="example">
+                    <div class="example-header">Adding HandleFlip</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleMovement();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleJump();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleAnimations();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>HandleFlip();</strong>  ← Add this<br>
+}
+                    </code>
+                </div>
+
+                <h3>Method Call Order:</h3>
+                <div class="key-points">
+                    <h4>📋 Execution Sequence Each Frame:</h4>
+                    <ol>
+                        <li><strong>HandleMovement():</strong> Updates velocity based on input</li>
+                        <li><strong>HandleJump():</strong> Checks for jump input</li>
+                        <li><strong>HandleAnimations():</strong> Updates animation state</li>
+                        <li><strong>HandleFlip():</strong> Checks if character should flip</li>
+                    </ol>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">What Happens Each Frame</div>
+                    <code>
+1. Player presses A (left) → HandleMovement sets velocity.x = -5<br>
+2. HandleJump checks space (not pressed)<br>
+3. HandleAnimations sets isMoving = true<br>
+4. HandleFlip checks: velocity < 0 && facingRight = true → FLIP!<br>
+<br>
+Next frame:<br>
+4. HandleFlip checks: velocity < 0 && facingRight = false → Don't flip
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>⚡ Performance:</strong> Don't worry about calling HandleFlip every frame. The if checks are extremely fast!
+                </div>
+            </div>
+
+            <!-- Topic 10: Complete Implementation -->
+            <div class="topic">
+                <h2>10. Complete Code Implementation 📝</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Let's see the complete PlayerController code with character flipping fully implemented.</p>
+                </div>
+
+                <h3>Full PlayerController with Flipping:</h3>
+                <div class="example">
+                    <div class="example-header">PlayerController.cs</div>
+                    <code>
+using UnityEngine;<br>
+<br>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float moveSpeed = 5f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float jumpForce = 10f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private Rigidbody2D rb;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private Animator anim;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>[SerializeField] private bool facingRight = true;</strong><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb = GetComponent&lt;Rigidbody2D&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;anim = GetComponentInChildren&lt;Animator&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HandleMovement();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HandleJump();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HandleAnimations();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>HandleFlip();</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void HandleMovement()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float horizontalInput = Input.GetAxisRaw("Horizontal");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void HandleJump()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void HandleAnimations()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool isMoving = rb.linearVelocity.x != 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;anim.SetBool("isMoving", isMoving);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>void HandleFlip()</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>{</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>// Moving right but facing left → flip right</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>if (rb.linearVelocity.x > 0 && !facingRight)</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Flip();</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>}</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>// Moving left but facing right → flip left</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>else if (rb.linearVelocity.x < 0 && facingRight)</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Flip();</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>}</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>}</strong><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>private void Flip()</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>{</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>// Rotate 180 degrees on Y-axis</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>transform.Rotate(0, 180, 0);</strong><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>// Toggle facing direction</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>facingRight = !facingRight;</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>}</strong><br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Key Points:</h4>
+                    <ul>
+                        <li><strong>Line 10:</strong> facingRight tracks which direction character faces</li>
+                        <li><strong>Line 23:</strong> HandleFlip called every frame</li>
+                        <li><strong>Lines 47-58:</strong> HandleFlip with two conditions</li>
+                        <li><strong>Lines 60-66:</strong> Flip method rotates and toggles boolean</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎯 Testing:</strong> Enter Play Mode and move left/right. Character should instantly face the direction they're moving!
+                </div>
+            </div>
+
+            <!-- Topic 11: Fine-Tuning Settings -->
+            <div class="topic">
+                <h2>11. Fine-Tuning Camera & Movement Speed 🎚️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Now that flipping works, you might notice the movement feels too slow or the camera is too close. Let's adjust settings for a better feel!</p>
+                </div>
+
+                <h3>Increasing Movement Speed:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Select Player GameObject</li>
+                        <li>In Inspector, find PlayerController script</li>
+                        <li>Change <strong>Move Speed</strong> from 5 to <strong>8</strong></li>
+                        <li>Test in Play Mode - feels more responsive!</li>
+                    </ol>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Speed Comparison</div>
+                    <code>
+Move Speed = 5:  Slow, methodical (puzzle game feel)<br>
+Move Speed = 8:  Medium, responsive (action game feel) ✅<br>
+Move Speed = 12: Fast, arcade-like (sonic-style game)
+                    </code>
+                </div>
+
+                <h3>Adjusting Camera Size:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Select <strong>Main Camera</strong> in Hierarchy</li>
+                        <li>In Inspector, find Camera component</li>
+                        <li>Change <strong>Size</strong> from 5 to <strong>8</strong></li>
+                        <li>Camera zooms out - you can see more of the level!</li>
+                    </ol>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Camera Size Effects</div>
+                    <code>
+Size = 5:  Zoomed in, claustrophobic (feels cramped)<br>
+Size = 8:  Balanced view (can see ahead) ✅<br>
+Size = 12: Zoomed out (character looks tiny)
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎮 Game Feel Tips:</h4>
+                    <ul>
+                        <li><strong>Platformers:</strong> Camera Size 6-8, Move Speed 7-10</li>
+                        <li><strong>Action Games:</strong> Camera Size 8-10, Move Speed 10-15</li>
+                        <li><strong>Puzzle Games:</strong> Camera Size 5-7, Move Speed 4-6</li>
+                        <li><strong>Pro Tip:</strong> Playtest and adjust until it feels good!</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Golden Rule:</strong> Movement should feel responsive, not sluggish. Camera should show enough to let players plan ahead!
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="key-points">
+                    <h4>Exercise 1: Debug with Context Menu</h4>
+                    <p><strong>Task:</strong> Add [ContextMenu] to test the Flip method manually.</p>
+                    <ul>
+                        <li>Add <code>[ContextMenu("Flip")]</code> above the Flip() method</li>
+                        <li>Enter Play Mode and select Player</li>
+                        <li>Click the script's ⋮ menu and select "Flip"</li>
+                        <li>Watch Graphics rotation and facingRight toggle</li>
+                        <li>Remove [ContextMenu] when done testing</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 2: Experiment with Flip Methods</h4>
+                    <p><strong>Task:</strong> Try different flipping techniques to understand the differences.</p>
+                    <ul>
+                        <li>Change Flip() to use scale: <code>transform.localScale = new Vector3(-transform.localScale.x, 1, 1);</code></li>
+                        <li>Test in Play Mode - what's different?</li>
+                        <li>Try flipX: Get SpriteRenderer and toggle <code>sr.flipX = !sr.flipX;</code></li>
+                        <li>Notice any positioning issues?</li>
+                        <li>Revert to rotation method (best practice)</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 3: Add Debug Logging</h4>
+                    <p><strong>Task:</strong> Log when flipping occurs to understand the logic.</p>
+                    <ul>
+                        <li>In Flip() method, add: <code>Debug.Log("Flipped! Now facing: " + (facingRight ? "Right" : "Left"));</code></li>
+                        <li>Enter Play Mode and check Console</li>
+                        <li>Move left/right and see when flips occur</li>
+                        <li>Notice it only logs when direction changes (not every frame)</li>
+                        <li>Remove Debug.Log when done</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Challenge: Create FlipSmooth Method</h4>
+                    <p><strong>Task:</strong> Make the flip happen gradually instead of instantly (advanced).</p>
+                    <ul>
+                        <li>Research <code>Quaternion.Slerp</code> for smooth rotation</li>
+                        <li>Use <code>Time.deltaTime</code> for frame-independent rotation speed</li>
+                        <li>Hint: You'll need to track target rotation and lerp to it</li>
+                        <li>This is challenging but teaches smooth transitions!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">📚 Lesson 6 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);"><strong>Congratulations!</strong> You've learned:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>Why Flipping Matters:</strong> Visual feedback and professional polish</li>
+                    <li>✅ <strong>Three Flip Methods:</strong> Rotation (best), scale, and flipX</li>
+                    <li>✅ <strong>Transform.Rotate:</strong> Rotate 180° on Y-axis for clean flipping</li>
+                    <li>✅ <strong>Facing Direction:</strong> Track with boolean variable (facingRight)</li>
+                    <li>✅ <strong>Boolean Toggle:</strong> Use !variable to flip between true/false</li>
+                    <li>✅ <strong>[ContextMenu]:</strong> Add Inspector buttons for testing</li>
+                    <li>✅ <strong>AND Operator (&&):</strong> Check multiple conditions simultaneously</li>
+                    <li>✅ <strong>HandleFlip Logic:</strong> Compare velocity direction with facing direction</li>
+                    <li>✅ <strong>Smart Flipping:</strong> Only flip when velocity and facing mismatch</li>
+                    <li>✅ <strong>Game Feel:</strong> Adjust camera and speed for better gameplay</li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95); margin-top: 15px;"><strong>Next Up:</strong> In Lesson 7,
+                    you'll implement jump animations, ground detection, and fix the infinite jump bug!</p>
+            </div>
+
+        </div>
+        <footer>
+            <p>Excellent work! Your character now moves like a professional game! 🔄✨</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

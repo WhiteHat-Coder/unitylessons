@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 4: Learn to import sprite sheets, set up player visuals, and create your first idle animation in Unity.">
+    <meta name="keywords" content="Unity sprites, sprite sheets, animations, itch.io, pivot points, Unity Animator">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+    <title>Lesson 4: Player Visuals & First Animation | Unity Tutorial</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🎨 Lesson 4: Player Visuals & First Animation</h1>
+            <p>Replace the placeholder circle with real character sprites and create your first idle animation</p>
+        </header>
+        <div class="content">
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Find and download free game assets from itch.io</li>
+                    <li>✅ Import and configure sprite sheets in Unity</li>
+                    <li>✅ Understand pivot points and sprite slicing</li>
+                    <li>✅ Separate logic and visuals with child GameObjects</li>
+                    <li>✅ Create your first idle animation with the Animator</li>
+                    <li>✅ Fix common issues like rotation and blurry sprites</li>
+                </ul>
+            </div>
+            <!-- Topic 1: Finding Free Game Assets on itch.io -->
+            <div class="topic">
+                <h2>1. Finding Free Game Assets on itch.io 🎮</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>itch.io</strong> is a popular platform for indie game developers where you can find
+                        thousands of free and paid game assets, publish your games, and connect with the game dev
+                        community.</p>
+                </div>
+
+                <h3>How to Find Assets:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Visit <code>itch.io</code> in your web browser</li>
+                        <li>Navigate to <strong>Game Assets</strong> section</li>
+                        <li>Filter by <strong>Free</strong> to find free resources</li>
+                        <li>Search for the type of assets you need (e.g., "pixel art warrior")</li>
+                        <li>Download the asset pack (usually a .zip file)</li>
+                    </ol>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Example: Warrior Sprite Pack</div>
+                    <code>
+Search Term: "pixel art warrior"<br>
+Pack Name: "Warrior Pack"<br>
+Contents: Sprite sheets with idle, run, attack animations<br>
+Format: .png files in a .zip archive
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Always check the license! Most free assets allow use in personal and
+                    commercial projects, but always read the terms. Give credit to the artist when possible!
+                </div>
+            </div>
+
+            <!-- Topic 2: Importing Sprites into Unity -->
+            <div class="topic">
+                <h2>2. Importing Sprites into Unity 📦</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>After downloading sprites, you need to import them into Unity and configure them properly to
+                        avoid blurry or pixelated graphics.</p>
+                </div>
+
+                <h3>Import Process:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Extract the .zip file you downloaded from itch.io</li>
+                        <li>In Unity, drag the sprite sheets into your <strong>Assets</strong> folder</li>
+                        <li>Select the imported sprite in the Project window</li>
+                        <li>In the Inspector, configure the following settings:</li>
+                    </ol>
+                </div>
+
+                <h3>Critical Import Settings:</h3>
+                <div class="example">
+                    <div class="example-header">Sprite Import Configuration</div>
+                    <code>
+<strong>Texture Type:</strong> Sprite (2D and UI)<br>
+<strong>Sprite Mode:</strong> Multiple<br>
+<strong>Pixels Per Unit:</strong> 16<br>
+<strong>Compression:</strong> None<br>
+<strong>Filter Mode:</strong> Point (no filter)<br>
+<strong>Max Size:</strong> Keep default (usually 2048)
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>⚙️ Why These Settings Matter:</h4>
+                    <ul>
+                        <li><strong>Pixels Per Unit (16):</strong> Matches pixel art scale - means 16 pixels = 1 Unity
+                            unit</li>
+                        <li><strong>Compression: None:</strong> Prevents artifacts and keeps pixel art crisp</li>
+                        <li><strong>Filter Mode: Point:</strong> Keeps sharp pixel edges (no blurring)</li>
+                        <li><strong>Sprite Mode: Multiple:</strong> Allows slicing sprite sheets into individual sprites
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Important:</strong> Always click <strong>Apply</strong> after changing settings! Unity
+                    won't save your changes otherwise.
+                </div>
+            </div>
+
+            <!-- Topic 3: Separating Logic and Visuals -->
+            <div class="topic">
+                <h2>3. Separating Logic and Visuals 🏗️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>A <strong>best practice</strong> in game development is to separate your game logic from visual
+                        elements using a parent-child GameObject structure.</p>
+                </div>
+
+                <h3>Why Separate?</h3>
+                <div class="key-points">
+                    <h4>✅ Benefits:</h4>
+                    <ul>
+                        <li>Keep physics and logic on the parent GameObject</li>
+                        <li>Keep visuals (sprites, animations) on child GameObjects</li>
+                        <li>Easier to swap out visual elements without breaking code</li>
+                        <li>Better organization and cleaner hierarchy</li>
+                        <li>Allows independent scaling and rotation of visuals</li>
+                    </ul>
+                </div>
+
+                <h3>Implementation:</h3>
+                <div class="example">
+                    <div class="example-header">GameObject Structure</div>
+                    <code>
+Player (Parent GameObject)<br>
+&nbsp;&nbsp;├── Rigidbody2D<br>
+&nbsp;&nbsp;├── Collider2D<br>
+&nbsp;&nbsp;├── PlayerController script<br>
+&nbsp;&nbsp;└── Graphics (Child GameObject)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── SpriteRenderer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── Animator
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>📋 Setup Steps:</h4>
+                    <ol>
+                        <li>Keep your existing Player GameObject with all scripts and physics</li>
+                        <li>Right-click on Player → Create Empty → Name it "Graphics"</li>
+                        <li>On Graphics: Add Component → Sprite Renderer</li>
+                        <li>Remove the Sprite Renderer from the parent Player object</li>
+                        <li>Drag your sprite onto the Graphics object's Sprite Renderer</li>
+                    </ol>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> This pattern makes it easy to add effects like sprite flipping,
+                    squash/stretch, or visual-only rotations without affecting your physics!
+                </div>
+            </div>
+
+            <!-- Topic 4: Understanding Pivot Points -->
+            <div class="topic">
+                <h2>4. Understanding Pivot Points 🎯</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>A <strong>pivot point</strong> is the reference point for a sprite - where rotation, scaling, and
+                        positioning happen from. Think of it like a door hinge!</p>
+                </div>
+
+                <h3>The Door Hinge Analogy:</h3>
+                <div class="example">
+                    <div class="example-header">Pivot Point Like a Door Hinge</div>
+                    <code>
+🚪 A door rotates around its HINGE, not its center.<br>
+<br>
+If the hinge is on the LEFT:<br>
+&nbsp;&nbsp;→ Door swings from the left edge<br>
+<br>
+If the hinge is in the CENTER:<br>
+&nbsp;&nbsp;→ Door would spin in place (weird!)<br>
+<br>
+Similarly, a sprite's PIVOT is where it rotates and scales from.
+                    </code>
+                </div>
+
+                <h3>Common Pivot Positions:</h3>
+                <div class="key-points">
+                    <h4>📍 Pivot Options:</h4>
+                    <ul>
+                        <li><strong>Bottom Center:</strong> Good for characters (ground contact point)</li>
+                        <li><strong>Center:</strong> Good for projectiles or floating objects</li>
+                        <li><strong>Custom:</strong> Set manually during sprite slicing</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Why It Matters:</strong> If your character sprite's pivot is at the top instead of the
+                    bottom, when you place it at Y=0, only its top will be visible! The pivot determines the
+                    GameObject's position reference.
+                </div>
+            </div>
+
+            <!-- Topic 5: Slicing Sprite Sheets -->
+            <div class="topic">
+                <h2>5. Slicing Sprite Sheets ✂️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>A <strong>sprite sheet</strong> contains multiple animation frames in a single image file.
+                        Unity's Sprite Editor lets you slice it into individual sprites for animation.</p>
+                </div>
+
+                <h3>Using the Sprite Editor:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Select your sprite sheet in the Project window</li>
+                        <li>Make sure <strong>Sprite Mode</strong> is set to "Multiple"</li>
+                        <li>Click <strong>Sprite Editor</strong> button in Inspector</li>
+                        <li>In Sprite Editor, click <strong>Slice</strong> dropdown</li>
+                        <li>Choose <strong>Grid By Cell Size</strong></li>
+                        <li>Enter the pixel dimensions of each frame</li>
+                        <li>Click <strong>Slice</strong>, then <strong>Apply</strong></li>
+                    </ol>
+                </div>
+
+                <h3>Example: Warrior Sprite Sheet:</h3>
+                <div class="example">
+                    <div class="example-header">Sprite Slice Settings</div>
+                    <code>
+Type: Grid By Cell Size<br>
+Pixel Size:<br>
+&nbsp;&nbsp;X: 69<br>
+&nbsp;&nbsp;Y: 44<br>
+<br>
+Pivot: Bottom (or Bottom Center)<br>
+<br>
+Result: Individual sprites appear as children in Project window
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎨 After Slicing:</h4>
+                    <ul>
+                        <li>Click the arrow next to your sprite sheet to see all individual frames</li>
+                        <li>Each frame is named automatically (e.g., warrior_0, warrior_1, etc.)</li>
+                        <li>You can now drag individual frames into your scene or use them in animations</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Finding Cell Size:</strong> If you don't know the cell size, open the sprite sheet in an
+                    image editor and measure one frame's width and height in pixels.
+                </div>
+            </div>
+
+            <!-- Topic 6: Pivot vs Center Transform Mode -->
+            <div class="topic">
+                <h2>6. Pivot vs Center Transform Mode 🔄</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Unity's Scene view has two transform tool modes: <strong>Pivot</strong> and
+                        <strong>Center</strong>. This affects where the transform gizmo appears.</p>
+                </div>
+
+                <h3>Transform Modes:</h3>
+                <div class="example">
+                    <div class="example-header">Pivot vs Center</div>
+                    <code>
+<strong>Pivot Mode:</strong><br>
+&nbsp;&nbsp;→ Gizmo appears at the sprite's actual pivot point<br>
+&nbsp;&nbsp;→ Shows where rotation/scaling happens from<br>
+&nbsp;&nbsp;→ Good for precise positioning<br>
+<br>
+<strong>Center Mode:</strong><br>
+&nbsp;&nbsp;→ Gizmo appears at the geometric center<br>
+&nbsp;&nbsp;→ Ignores the sprite's pivot setting<br>
+&nbsp;&nbsp;→ Good for centering objects visually
+                    </code>
+                </div>
+
+                <h3>How to Switch:</h3>
+                <div class="key-points">
+                    <h4>🔧 Location:</h4>
+                    <p>Look at the top-left of the Unity Scene view toolbar. You'll see two buttons:</p>
+                    <ul>
+                        <li><strong>Left button:</strong> Toggle between Pivot / Center</li>
+                        <li><strong>Right button:</strong> Toggle between Local / Global rotation</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> When positioning your Graphics child object, use Pivot mode to see exactly
+                    where the sprite's pivot is relative to the parent Player object!
+                </div>
+            </div>
+
+            <!-- Topic 7: Updating the Collider -->
+            <div class="topic">
+                <h2>7. Updating the Collider 🛡️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>When you replace a circle placeholder with a character sprite, you should update the collider to
+                        match the new shape for better physics and collision detection.</p>
+                </div>
+
+                <h3>Changing Collider Type:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Select your Player GameObject</li>
+                        <li>In Inspector, find the <strong>Circle Collider 2D</strong> component</li>
+                        <li>Click the three dots (⋮) → Remove Component</li>
+                        <li>Click Add Component → Search "Capsule"</li>
+                        <li>Add <strong>Capsule Collider 2D</strong></li>
+                        <li>Adjust the size to fit your character sprite</li>
+                    </ol>
+                </div>
+
+                <h3>Why Capsule Collider?</h3>
+                <div class="example">
+                    <div class="example-header">Collider Comparison</div>
+                    <code>
+Circle Collider 2D:<br>
+&nbsp;&nbsp;✅ Good for: Rolling objects, projectiles<br>
+&nbsp;&nbsp;❌ Bad for: Humanoid characters (catches on edges)<br>
+<br>
+Capsule Collider 2D:<br>
+&nbsp;&nbsp;✅ Good for: Characters (smooth ledge climbing)<br>
+&nbsp;&nbsp;✅ Rounded top/bottom prevents snagging<br>
+&nbsp;&nbsp;✅ Flat sides for stable standing
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> Make the capsule slightly smaller than your sprite so the character
+                    doesn't appear to "float" when standing next to walls or on platforms.
+                </div>
+            </div>
+
+            <!-- Topic 8: Fixing Common Issues -->
+            <div class="topic">
+                <h2>8. Fixing Common Issues 🔧</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>When adding visuals to your player, you might encounter issues like unwanted rotation. Here's how
+                        to fix the most common problems.</p>
+                </div>
+
+                <h3>Issue: Player Character Rotating/Falling Over</h3>
+                <div class="example">
+                    <div class="example-header">Problem</div>
+                    <code>
+When you move, your character tips over or rotates!<br>
+This happens because Rigidbody2D allows rotation by default.
+                    </code>
+                </div>
+
+                <h3>Solution: Freeze Rotation</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Select your Player GameObject</li>
+                        <li>Find the <strong>Rigidbody2D</strong> component in Inspector</li>
+                        <li>Expand the <strong>Constraints</strong> section</li>
+                        <li>Check the box for <strong>Freeze Rotation Z</strong></li>
+                    </ol>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Rigidbody2D Constraints</div>
+                    <code>
+Freeze Position:<br>
+&nbsp;&nbsp;☐ X<br>
+&nbsp;&nbsp;☐ Y<br>
+<br>
+Freeze Rotation:<br>
+&nbsp;&nbsp;☑ Z  ← Check this!
+                    </code>
+                </div>
+
+                <h3>Other Common Issues:</h3>
+                <div class="key-points">
+                    <h4>🐛 Common Problems & Fixes:</h4>
+                    <ul>
+                        <li><strong>Blurry sprites:</strong> Set Filter Mode to "Point (no filter)"</li>
+                        <li><strong>Wrong scale:</strong> Adjust Pixels Per Unit (try 16, 32, or 64)</li>
+                        <li><strong>Sprite offset:</strong> Check Graphics child position (should be 0, 0, 0 or slight Y
+                            offset)</li>
+                        <li><strong>Animation not playing:</strong> Make sure Animator component is on Graphics child,
+                            not parent</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 9: Creating Your First Animation -->
+            <div class="topic">
+                <h2>9. Creating Your First Animation 🎬</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Unity's <strong>Animation window</strong> lets you create animations by arranging sprite frames
+                        over time. An idle animation loops continuously when the player is standing still.</p>
+                </div>
+
+                <h3>Creating an Idle Animation:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Select your <strong>Graphics</strong> child GameObject</li>
+                        <li>Open <strong>Window → Animation → Animation</strong></li>
+                        <li>Click <strong>Create</strong> button in Animation window</li>
+                        <li>Name it "playerIdle" and save in your project</li>
+                        <li>This automatically creates an Animator Controller too</li>
+                    </ol>
+                </div>
+
+                <h3>Adding Frames to the Animation:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>In Project window, expand your sliced sprite sheet</li>
+                        <li>Select the first 6 idle frames (e.g., warrior_0 through warrior_5)</li>
+                        <li>Drag them into the Animation window timeline</li>
+                        <li>Unity automatically spaces them out over time</li>
+                    </ol>
+                </div>
+
+                <h3>Adjusting Animation Speed:</h3>
+                <div class="example">
+                    <div class="example-header">Sample Rate Settings</div>
+                    <code>
+In Animation window, find "Sample Rate" (usually top-left)<br>
+<br>
+Default: 60 (very fast!)<br>
+For Idle Animation: <strong>10</strong><br>
+<br>
+Sample Rate = Frames Per Second (FPS)<br>
+Lower = Slower animation<br>
+Higher = Faster animation
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎨 Animation Best Practices:</h4>
+                    <ul>
+                        <li><strong>Idle animations:</strong> 6-12 FPS (slow and subtle)</li>
+                        <li><strong>Run animations:</strong> 10-15 FPS (moderate speed)</li>
+                        <li><strong>Attack animations:</strong> 15-24 FPS (fast and snappy)</li>
+                        <li>Make sure <strong>Loop</strong> is enabled for idle animations</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Press the Play button in the Animation window (not the main Play button) to
+                    preview your animation without entering Play Mode!
+                </div>
+            </div>
+
+            <!-- Topic 10: Understanding the Animator -->
+            <div class="topic">
+                <h2>10. Understanding the Animator 🎭</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>Animator</strong> system has two parts: the <strong>Animator component</strong> (on
+                        your GameObject) and the <strong>Animator Controller</strong> (an asset that holds animation
+                        states and transitions).</p>
+                </div>
+
+                <h3>Animator Components:</h3>
+                <div class="example">
+                    <div class="example-header">Animator System Structure</div>
+                    <code>
+<strong>Animator Component:</strong> (On Graphics GameObject)<br>
+&nbsp;&nbsp;→ References an Animator Controller<br>
+&nbsp;&nbsp;→ Controls which animation plays<br>
+&nbsp;&nbsp;→ Updated every frame<br>
+<br>
+<strong>Animator Controller:</strong> (Asset in Project)<br>
+&nbsp;&nbsp;→ Contains animation states (Idle, Run, Jump, etc.)<br>
+&nbsp;&nbsp;→ Defines transitions between states<br>
+&nbsp;&nbsp;→ Reusable across multiple GameObjects
+                    </code>
+                </div>
+
+                <h3>What Happened Automatically:</h3>
+                <div class="key-points">
+                    <h4>✨ When you created your first animation:</h4>
+                    <ul>
+                        <li>Unity added an <strong>Animator component</strong> to your Graphics object</li>
+                        <li>Unity created an <strong>Animator Controller</strong> asset</li>
+                        <li>Your "playerIdle" animation was added as the default state</li>
+                        <li>The controller was automatically assigned to the Animator component</li>
+                    </ul>
+                </div>
+
+                <h3>Viewing the Animator Controller:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Open <strong>Window → Animation → Animator</strong></li>
+                        <li>Select your Graphics GameObject</li>
+                        <li>You'll see your animation states as boxes</li>
+                        <li>Orange state = Default/Entry state (plays first)</li>
+                    </ol>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Animator Controller View</div>
+                    <code>
+┌──────────┐<br>
+│  Entry   │──→  ┌─────────────┐<br>
+└──────────┘     │ playerIdle  │  ← Orange (default)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─────────────┘<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↻ (loops)
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Coming Soon:</strong> In future lessons, you'll add more states (Run, Jump, Attack) and
+                    create transitions between them using parameters and conditions!
+                </div>
+            </div>
+
+            <!-- Topic 11: Project Organization -->
+            <div class="topic">
+                <h2>11. Project Organization 📁</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>As your project grows, keeping files organized is crucial. Create dedicated folders for different
+                        asset types to stay organized.</p>
+                </div>
+
+                <h3>Recommended Folder Structure:</h3>
+                <div class="example">
+                    <div class="example-header">Assets Organization</div>
+                    <code>
+Assets/<br>
+├── Animations/          ← Animation clips (.anim)<br>
+│   ├── playerIdle.anim<br>
+│   └── playerRun.anim<br>
+├── Animators/           ← Animator Controllers<br>
+│   └── PlayerAnimator.controller<br>
+├── Scripts/<br>
+│   └── PlayerController.cs<br>
+├── Sprites/<br>
+│   ├── Characters/<br>
+│   │   └── warrior.png<br>
+│   └── Environment/<br>
+├── Scenes/<br>
+│   └── MainScene.unity<br>
+└── Prefabs/
+                    </code>
+                </div>
+
+                <h3>Creating an Animations Folder:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>In Project window, right-click in Assets</li>
+                        <li>Create → Folder</li>
+                        <li>Name it "Animations"</li>
+                        <li>Drag your playerIdle.anim file into this folder</li>
+                        <li>Create another folder called "Animators" for controllers</li>
+                    </ol>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> Organize as you go! It's much harder to reorganize a messy project
+                    later. Create folders BEFORE you have hundreds of files.
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="key-points">
+                    <h4>Exercise 1: Import New Sprites</h4>
+                    <p><strong>Task:</strong> Find a different character sprite pack on itch.io and import it with
+                        proper settings.</p>
+                    <ul>
+                        <li>Search itch.io for a free sprite pack</li>
+                        <li>Import with correct settings (Pixels Per Unit: 16, Filter: Point, Compression: None)</li>
+                        <li>Slice the sprite sheet into individual frames</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 2: Create a Run Animation</h4>
+                    <p><strong>Task:</strong> If your sprite pack includes run frames, create a run animation.</p>
+                    <ul>
+                        <li>Select the run frames from your sprite sheet</li>
+                        <li>Create a new animation called "playerRun"</li>
+                        <li>Set Sample Rate to 12-15 FPS</li>
+                        <li>Test the animation in the Animation window</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 3: Adjust Visual Position</h4>
+                    <p><strong>Task:</strong> Fine-tune the Graphics child object position.</p>
+                    <ul>
+                        <li>Use Pivot mode to see the sprite's pivot point</li>
+                        <li>Adjust Y position so character stands properly on ground</li>
+                        <li>Ensure the pivot aligns with the parent Player GameObject</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Challenge: Organize Your Project</h4>
+                    <p><strong>Task:</strong> Create a complete folder structure for your project.</p>
+                    <ul>
+                        <li>Create folders: Animations, Animators, Sprites, Scripts, Scenes</li>
+                        <li>Move all existing files into appropriate folders</li>
+                        <li>Create subfolders within Sprites (Characters, Environment, UI, etc.)</li>
+                        <li>Verify all references still work after moving files</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">📚 Lesson 4 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);"><strong>Congratulations!</strong> You've learned:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>itch.io:</strong> Find and download free game assets for your projects</li>
+                    <li>✅ <strong>Sprite Import:</strong> Configure Pixels Per Unit (16), Compression (None), Filter
+                        Mode (Point)</li>
+                    <li>✅ <strong>Best Practice:</strong> Separate logic (parent) from visuals (child GameObject)</li>
+                    <li>✅ <strong>Pivot Points:</strong> Understanding the "door hinge" concept for sprite positioning
+                    </li>
+                    <li>✅ <strong>Sprite Slicing:</strong> Use Grid By Cell Size to slice sprite sheets</li>
+                    <li>✅ <strong>Collider Update:</strong> Change from Circle to Capsule Collider 2D for characters
+                    </li>
+                    <li>✅ <strong>Fix Rotation:</strong> Freeze Rotation Z in Rigidbody2D constraints</li>
+                    <li>✅ <strong>Animator System:</strong> Component + Controller working together</li>
+                    <li>✅ <strong>First Animation:</strong> Create smooth idle animation with proper FPS</li>
+                    <li>✅ <strong>Organization:</strong> Keep project organized with proper folder structure</li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95); margin-top: 15px;"><strong>Next Up:</strong> In Lesson 5,
+                    you'll learn to switch between animations based on player input and create smooth transitions!</p>
+            </div>
+
+        </div>
+        <footer>
+            <p>Great progress! Your game is starting to look professional! 🎨✨</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>
