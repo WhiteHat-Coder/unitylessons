@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 8: Master jump and fall animations using Blend Trees for smooth, responsive character movement">
+    <meta name="keywords"
+        content="Unity, animation, blend tree, jump animation, fall animation, velocity parameters, physics material, 2D animations">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+    <title>Lesson 8: Jump & Fall Animations with Blend Trees | Unity Tutorial</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🎬 Lesson 8: Jump & Fall Animations with Blend Trees</h1>
+            <p>Create responsive jump and fall animations using Unity's powerful Blend Tree system</p>
+        </header>
+        <div class="content">
+            <!-- What You'll Learn section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Understand why 2D jump animations should be simple and responsive</li>
+                    <li>✅ Create jump and fall animation clips from sprite sheets</li>
+                    <li>✅ Master Unity's Blend Tree system for smooth animation transitions</li>
+                    <li>✅ Use velocity parameters to control animations dynamically</li>
+                    <li>✅ Build a complete idle/move/jump/fall animation state machine</li>
+                    <li>✅ Write clean animation control code with SetFloat</li>
+                    <li>✅ Fix wall-sticking issues with Physics Material 2D</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: Philosophy of 2D Jump Animations -->
+            <div class="topic">
+                <h2>1. The Philosophy of 2D Jump Animations 🎮</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>If you've never set up a 2D character before, you might imagine elaborate jump sequences with
+                        preparation frames, takeoff, mid-air, transition, landing, and hero landing poses. However,
+                        <strong>professional 2D platformers use surprisingly simple jump animations</strong>—often just
+                        1-3 frames. This is intentional design for responsiveness.
+                    </p>
+                </div>
+
+                <h3>Why Simple Jump Animations Work</h3>
+                <div class="key-points">
+                    <h4>🎯 The Responsiveness Principle</h4>
+                    <ul>
+                        <li><strong>Instant Feedback:</strong> When players press jump, they expect immediate upward
+                            motion</li>
+                        <li><strong>No Wind-Up:</strong> Preparation animations feel sluggish and unresponsive</li>
+                        <li><strong>Classic Examples:</strong> Mario (1-2 frames), Celeste, Hollow Knight—all use
+                            minimal jump frames</li>
+                        <li><strong>Player Expectations:</strong> Button press = instant action, not a preparation
+                            sequence</li>
+                    </ul>
+                </div>
+
+                <h3>Historical Context: Super Mario Bros</h3>
+                <div class="example">
+                    <div class="example-header">Mario's Jump Animation</div>
+                    <code>Frame 1: Standing<br>
+Frame 2: Arms up (jump pose)<br>
+Result: Character immediately in jump state<br>
+<br>
+Total frames: 1-2 frames for entire jump<br>
+Feel: Snappy, responsive, arcade-perfect</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎨 Design Lesson:</strong> More animation frames ≠ Better feel. In platformers,
+                    responsiveness beats realism. Players need to feel their input instantly reflected on screen.
+                </div>
+
+                <div class="key-points">
+                    <h4>📊 Modern 2D Platformer Standards</h4>
+                    <ul>
+                        <li><strong>Jump Animation:</strong> 2-4 frames (rising pose)</li>
+                        <li><strong>Fall Animation:</strong> 2-4 frames (falling pose)</li>
+                        <li><strong>No Landing Animation:</strong> Immediate transition to idle/move</li>
+                        <li><strong>Why It Works:</strong> Frames change so fast (60 FPS gameplay) that transitions
+                            aren't noticeable</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 2: Creating Jump Animation -->
+            <div class="topic">
+                <h2>2. Creating the Jump Animation 🚀</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>jump animation</strong> represents your character rising upward. It should capture
+                        the feeling of ascent—arms up, body extended, looking upward. We'll select specific frames from
+                        our sprite sheet that convey this upward motion.</p>
+                </div>
+
+                <h3>Creating the Animation Clip</h3>
+                <div class="example">
+                    <div class="example-header">Step-by-Step Setup</div>
+                    <code>1. Select Animator in Hierarchy<br>
+2. Animation window → Create New Clip<br>
+3. Name: "Player_Jump"<br>
+4. Go to Graphics folder in Project window<br>
+5. Find jump sprites (frames 41-44 typically)<br>
+6. Select first 3 frames (NOT the falling frame)<br>
+7. Drag sprites to Player_Jump timeline<br>
+8. Set Sample Rate: 12</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Selecting the Right Frames</h4>
+                    <ul>
+                        <li><strong>Frame 1:</strong> Character starting to rise (arms beginning to lift)</li>
+                        <li><strong>Frame 2:</strong> Mid-jump (arms fully extended upward)</li>
+                        <li><strong>Frame 3:</strong> Peak of jump (fully extended pose)</li>
+                        <li><strong>EXCLUDE:</strong> Any frame where character looks downward (that's fall animation)
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Understanding Sample Rate</h3>
+                <div class="example">
+                    <div class="example-header">Sample Rate = Frames Per Second</div>
+                    <code>Sample Rate: 12<br>
+= 12 frames per second<br>
+= Each sprite shows for 1/12 of a second<br>
+<br>
+3 sprites × (1/12 sec) = 0.25 seconds total<br>
+<br>
+Lower sample rate = Slower animation<br>
+Higher sample rate = Faster animation</code>
+                </div>
+
+                <div class="tip">
+                    <strong>⚙️ Why 12 FPS?</strong> Sample rate of 12 is common for sprite animations because it's fast
+                    enough to feel responsive but slow enough to see each frame clearly. Game runs at 60 FPS, but
+                    animations can be 12 FPS.
+                </div>
+
+                <h3>Previewing Your Animation</h3>
+                <div class="key-points">
+                    <h4>✅ Quality Check</h4>
+                    <ul>
+                        <li>Click Play button in Animation window</li>
+                        <li>Character should smoothly transition through rising poses</li>
+                        <li>No downward-looking frames should appear</li>
+                        <li>Animation should feel quick and punchy</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 3: Creating Fall Animation -->
+            <div class="topic">
+                <h2>3. Creating the Fall Animation 🪂</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>fall animation</strong> shows your character descending. It captures the opposite
+                        feeling from jump—looking down, body preparing to land. This animation loops while the character
+                        is falling.</p>
+                </div>
+
+                <h3>Initial Setup</h3>
+                <div class="example">
+                    <div class="example-header">Creating Fall Animation</div>
+                    <code>1. Animation window → Create New Clip<br>
+2. Name: "Player_Fall"<br>
+3. Find falling sprites (typically after jump sprites)<br>
+4. Select 3-4 falling frames<br>
+5. Drag to Player_Fall timeline<br>
+6. Set Sample Rate: 12</code>
+                </div>
+
+                <h3>Dealing with Transition Frames</h3>
+                <div class="key-points">
+                    <h4>🤔 The Transition Frame Problem</h4>
+                    <ul>
+                        <li><strong>Issue:</strong> Some sprite sheets include transition frames (jump → fall)</li>
+                        <li><strong>In Slow Motion:</strong> Transitions look smooth and natural</li>
+                        <li><strong>In Actual Gameplay:</strong> Animation is so fast transitions become glitchy</li>
+                        <li><strong>Solution:</strong> Remove transition frames, keep only clear falling poses</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Refined Fall Animation</div>
+                    <code>Original: 4 frames (includes transition)<br>
+Problem: Transition frame makes it glitchy at game speed<br>
+<br>
+Refined: 3 frames (pure falling poses)<br>
+Result: Clean, crisp falling animation<br>
+<br>
+Keep frames that clearly show:<br>
+- Character looking down<br>
+- Arms in falling position<br>
+- Body anticipating landing</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎨 Pro Tip:</strong> When in doubt, test animations at game speed, not in slow preview. What
+                    looks good at 1x speed rarely looks good at 60 FPS gameplay speeds.
+                </div>
+
+                <h3>Loop Time Setting</h3>
+                <div class="key-points">
+                    <h4>🔄 Should Fall Animation Loop?</h4>
+                    <ul>
+                        <li><strong>Initially:</strong> Enable loop time for continuous falling</li>
+                        <li><strong>With Blend Trees:</strong> Disable loop (we'll control it with velocity)</li>
+                        <li><strong>Final Decision:</strong> Test both options and choose what feels better</li>
+                        <li><strong>Trade-off:</strong> Loop = continuous motion, No Loop = static fall pose</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 4: Introduction to Blend Trees -->
+            <div class="topic">
+                <h2>4. Introduction to Blend Trees 🌳</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>A <strong>Blend Tree</strong> is a special Animator state that smoothly blends between multiple
+                        animations based on a parameter value. Instead of hard transitions between animations, blend
+                        trees create fluid interpolation. This is perfect for jump/fall because we can blend based on
+                        vertical velocity.</p>
+                </div>
+
+                <h3>Blend Trees vs Traditional Transitions</h3>
+                <div class="example">
+                    <div class="example-header">Comparison</div>
+                    <code>TRADITIONAL TRANSITIONS:<br>
+- Animation A → Transition → Animation B<br>
+- Requires exit time, transition duration<br>
+- Hard switch between states<br>
+- More complex to manage<br>
+<br>
+BLEND TREE:<br>
+- Automatically blends based on parameter<br>
+- Smooth interpolation between animations<br>
+- Single parameter controls everything<br>
+- Much cleaner to manage</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Why Use Blend Trees?</h4>
+                    <ul>
+                        <li><strong>Smooth Transitions:</strong> No hard cuts between animations</li>
+                        <li><strong>Parameter-Driven:</strong> One float value controls everything</li>
+                        <li><strong>Less Arrows:</strong> Reduces Animator complexity dramatically</li>
+                        <li><strong>Real-Time Blending:</strong> Responds instantly to changing values</li>
+                        <li><strong>Professional Workflow:</strong> Industry standard for complex character animation
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Mental Model:</strong> Think of a blend tree like a slider. At -1 = Animation A, at +1 =
+                    Animation B, at 0 = blend of both. The parameter value determines where on the slider you are.
+                </div>
+            </div>
+
+            <!-- Topic 5: Jump/Fall Blend Tree with Y Velocity -->
+            <div class="topic">
+                <h2>5. Creating Jump/Fall Blend Tree 🎯</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>We'll create a blend tree that automatically switches between jump and fall animations based on
+                        the character's <strong>Y velocity</strong>. When velocity is positive (moving up), show jump.
+                        When velocity is negative (moving down), show fall. Unity handles the blending automatically.
+                    </p>
+                </div>
+
+                <h3>Creating the Blend Tree</h3>
+                <div class="example">
+                    <div class="example-header">Setup Steps</div>
+                    <code>1. In Animator window → Right-click → Create State → From New Blend Tree<br>
+2. Name it: "Jump_Fall"<br>
+3. Double-click to enter Blend Tree view<br>
+4. In Inspector → Click "+" next to Motion field<br>
+5. Add Motion (do this twice)<br>
+6. First Motion: Player_Jump<br>
+7. Second Motion: Player_Fall</code>
+                </div>
+
+                <h3>Configuring the Parameter</h3>
+                <div class="example">
+                    <div class="example-header">Y Velocity Parameter</div>
+                    <code>1. In Parameters tab → Create new Float parameter<br>
+2. Name: "yVelocity"<br>
+3. In Blend Tree Inspector → Change "Blend Parameter" to "yVelocity"<br>
+4. Uncheck "Automate Thresholds"<br>
+5. Set Jump threshold: 0<br>
+6. Set Fall threshold: -1</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Understanding Thresholds</h4>
+                    <ul>
+                        <li><strong>Threshold 0 (Jump):</strong> When yVelocity ≥ 0, play jump animation</li>
+                        <li><strong>Threshold -1 (Fall):</strong> When yVelocity < 0, blend toward fall animation</li>
+                        <li><strong>Automatic Blending:</strong> Unity interpolates between animations based on exact
+                            value</li>
+                        <li><strong>Positive Velocity:</strong> Character rising = Jump animation</li>
+                        <li><strong>Negative Velocity:</strong> Character falling = Fall animation</li>
+                    </ul>
+                </div>
+
+                <h3>Why Y Velocity Is Perfect</h3>
+                <div class="example">
+                    <div class="example-header">Velocity Logic</div>
+                    <code>Y Velocity > 0 → Character moving UP → Show Jump<br>
+Y Velocity = 0 → Character at peak → Transition point<br>
+Y Velocity < 0 → Character moving DOWN → Show Fall<br>
+<br>
+Rigidbody2D.linearVelocity.y provides this automatically!<br>
+No manual tracking needed!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎮 Pro Technique:</strong> Using physics values (like velocity) to drive animations creates
+                    realistic, responsive character movement. The animation system reacts to actual game physics in
+                    real-time!
+                </div>
+
+                <h3>Testing the Blend Tree</h3>
+                <div class="key-points">
+                    <h4>✅ Visual Testing</h4>
+                    <ul>
+                        <li>In Blend Tree view, drag the yVelocity slider in Inspector</li>
+                        <li>Positive values → See jump animation</li>
+                        <li>Negative values → See fall animation</li>
+                        <li>Watch the smooth transition between them</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 6: Understanding Velocity-Based Animation -->
+            <div class="topic">
+                <h2>6. Understanding Velocity-Based Animation Control ⚡</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Velocity-based animation</strong> means using the character's actual movement speed (from
+                        the physics system) to control which animation plays. This creates perfectly synchronized
+                        animation and movement—no lag, no manual tracking, just pure physics-driven animation.</p>
+                </div>
+
+                <h3>The Power of Direct Physics Integration</h3>
+                <div class="example">
+                    <div class="example-header">Traditional vs Velocity-Based</div>
+                    <code>TRADITIONAL METHOD:<br>
+if (jumping) { PlayAnimation("Jump"); }<br>
+if (falling) { PlayAnimation("Fall"); }<br>
+Problem: Manual state tracking, can desync from physics<br>
+<br>
+VELOCITY-BASED METHOD:<br>
+animator.SetFloat("yVelocity", rb.linearVelocity.y);<br>
+Benefit: Animation always matches actual physics state</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Advantages</h4>
+                    <ul>
+                        <li><strong>Always Accurate:</strong> Animation reflects true movement state</li>
+                        <li><strong>No Manual State:</strong> Don't need isJumping, isFalling booleans</li>
+                        <li><strong>Handles Edge Cases:</strong> Works for knockback, bouncing, any vertical movement
+                        </li>
+                        <li><strong>Less Code:</strong> One line updates the entire system</li>
+                        <li><strong>Responsive:</strong> Instant reaction to physics changes</li>
+                    </ul>
+                </div>
+
+                <h3>How Rigidbody2D.linearVelocity Works</h3>
+                <div class="example">
+                    <div class="example-header">Velocity Vector</div>
+                    <code>Rigidbody2D.linearVelocity → Vector2(x, y)<br>
+<br>
+linearVelocity.x → Horizontal speed<br>
+- Positive = Moving right<br>
+- Negative = Moving left<br>
+- Zero = Stationary horizontally<br>
+<br>
+linearVelocity.y → Vertical speed<br>
+- Positive = Moving up (jumping)<br>
+- Negative = Moving down (falling)<br>
+- Zero = Peak of jump or on ground</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Physics Insight:</strong> Velocity is automatically managed by Unity's physics engine.
+                    Gravity decreases Y velocity over time, making it naturally transition from positive (jump) to
+                    negative (fall). Perfect for animation!
+                </div>
+            </div>
+
+            <!-- Topic 7: Creating Idle/Move Blend Tree -->
+            <div class="topic">
+                <h2>7. Creating Idle/Move Blend Tree with X Velocity 🏃</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Now that we understand blend trees, let's rebuild our idle/move system using a blend tree with
+                        <strong>X velocity</strong>. This is much cleaner than the transition-based approach from
+                        earlier lessons, and it uses a brilliant trick: the same move animation for both left and right
+                        movement.
+                    </p>
+                </div>
+
+                <h3>Why Rebuild with Blend Trees?</h3>
+                <div class="key-points">
+                    <h4>🎯 The Problem with Traditional Transitions</h4>
+                    <ul>
+                        <li><strong>Arrow Spaghetti:</strong> Idle → Move, Move → Idle, both → Jump/Fall = 6+ arrows
+                        </li>
+                        <li><strong>Hard to Manage:</strong> Each transition needs conditions, exit time, duration</li>
+                        <li><strong>Not Scalable:</strong> Adding new states multiplies complexity</li>
+                        <li><strong>Learning Value:</strong> You needed to understand transitions first, now we optimize
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Creating the Blend Tree</h3>
+                <div class="example">
+                    <div class="example-header">Setup Process</div>
+                    <code>1. Delete old Idle and Move states<br>
+2. Create State → From New Blend Tree<br>
+3. Name: "Idle_Move"<br>
+4. Double-click to enter<br>
+5. Create new Float parameter: "xVelocity"<br>
+6. Set Blend Parameter to "xVelocity"<br>
+7. Add Motion field THREE times<br>
+8. Uncheck "Automate Thresholds"</code>
+                </div>
+
+                <h3>The Three-Point Configuration</h3>
+                <div class="example">
+                    <div class="example-header">Three Motion Setup</div>
+                    <code>Motion 1: Player_Move → Threshold: -1<br>
+Motion 2: Player_Idle → Threshold: 0<br>
+Motion 3: Player_Move → Threshold: 1<br>
+<br>
+Why same animation at -1 and 1?<br>
+Because character flipping is handled by FlipX!<br>
+Moving left (-1) and moving right (+1) use SAME animation!</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎨 How It Works</h4>
+                    <ul>
+                        <li><strong>xVelocity = -1 (or less):</strong> Moving left → Play move animation</li>
+                        <li><strong>xVelocity = 0:</strong> Stationary → Play idle animation</li>
+                        <li><strong>xVelocity = 1 (or more):</strong> Moving right → Play move animation</li>
+                        <li><strong>In Between Values:</strong> Blend smoothly between animations</li>
+                    </ul>
+                </div>
+
+                <h3>Testing the Blend Tree</h3>
+                <div class="example">
+                    <div class="example-header">Visual Testing</div>
+                    <code>In Blend Tree view, drag xVelocity slider:<br>
+<br>
+Slider at -1 → Character running (will face left via FlipX)<br>
+Slider at 0 → Character idle<br>
+Slider at +1 → Character running (will face right via FlipX)<br>
+<br>
+Smooth transitions throughout!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Brilliant Design:</strong> This three-point setup means we only need ONE move animation
+                    instead of separate left/right animations. Character direction is handled by FlipX (from Lesson 6),
+                    not separate animations!
+                </div>
+            </div>
+
+            <!-- Topic 8: Setting Up Transitions Between States -->
+            <div class="topic">
+                <h2>8. Setting Up Grounded/Airborne Transitions 🔄</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Now we have two blend trees: <strong>Idle_Move</strong> (grounded) and <strong>Jump_Fall</strong>
+                        (airborne). We need transitions between them based on one simple condition: Is the character on
+                        the ground? We already have <code>isGrounded</code> from Lesson 7!</p>
+                </div>
+
+                <h3>Setting Default State</h3>
+                <div class="example">
+                    <div class="example-header">Initial Configuration</div>
+                    <code>1. Right-click "Idle_Move" → Set as Layer Default State<br>
+2. Idle_Move turns orange (default state)<br>
+3. Character starts in this state when game begins</code>
+                </div>
+
+                <h3>Transition to Airborne (Jump/Fall)</h3>
+                <div class="example">
+                    <div class="example-header">Ground → Air Transition</div>
+                    <code>1. Right-click "Idle_Move" → Make Transition → "Jump_Fall"<br>
+2. Click the transition arrow<br>
+3. In Inspector, add Condition:<br>
+   - isGrounded = false<br>
+4. Uncheck "Has Exit Time"<br>
+5. Set "Transition Duration" to 0<br>
+<br>
+Logic: When character leaves ground, instantly switch to Jump_Fall</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Why These Settings?</h4>
+                    <ul>
+                        <li><strong>Has Exit Time = OFF:</strong> Don't wait for animation to finish, transition
+                            immediately</li>
+                        <li><strong>Transition Duration = 0:</strong> Instant switch, no blending (we want snappy
+                            response)</li>
+                        <li><strong>Condition isGrounded = false:</strong> Only transition when leaving ground</li>
+                        <li><strong>Result:</strong> Instant, responsive transition when jumping or falling off ledge
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Transition to Grounded (Idle/Move)</h3>
+                <div class="example">
+                    <div class="example-header">Air → Ground Transition</div>
+                    <code>1. Right-click "Jump_Fall" → Make Transition → "Idle_Move"<br>
+2. Click the transition arrow<br>
+3. In Inspector, add Condition:<br>
+   - isGrounded = true<br>
+4. Uncheck "Has Exit Time"<br>
+5. Set "Transition Duration" to 0<br>
+<br>
+Logic: When character touches ground, instantly switch to Idle_Move</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎮 Design Philosophy:</strong> Zero transition duration on grounded/airborne switches
+                    creates that tight, responsive platformer feel. Players expect instant ground detection feedback!
+                </div>
+
+                <h3>The Complete State Machine</h3>
+                <div class="example">
+                    <div class="example-header">Final Animator Structure</div>
+                    <code>Idle_Move (Blend Tree - xVelocity)<br>
+├─ Player_Idle (threshold: 0)<br>
+├─ Player_Move (threshold: -1)<br>
+└─ Player_Move (threshold: 1)<br>
+<br>
+Jump_Fall (Blend Tree - yVelocity)<br>
+├─ Player_Jump (threshold: 0)<br>
+└─ Player_Fall (threshold: -1)<br>
+<br>
+Transitions:<br>
+Idle_Move → Jump_Fall: isGrounded = false<br>
+Jump_Fall → Idle_Move: isGrounded = true</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Why This Is Elegant</h4>
+                    <ul>
+                        <li><strong>Only 2 States:</strong> Down from 4 separate animation states</li>
+                        <li><strong>Only 2 Transitions:</strong> Instead of 8+ transition arrows</li>
+                        <li><strong>Automatic Blending:</strong> Velocity handles all internal animation switching</li>
+                        <li><strong>One Condition:</strong> isGrounded controls the entire system</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 9: Updating Code for Clean Animation Control -->
+            <div class="topic">
+                <h2>9. Clean Animation Control Code 💻</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Now we update our PlayerController script to feed velocity data to the Animator. This is where
+                        everything comes together—physics drives animation, and we only need <strong>three lines of
+                            code</strong> to control the entire animation system!</p>
+                </div>
+
+                <h3>Updating HandleAnimation Method</h3>
+                <div class="example">
+                    <div class="example-header">Complete Animation Code</div>
+                    <code>private void HandleAnimation()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;anim.SetBool("isGrounded", isGrounded);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;anim.SetFloat("xVelocity", rb.linearVelocity.x);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;anim.SetFloat("yVelocity", rb.linearVelocity.y);<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 What Each Line Does</h4>
+                    <ul>
+                        <li><strong>Line 1 - isGrounded:</strong> Controls transition between Idle_Move and Jump_Fall
+                            states</li>
+                        <li><strong>Line 2 - xVelocity:</strong> Controls Idle_Move blend tree (idle vs moving, left vs
+                            right)</li>
+                        <li><strong>Line 3 - yVelocity:</strong> Controls Jump_Fall blend tree (jumping vs falling)</li>
+                        <li><strong>Total Control:</strong> Three parameters control 4+ animations seamlessly</li>
+                    </ul>
+                </div>
+
+                <h3>Removing Old Code</h3>
+                <div class="example">
+                    <div class="example-header">Code Cleanup</div>
+                    <code>// DELETE THESE - No longer needed:<br>
+// anim.SetBool("isMoving", ...);<br>
+// Manual animation state tracking<br>
+// Complex transition logic<br>
+<br>
+// KEEP THESE:<br>
+anim.SetBool("isGrounded", isGrounded);<br>
+anim.SetFloat("xVelocity", rb.linearVelocity.x);<br>
+anim.SetFloat("yVelocity", rb.linearVelocity.y);</code>
+                </div>
+
+                <div class="tip">
+                    <strong>✨ Code Beauty:</strong> This is incredibly clean! Three lines replace dozens of lines of
+                    manual animation control. This is why experienced developers love blend trees—maximum effect,
+                    minimum code.
+                </div>
+
+                <h3>Understanding SetFloat vs SetBool</h3>
+                <div class="key-points">
+                    <h4>📊 Animator Parameter Types</h4>
+                    <ul>
+                        <li><strong>SetBool:</strong> On/off states (isGrounded: true or false)</li>
+                        <li><strong>SetFloat:</strong> Continuous values (velocity can be any number)</li>
+                        <li><strong>SetInt:</strong> Whole numbers (useful for state machines with numbered states)</li>
+                        <li><strong>SetTrigger:</strong> One-time events (like taking damage, not used here)</li>
+                    </ul>
+                </div>
+
+                <h3>Complete Player Script Structure</h3>
+                <div class="example">
+                    <div class="example-header">Organized Methods</div>
+                    <code>void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleCollision();  // Check ground state<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleInput();       // Get player input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleMovement();    // Apply movement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleAnimation();   // Update animation parameters<br>
+}<br>
+<br>
+Clean, organized, easy to understand!</code>
+                </div>
+            </div>
+
+            <!-- Topic 10: Fine-Tuning Animations -->
+            <div class="topic">
+                <h2>10. Fine-Tuning and Polishing Animations 🎨</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>With the system working, it's time to <strong>polish</strong>. This means testing animations at
+                        gameplay speed, adjusting frame counts, and making decisions about loop time settings. Small
+                        tweaks here dramatically improve game feel.</p>
+                </div>
+
+                <h3>Testing at Gameplay Speed</h3>
+                <div class="key-points">
+                    <h4>🎮 Playtest Observations</h4>
+                    <ul>
+                        <li><strong>Jump Animation:</strong> Should feel instant and responsive</li>
+                        <li><strong>Fall Animation:</strong> Should clearly show descending</li>
+                        <li><strong>Transitions:</strong> Should be barely noticeable at full speed</li>
+                        <li><strong>Landing:</strong> Instant return to idle/move (no landing animation)</li>
+                    </ul>
+                </div>
+
+                <h3>Removing Glitchy Transition Frames</h3>
+                <div class="example">
+                    <div class="example-header">Frame Optimization</div>
+                    <code>PROBLEM DISCOVERED:<br>
+Fall animation with 4 frames looks glitchy at game speed<br>
+The "transition" frame between jump and fall causes flickering<br>
+<br>
+SOLUTION:<br>
+1. Open Player_Fall animation<br>
+2. Remove the first 1-2 transition frames<br>
+3. Keep only clear "falling" pose frames (3 frames)<br>
+4. Result: Clean, crisp animation at gameplay speed</code>
+                </div>
+
+                <div class="tip">
+                    <strong>⚡ Performance Tip:</strong> Fewer frames = less glitchy = better performance. In fast-paced
+                    games, clarity beats complexity. Keep only the frames that clearly communicate the action.
+                </div>
+
+                <h3>Loop Time Decision</h3>
+                <div class="example">
+                    <div class="example-header">Loop Time Settings</div>
+                    <code>Player_Jump Animation:<br>
+Loop Time: OFF (plays once, holds last frame)<br>
+Why: Jump is momentary, doesn't need to cycle<br>
+<br>
+Player_Fall Animation:<br>
+Loop Time: ON (cycles continuously)<br>
+Why: Character might fall for extended time<br>
+Result: Continuous falling motion while airborne</code>
+                </div>
+
+                <h3>Creating Test Platforms</h3>
+                <div class="example">
+                    <div class="example-header">Testing Setup</div>
+                    <code>1. Select existing platform<br>
+2. Press Ctrl+D (Cmd+D on Mac) to duplicate<br>
+3. Press W to switch to Move tool<br>
+4. Position at different heights<br>
+5. Scale some platforms to make them bigger<br>
+6. Test jumping between platforms<br>
+7. Test walking off ledges (should transition to fall without jumping)</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✅ Quality Checklist</h4>
+                    <ul>
+                        <li>Standing on ground → Idle animation plays ✅</li>
+                        <li>Moving left/right → Run animation plays ✅</li>
+                        <li>Pressing jump → Instant jump animation ✅</li>
+                        <li>Rising in air → Jump animation continues ✅</li>
+                        <li>Starting to fall → Smooth transition to fall animation ✅</li>
+                        <li>Falling → Fall animation loops cleanly ✅</li>
+                        <li>Landing → Instant return to idle/move ✅</li>
+                        <li>Walking off ledge → Falls without jumping first ✅</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 11: Physics Material 2D - Fixing Wall Sticking -->
+            <div class="topic">
+                <h2>11. Physics Material 2D: Fixing Wall Sticking 🧱</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>You may notice that when the character jumps against a wall, they <strong>stick or slide
+                            slowly</strong> instead of sliding down smoothly. This is caused by
+                        <strong>friction</strong> between the character's collider and the wall. We fix this with a
+                        <strong>Physics Material 2D</strong> that has zero friction.
+                    </p>
+                </div>
+
+                <h3>Understanding the Problem</h3>
+                <div class="key-points">
+                    <h4>🤔 Why Characters Stick to Walls</h4>
+                    <ul>
+                        <li><strong>Default Friction:</strong> Unity colliders have friction by default</li>
+                        <li><strong>Realistic Physics:</strong> Friction prevents objects from sliding freely</li>
+                        <li><strong>Platformer Problem:</strong> We want smooth sliding, not sticking</li>
+                        <li><strong>Player Experience:</strong> Sticking feels buggy and unresponsive</li>
+                    </ul>
+                </div>
+
+                <h3>Creating a Slippery Physics Material</h3>
+                <div class="example">
+                    <div class="example-header">Step-by-Step Creation</div>
+                    <code>1. In Project window → Create folder "Materials"<br>
+2. Right-click in Materials folder<br>
+3. Create → 2D → Physics Material 2D<br>
+4. Name it: "Slippery_Material"<br>
+5. Select the material<br>
+6. In Inspector, set Friction: 0<br>
+7. Leave Bounciness: 0 (we don't want bouncing)</code>
+                </div>
+
+                <h3>Applying to Character</h3>
+                <div class="example">
+                    <div class="example-header">Application Options</div>
+                    <code>OPTION 1 - Apply to Rigidbody2D:<br>
+1. Select Player GameObject<br>
+2. Find Rigidbody2D component<br>
+3. Drag Slippery_Material to "Material" field<br>
+Result: Character has no friction with anything<br>
+<br>
+OPTION 2 - Apply to Collider2D:<br>
+1. Select Player GameObject<br>
+2. Find Capsule Collider 2D component<br>
+3. Drag Slippery_Material to "Material" field<br>
+Result: Same effect, different component<br>
+<br>
+RECOMMENDED: Apply to Rigidbody2D (more common practice)</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 What Changes</h4>
+                    <ul>
+                        <li><strong>Before:</strong> Character sticks to walls, slides slowly</li>
+                        <li><strong>After:</strong> Character slides smoothly down walls</li>
+                        <li><strong>Ground:</strong> No effect on ground movement (controlled by script)</li>
+                        <li><strong>Overall Feel:</strong> More responsive, "tighter" controls</li>
+                    </ul>
+                </div>
+
+                <h3>Testing the Fix</h3>
+                <div class="example">
+                    <div class="example-header">Wall Slide Test</div>
+                    <code>1. Create a tall wall (duplicate platform, rotate, scale)<br>
+2. Enter Play Mode<br>
+3. Jump into the wall<br>
+4. BEFORE: Character sticks/slides slowly<br>
+5. Apply Slippery_Material<br>
+6. AFTER: Character slides smoothly down<br>
+7. Success! No more wall sticking!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>⚙️ Physics Material Properties:</strong> <br>
+                    <strong>Friction:</strong> 0 = slippery, 1 = sticky<br>
+                    <strong>Bounciness:</strong> 0 = no bounce, 1 = super bouncy<br>
+                    For most platformers: Friction = 0, Bounciness = 0
+                </div>
+
+                <h3>When NOT to Use Zero Friction</h3>
+                <div class="key-points">
+                    <h4>⚠️ Design Considerations</h4>
+                    <ul>
+                        <li><strong>Wall Jump Games:</strong> Might want slight friction to "catch" walls</li>
+                        <li><strong>Ice Levels:</strong> Zero friction for slippery floors, high friction for normal
+                            floors</li>
+                        <li><strong>Climbing Mechanics:</strong> Variable friction based on whether climbing</li>
+                        <li><strong>Our Case:</strong> Simple platformer = zero friction is perfect</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 12: Complete Character Controller -->
+            <div class="topic">
+                <h2>12. Your Complete Character Controller 🎉</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Congratulations! You now have a <strong>fully functional 2D platformer character
+                            controller</strong>. Let's review what you've built and understand why this is a
+                        professional-grade foundation.</p>
+                </div>
+
+                <h3>What You've Accomplished</h3>
+                <div class="key-points">
+                    <h4>✨ Complete Feature Set</h4>
+                    <ul>
+                        <li><strong>Responsive Movement:</strong> Left/right movement with smooth acceleration</li>
+                        <li><strong>Precise Jumping:</strong> Physics-based jump with ground detection</li>
+                        <li><strong>Smooth Animations:</strong> Idle, run, jump, fall—all seamlessly integrated</li>
+                        <li><strong>Character Flipping:</strong> Faces movement direction automatically</li>
+                        <li><strong>Collision Detection:</strong> Raycast-based ground checking</li>
+                        <li><strong>Polish:</strong> No wall sticking, clean physics</li>
+                    </ul>
+                </div>
+
+                <h3>The Technology Stack</h3>
+                <div class="example">
+                    <div class="example-header">Systems Working Together</div>
+                    <code>PHYSICS:<br>
+- Rigidbody2D with adjusted gravity (3.5)<br>
+- Capsule Collider 2D with zero-friction material<br>
+- Linear drag (0.5) for natural deceleration<br>
+<br>
+ANIMATION:<br>
+- Blend Trees for smooth transitions<br>
+- Velocity-driven animation parameters<br>
+- Minimal frame counts for responsiveness<br>
+<br>
+CODE:<br>
+- Clean method organization<br>
+- Physics-based movement<br>
+- Raycast collision detection<br>
+- Three-line animation control</code>
+                </div>
+
+                <h3>What's Missing (For Now)</h3>
+                <div class="key-points">
+                    <h4>🚀 Future Additions</h4>
+                    <ul>
+                        <li><strong>Combat System:</strong> Attack animations and hitboxes</li>
+                        <li><strong>Dash Mechanic:</strong> Quick burst movement ability</li>
+                        <li><strong>Double Jump:</strong> Additional air mobility</li>
+                        <li><strong>Wall Jump:</strong> Advanced platforming mechanic</li>
+                        <li><strong>Health System:</strong> Taking damage, death animation</li>
+                        <li><strong>Enemies:</strong> Characters to interact with</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Learning Note:</strong> This controller is the foundation. Before adding advanced
+                    features (combat, dash, etc.), you need to understand core concepts we'll cover in upcoming lessons.
+                    Be patient—you're building the right way!
+                </div>
+
+                <h3>Professional Assessment</h3>
+                <div class="key-points">
+                    <h4>💼 Industry Comparison</h4>
+                    <ul>
+                        <li><strong>Your Controller:</strong> Comparable to indie platformer standards</li>
+                        <li><strong>Clean Architecture:</strong> Organized, maintainable code structure</li>
+                        <li><strong>Modern Techniques:</strong> Blend trees are industry-standard</li>
+                        <li><strong>Extensible Design:</strong> Easy to add new features</li>
+                        <li><strong>Performance:</strong> Optimized for smooth 60 FPS gameplay</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="key-points">
+                    <h4>Exercise 1: Create a Second Character</h4>
+                    <p><strong>Task:</strong> Apply everything you learned to a different character sprite</p>
+                    <ul>
+                        <li>Find a new character sprite on itch.io</li>
+                        <li>Import and slice the sprite sheet</li>
+                        <li>Create idle, run, jump, and fall animations</li>
+                        <li>Set up the exact same blend tree system</li>
+                        <li>Test and compare how different sprites feel with the same controller</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 2: Experiment with Physics Values</h4>
+                    <p><strong>Task:</strong> Find your perfect character "feel"</p>
+                    <ul>
+                        <li>Test gravity scale: 2.0, 3.5, 5.0—document how each feels</li>
+                        <li>Test jump force: 8, 12, 16—find your preferred height</li>
+                        <li>Test linear drag: 0, 0.5, 1.0—feel the difference in momentum</li>
+                        <li>Create three presets: "Floaty," "Balanced," "Heavy"</li>
+                        <li>Ask friends to play and vote on which feels best</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 3: Multi-Platform Level Design</h4>
+                    <p><strong>Task:</strong> Create a test level to showcase your controller</p>
+                    <ul>
+                        <li>Create 10+ platforms at varying heights</li>
+                        <li>Include gaps that require precise jumping</li>
+                        <li>Add vertical walls to test wall-sliding</li>
+                        <li>Create a "challenge course" path through the level</li>
+                        <li>Test all animations: idle, run, jump, fall, wall interaction</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 4: Animation Timing Experiments</h4>
+                    <p><strong>Task:</strong> Master animation timing and sample rates</p>
+                    <ul>
+                        <li>Test jump animation with sample rates: 6, 12, 18, 24</li>
+                        <li>Document which feels most responsive</li>
+                        <li>Try 2-frame vs 3-frame vs 4-frame jump animations</li>
+                        <li>Test fall animation with loop time ON vs OFF</li>
+                        <li>Find the sweet spot for your game's feel</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Challenge Exercise: Add Coyote Time to Animations</h4>
+                    <p><strong>Task:</strong> Integrate coyote time with the animation system</p>
+                    <ul>
+                        <li>Implement coyote time jump mechanic (from Lesson 7 challenge)</li>
+                        <li>Ensure animation stays in idle/run briefly after leaving ground</li>
+                        <li>Transition to jump animation only when player actually jumps</li>
+                        <li>Test the difference: with vs without animation-aware coyote time</li>
+                        <li>Make it feel as polished as Celeste or Hollow Knight</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white !important; border-left: none !important;">
+                <h4 style="color: white !important;">📚 Lesson 8 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95) !important;"><strong>Outstanding work!</strong> You've mastered
+                    advanced
+                    animation techniques and completed your character controller. Here's everything you learned:</p>
+                <ul style="color: rgba(255,255,255,0.9) !important;">
+                    <li>✅ <strong>2D Animation Philosophy:</strong> Simple, responsive animations (2-4 frames) beat
+                        complex sequences in platformers</li>
+                    <li>✅ <strong>Jump Animation:</strong> Created 3-frame rising animation showing upward motion and
+                        extended pose</li>
+                    <li>✅ <strong>Fall Animation:</strong> Created 3-frame falling animation, removed glitchy transition
+                        frames</li>
+                    <li>✅ <strong>Blend Tree Mastery:</strong> Learned how blend trees smoothly interpolate between
+                        animations based on parameters</li>
+                    <li>✅ <strong>Jump/Fall Blend Tree:</strong> Used Y velocity to automatically blend between jumping
+                        and falling (positive = jump, negative = fall)</li>
+                    <li>✅ <strong>Idle/Move Blend Tree:</strong> Used X velocity with three-point setup (Move at -1,
+                        Idle at 0, Move at +1)</li>
+                    <li>✅ <strong>Velocity-Based Animation:</strong> Physics values (linearVelocity.x and .y) drive all
+                        animations—no manual tracking needed</li>
+                    <li>✅ <strong>Clean Transitions:</strong> Only two states needed with zero transition duration for
+                        responsive feel</li>
+                    <li>✅ <strong>Elegant Code:</strong> Three lines control the entire animation system—SetBool for
+                        isGrounded, SetFloat for x and y velocity</li>
+                    <li>✅ <strong>Physics Material 2D:</strong> Created slippery material (friction = 0) to prevent wall
+                        sticking</li>
+                    <li>✅ <strong>Complete Controller:</strong> Professional-grade character with movement, jumping,
+                        flipping, and animations fully integrated</li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95) !important; margin-top: 15px;"><strong>Next Up:</strong> In
+                    Lesson 9, we'll
+                    add attack mechanics and create a combat system. Time to make your character dangerous! ⚔️</p>
+            </div>
+        </div>
+        <footer>
+            <p>Your character is now a fully animated, physics-driven platformer hero! You've learned industry-standard
+                techniques used in professional 2D games. Experiment, polish, and make it uniquely yours! 🎬✨</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

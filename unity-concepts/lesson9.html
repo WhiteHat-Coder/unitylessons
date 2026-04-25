@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 9: Master attack animations, animation triggers, and animation events to create a fully functional combat system">
+    <meta name="keywords"
+        content="Unity, animation triggers, animation events, attack animation, combat system, player state management, GetComponentInParent">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+    <title>Lesson 9: Attack Animations & Animation Events | Unity Tutorial</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>⚔️ Lesson 9: Attack Animations & Animation Events</h1>
+            <p>Create a combat system using animation triggers and events to control player attacks</p>
+        </header>
+        <div class="content">
+            <!-- What You'll Learn section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Create attack animations and add them to your Animator state machine</li>
+                    <li>✅ Master Animation Triggers for one-time events</li>
+                    <li>✅ Implement mouse input for attacking</li>
+                    <li>✅ Use Animation Events to call code at specific animation frames</li>
+                    <li>✅ Manage player state with boolean flags (canMove, canJump)</li>
+                    <li>✅ Create helper scripts for animation event handling</li>
+                    <li>✅ Disable movement and jumping during attacks</li>
+                    <li>✅ Master GetComponentInParent for parent-child communication</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: Creating the Attack Animation -->
+            <div class="topic">
+                <h2>1. Creating the Attack Animation ⚔️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>An <strong>attack animation</strong> shows your character performing a combat action. Like other
+                        platformer animations, it should be quick and responsive. Most sprite sheets contain multiple
+                        attack variations (light, heavy, special), but we'll start with one to learn the core mechanics.
+                    </p>
+                </div>
+
+                <h3>Creating the Animation Clip</h3>
+                <div class="example">
+                    <div class="example-header">Setup Process</div>
+                    <code>1. Select Animator in Hierarchy<br>
+2. Animation window → Create New Clip<br>
+3. Save in Animations folder as "Player_Attack"<br>
+4. Go to Graphics folder<br>
+5. Find attack sprites (typically frames 14-20)<br>
+6. Select one attack sequence (first attack)<br>
+7. Drag sprites to timeline<br>
+8. Set Sample Rate: 15</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Selecting Attack Frames</h4>
+                    <ul>
+                        <li><strong>Start Frame:</strong> Character begins swing/strike</li>
+                        <li><strong>Middle Frames:</strong> Weapon/fist extends outward</li>
+                        <li><strong>Impact Frame:</strong> Peak of attack motion</li>
+                        <li><strong>Recovery Frames:</strong> Character pulls weapon back</li>
+                        <li><strong>Avoid Mixing:</strong> Don't combine different attack types in one animation</li>
+                    </ul>
+                </div>
+
+                <h3>Why Sample Rate 15 for Attacks?</h3>
+                <div class="example">
+                    <div class="example-header">Attack Speed Comparison</div>
+                    <code>Sample Rate 12: Standard speed (used for idle/run)<br>
+Sample Rate 15: Slightly faster (good for attacks)<br>
+Sample Rate 18+: Very fast (for quick jabs)<br>
+<br>
+Attacks should feel quicker than movement animations<br>
+Makes combat feel responsive and impactful</code>
+                </div>
+
+                <h3>Adding Weapon Return Frames</h3>
+                <div class="concept">
+                    <h3>Polish Technique:</h3>
+                    <p>After the attack peak, add a few frames showing the character pulling the weapon back to idle
+                        position. This creates a complete attack arc instead of an abrupt cut back to idle.</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Recovery Frames</div>
+                    <code>Original: Start → Swing → Impact → END (abrupt)<br>
+<br>
+Improved: Start → Swing → Impact → Pull Back → Ready<br>
+<br>
+Add 2-3 frames after impact:<br>
+- Frame showing weapon beginning to return<br>
+- Frame showing weapon halfway back<br>
+- Frame showing ready stance<br>
+<br>
+Result: Smooth, complete attack motion</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎨 Animation Polish:</strong> Recovery frames make attacks feel "complete" rather than
+                    choppy. Test with and without them—the difference is immediately noticeable!
+                </div>
+            </div>
+
+            <!-- Topic 2: Understanding Animation Triggers -->
+            <div class="topic">
+                <h2>2. Understanding Animation Triggers 🎬</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Animation Triggers</strong> are special Animator parameters designed for one-time events.
+                        Unlike booleans that stay true/false, triggers automatically reset after being used. Perfect for
+                        actions like attacking, taking damage, or opening doors.</p>
+                </div>
+
+                <h3>Parameter Types Comparison</h3>
+                <div class="example">
+                    <div class="example-header">Four Parameter Types</div>
+                    <code>BOOL (true/false):<br>
+- Stays in state until manually changed<br>
+- Example: isGrounded, isMoving<br>
+- Use for: Continuous states<br>
+<br>
+FLOAT (decimal numbers):<br>
+- Continuous value range<br>
+- Example: xVelocity, yVelocity<br>
+- Use for: Blend trees, speed values<br>
+<br>
+INT (whole numbers):<br>
+- Discrete numbered states<br>
+- Example: comboStep (1, 2, 3)<br>
+- Use for: State machines with numbered stages<br>
+<br>
+TRIGGER (one-time event):<br>
+- Fires once, then auto-resets<br>
+- Example: Attack, TakeDamage, Jump<br>
+- Use for: Momentary actions</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Why Triggers Are Perfect for Attacks</h4>
+                    <ul>
+                        <li><strong>One-Time Action:</strong> Attack happens once per button press</li>
+                        <li><strong>Auto-Reset:</strong> Don't need to manually set it back to false</li>
+                        <li><strong>No Leftover State:</strong> Can't get "stuck" in attack mode</li>
+                        <li><strong>Clean Code:</strong> Just call SetTrigger, no boolean management</li>
+                        <li><strong>Spam Protection:</strong> Even if called multiple times, triggers once per frame
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Creating the Attack Trigger</h3>
+                <div class="example">
+                    <div class="example-header">Animator Setup</div>
+                    <code>1. Open Animator window<br>
+2. Go to Parameters tab<br>
+3. Click "+" button<br>
+4. Select "Trigger"<br>
+5. Name it: "Attack"<br>
+<br>
+Now you can use this in transitions!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Naming Consistency:</strong> Name your trigger exactly "Attack" (capital A). When you
+                    call it from code, the spelling must match perfectly, including capitalization!
+                </div>
+            </div>
+
+            <!-- Topic 3: Setting Up Attack Transitions -->
+            <div class="topic">
+                <h2>3. Setting Up Attack Transitions 🔄</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Attack animations need two transitions: <strong>entering the attack</strong> (from Idle_Move) and
+                        <strong>exiting the attack</strong> (back to Idle_Move). The enter transition uses the trigger,
+                        while the exit transition uses "Has Exit Time" to play the full animation.
+                    </p>
+                </div>
+
+                <h3>Transition to Attack (Entry)</h3>
+                <div class="example">
+                    <div class="example-header">Entry Transition Setup</div>
+                    <code>1. Right-click "Idle_Move" → Make Transition → "Player_Attack"<br>
+2. Click the transition arrow<br>
+3. In Inspector:<br>
+   - Add Condition: Attack (trigger)<br>
+   - Uncheck "Has Exit Time"<br>
+   - Set "Transition Duration" to 0<br>
+<br>
+Logic: When Attack trigger fires, instantly switch to attack animation</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Entry Transition Settings Explained</h4>
+                    <ul>
+                        <li><strong>Condition = Attack:</strong> Only transitions when trigger is fired</li>
+                        <li><strong>No Exit Time:</strong> Don't wait for current animation to finish</li>
+                        <li><strong>Duration = 0:</strong> Instant transition for responsive feel</li>
+                        <li><strong>Result:</strong> Attack starts immediately when player presses button</li>
+                    </ul>
+                </div>
+
+                <h3>Transition from Attack (Exit)</h3>
+                <div class="example">
+                    <div class="example-header">Exit Transition Setup</div>
+                    <code>1. Right-click "Player_Attack" → Make Transition → "Idle_Move"<br>
+2. Click the transition arrow<br>
+3. In Inspector:<br>
+   - No conditions needed!<br>
+   - CHECK "Has Exit Time"<br>
+   - Set "Exit Time" to 1.0<br>
+   - Set "Transition Duration" to 0<br>
+<br>
+Logic: After animation plays once (exit time = 1), return to idle/move</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Exit Transition Settings Explained</h4>
+                    <ul>
+                        <li><strong>Has Exit Time = TRUE:</strong> Wait for animation to complete</li>
+                        <li><strong>Exit Time = 1.0:</strong> Means "wait for 100% of animation"</li>
+                        <li><strong>No Conditions:</strong> Automatically returns when done</li>
+                        <li><strong>Duration = 0:</strong> Instant return to idle/move</li>
+                        <li><strong>Result:</strong> Attack plays fully, then returns to normal movement</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎮 Exit Time Values:</strong><br>
+                    Exit Time 0.5 = Transitions halfway through animation<br>
+                    Exit Time 1.0 = Transitions at animation end (most common for attacks)<br>
+                    Exit Time 1.5 = Would wait for animation to loop 1.5 times
+                </div>
+
+                <h3>Why This Two-Part System Works</h3>
+                <div class="example">
+                    <div class="example-header">Flow Diagram</div>
+                    <code>Player in Idle_Move<br>
+↓<br>
+Player presses Attack button<br>
+↓<br>
+Trigger "Attack" fires<br>
+↓<br>
+Instantly transition to Player_Attack (no exit time)<br>
+↓<br>
+Attack animation plays completely (exit time = 1.0)<br>
+↓<br>
+Automatically return to Idle_Move (no condition needed)<br>
+↓<br>
+Player back in normal movement state</code>
+                </div>
+            </div>
+
+            <!-- Topic 4: Implementing Attack Input -->
+            <div class="topic">
+                <h2>4. Implementing Attack Input 🖱️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Attacks are typically triggered by mouse clicks in PC games. We'll detect <strong>left mouse
+                            button</strong> input and trigger the attack animation. We also introduce the concept of
+                        "trying" to perform actions—the attempt might fail if conditions aren't met.</p>
+                </div>
+
+                <h3>Adding the Input Check</h3>
+                <div class="example">
+                    <div class="example-header">Handle Input Method</div>
+                    <code>private void HandleInput()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;xInput = Input.GetAxisRaw("Horizontal");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TryToJump();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Mouse0))  // Left mouse button<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TryToAttack();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🖱️ Mouse Button KeyCodes</h4>
+                    <ul>
+                        <li><strong>KeyCode.Mouse0:</strong> Left mouse button</li>
+                        <li><strong>KeyCode.Mouse1:</strong> Right mouse button</li>
+                        <li><strong>KeyCode.Mouse2:</strong> Middle mouse button (scroll click)</li>
+                        <li><strong>GetKeyDown:</strong> Detects single press (not held)</li>
+                        <li><strong>Perfect for Attacks:</strong> One click = one attack</li>
+                    </ul>
+                </div>
+
+                <h3>The "Try" Method Naming Convention</h3>
+                <div class="concept">
+                    <h3>Best Practice:</h3>
+                    <p>Name methods "TryToAttack" or "TryToJump" instead of just "Attack" or "Jump". This signals that
+                        the action might not execute—there are conditions that could prevent it. Clear naming makes code
+                        more understandable.</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Try Method Implementation</div>
+                    <code>private void TryToAttack()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (isGrounded)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;anim.SetTrigger("Attack");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Renaming existing Jump method for consistency:<br>
+private void TryToJump()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (isGrounded)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🔧 Visual Studio Rename Shortcut:</strong> Ctrl+R, R (press R twice) to rename a method
+                    across the entire project. Ensures all references update automatically!
+                </div>
+
+                <h3>Why Only Attack While Grounded?</h3>
+                <div class="key-points">
+                    <h4>⚠️ Design Decision</h4>
+                    <ul>
+                        <li><strong>Animation Interruption:</strong> Attacking in air would interrupt jump/fall
+                            animations</li>
+                        <li><strong>Visual Glitches:</strong> Mid-air attack looks buggy without proper setup</li>
+                        <li><strong>State Complexity:</strong> Air attacks need separate animation states</li>
+                        <li><strong>For Now:</strong> Ground-only attacks keep the system simple</li>
+                        <li><strong>Later:</strong> Can add air attacks as an advanced feature</li>
+                    </ul>
+                </div>
+
+                <h3>Testing Basic Attack</h3>
+                <div class="example">
+                    <div class="example-header">Initial Test</div>
+                    <code>Enter Play Mode<br>
+<br>
+✅ Click while standing → Attack plays<br>
+✅ Click while walking → Attack plays<br>
+✅ Click while jumping → Attack blocked (correct!)<br>
+<br>
+❌ PROBLEM: Can move during attack animation!<br>
+❌ PROBLEM: Attack animation plays but character slides around<br>
+<br>
+Solution: Need to disable movement during attacks...</code>
+                </div>
+            </div>
+
+            <!-- Topic 5: Introduction to Animation Events -->
+            <div class="topic">
+                <h2>5. Introduction to Animation Events 🎯</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Animation Events</strong> let you call code at specific frames of an animation. Think of
+                        it as placing markers in your animation timeline that trigger functions. Perfect for syncing
+                        game logic with animation timing—like disabling movement when attack starts.</p>
+                </div>
+
+                <h3>The Problem: Moving During Attacks</h3>
+                <div class="key-points">
+                    <h4>🤔 Why Current System Fails</h4>
+                    <ul>
+                        <li><strong>Attack Triggers:</strong> Animation starts playing</li>
+                        <li><strong>But Movement Still Active:</strong> HandleMovement still applies velocity</li>
+                        <li><strong>Result:</strong> Character slides around while attacking</li>
+                        <li><strong>Looks Terrible:</strong> Breaks immersion and game feel</li>
+                        <li><strong>Need Solution:</strong> Disable movement when attack starts, re-enable when it ends
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>The Solution: Register Start and End Moments</h3>
+                <div class="example">
+                    <div class="example-header">Animation Event Strategy</div>
+                    <code>CONCEPT:<br>
+- At frame 0 (attack starts): Call DisableMovement()<br>
+- At last frame (attack ends): Call EnableMovement()<br>
+<br>
+IMPLEMENTATION:<br>
+1. Animation Events mark these exact frames<br>
+2. Events call functions at those moments<br>
+3. Functions control canMove and canJump booleans<br>
+4. Movement system respects these flags<br>
+<br>
+Result: Character locked in place during attack</code>
+                </div>
+
+                <h3>How Animation Events Work</h3>
+                <div class="key-points">
+                    <h4>🎬 Animation Event System</h4>
+                    <ul>
+                        <li><strong>Timeline Markers:</strong> Place events at any frame in animation</li>
+                        <li><strong>Function Calls:</strong> Events call methods from scripts on same GameObject</li>
+                        <li><strong>Perfect Sync:</strong> Code executes exactly when animation reaches that frame</li>
+                        <li><strong>Multiple Events:</strong> Can have many events in one animation</li>
+                        <li><strong>Common Uses:</strong> Footstep sounds, attack damage hitboxes, particle effects</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Key Requirement:</strong> Animation Events can ONLY call functions from scripts attached
+                    to the same GameObject as the Animator component. This is why we need a helper script!
+                </div>
+
+                <h3>Why We Need a Separate Script</h3>
+                <div class="concept">
+                    <h3>Architecture Problem:</h3>
+                    <p>The Animator is on the Player GameObject, but we can't put all animation event functions in the
+                        PlayerController—it would get messy. Better to create a dedicated
+                        <strong>PlayerAnimationEvents</strong> script for clean organization.
+                    </p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Component Structure</div>
+                    <code>Player GameObject:<br>
+├─ Animator (controls animations)<br>
+├─ PlayerController (movement, jumping, attack logic)<br>
+└─ PlayerAnimationEvents (handles animation event callbacks)<br>
+<br>
+Animation Events call methods in PlayerAnimationEvents<br>
+PlayerAnimationEvents communicates with PlayerController<br>
+PlayerController enables/disables movement</code>
+                </div>
+            </div>
+
+            <!-- Topic 6: Creating Player Animation Events Script -->
+            <div class="topic">
+                <h2>6. Creating PlayerAnimationEvents Script 📜</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>PlayerAnimationEvents</strong> script acts as a bridge between the animation system
+                        and your player logic. It receives callbacks from animation events and forwards them to the
+                        appropriate systems.</p>
+                </div>
+
+                <h3>Creating the Script</h3>
+                <div class="example">
+                    <div class="example-header">Setup Process</div>
+                    <code>1. Select Player GameObject in Hierarchy<br>
+2. In Inspector, click "Add Component"<br>
+3. Type "New Script"<br>
+4. Name: "PlayerAnimationEvents"<br>
+5. Click "Create and Add"<br>
+<br>
+Script is now attached to Player GameObject!</code>
+                </div>
+
+                <h3>Initial Test Function</h3>
+                <div class="example">
+                    <div class="example-header">Testing Animation Events</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class PlayerAnimationEvents : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Delete Start() and Update() - not needed<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void AttackStarted()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Attack started!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>Adding the Animation Event</h3>
+                <div class="example">
+                    <div class="example-header">Placing Events in Timeline</div>
+                    <code>1. In Animator window, select Player_Attack animation<br>
+2. Open Animation window (Window → Animation → Animation)<br>
+3. Look at the timeline with keyframes<br>
+4. At frame 0 (start), click the "Add Event" button (looks like marker)<br>
+5. In Inspector for that event:<br>
+   - Function: AttackStarted<br>
+6. Event is now placed at animation start!</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 How to Place Events</h4>
+                    <ul>
+                        <li><strong>Event Button:</strong> Small marker icon in Animation window toolbar</li>
+                        <li><strong>Click at Frame:</strong> Scrub to desired frame, then click Add Event</li>
+                        <li><strong>Visual Marker:</strong> White vertical line with function name appears</li>
+                        <li><strong>Inspector Settings:</strong> Select event marker to choose function</li>
+                        <li><strong>Dropdown List:</strong> Shows all public/private void methods with no parameters
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Testing the Event</h3>
+                <div class="example">
+                    <div class="example-header">Console Test</div>
+                    <code>Enter Play Mode<br>
+Press left mouse button to attack<br>
+<br>
+Console output: "Attack started!"<br>
+Attack again: "Attack started!"<br>
+<br>
+✅ Animation events are working!<br>
+✅ Function gets called at exact frame<br>
+✅ Can now replace Debug.Log with real logic</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Learning Check:</strong> If you don't see the message in Console, check: (1) Script is on
+                    same GameObject as Animator, (2) Function name matches exactly, (3) Function is void with no
+                    parameters, (4) Event is placed in timeline.
+                </div>
+            </div>
+
+            <!-- Topic 7: Boolean Flags for Movement Control -->
+            <div class="topic">
+                <h2>7. Boolean Flags for Movement Control 🚦</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Boolean flags</strong> act as permission gates in your code. <code>canMove</code> and
+                        <code>canJump</code> control whether the player is allowed to move or jump. Various game systems
+                        can toggle these flags to temporarily disable player control.
+                    </p>
+                </div>
+
+                <h3>Adding the Boolean Variables</h3>
+                <div class="example">
+                    <div class="example-header">PlayerController Variables</div>
+                    <code>// Add these near the top of PlayerController<br>
+private bool canMove = true;<br>
+private bool canJump = true;<br>
+<br>
+// Start as true because player should be able to move from game start</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Use Cases for These Flags</h4>
+                    <ul>
+                        <li><strong>During Attacks:</strong> Set canMove = false to prevent sliding</li>
+                        <li><strong>Taking Damage:</strong> Disable both during hit stun animation</li>
+                        <li><strong>Cutscenes:</strong> Disable player control during story moments</li>
+                        <li><strong>Dialogue:</strong> Stop movement while talking to NPCs</li>
+                        <li><strong>Death State:</strong> Disable everything when character dies</li>
+                    </ul>
+                </div>
+
+                <h3>Modifying HandleMovement</h3>
+                <div class="example">
+                    <div class="example-header">Adding Movement Gate</div>
+                    <code>private void HandleMovement()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (canMove == true)  // Can also write: if (canMove)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Boolean Shorthand:</strong><br>
+                    <code>if (canMove == true)</code> ← Explicit, easier for beginners<br>
+                    <code>if (canMove)</code> ← Shorthand, same meaning<br>
+                    <code>if (canMove == false)</code> ← Explicit false check<br>
+                    <code>if (!canMove)</code> ← Shorthand, "if NOT canMove"
+                </div>
+
+                <h3>Modifying TryToJump</h3>
+                <div class="example">
+                    <div class="example-header">Adding Jump Gate</div>
+                    <code>private void TryToJump()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (isGrounded && canJump)  // Both conditions must be true<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>📊 The && (AND) Operator Review</h4>
+                    <ul>
+                        <li><strong>Both Must Be True:</strong> isGrounded AND canJump must both be true</li>
+                        <li><strong>If Either False:</strong> Jump doesn't execute</li>
+                        <li><strong>Safety Check:</strong> Multiple conditions prevent unwanted jumps</li>
+                        <li><strong>Example:</strong> On ground but attacking = isGrounded true, canJump false = no jump
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>The Problem: Existing Velocity</h3>
+                <div class="concept">
+                    <h3>Critical Issue:</h3>
+                    <p>If the player is moving when they attack, <code>canMove = false</code> prevents NEW input, but
+                        the Rigidbody still has velocity from BEFORE the attack. Character continues sliding! We need to
+                        manually stop the velocity.</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Stopping Velocity on Attack</div>
+                    <code>private void TryToAttack()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (isGrounded)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;anim.SetTrigger("Attack");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// CRITICAL: Stop horizontal velocity immediately<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Common Mistake:</strong> Forgetting to reset velocity causes "attack sliding." Always
+                    zero out velocity when starting actions that should stop movement!
+                </div>
+            </div>
+
+            <!-- Topic 8: Public Methods for State Control -->
+            <div class="topic">
+                <h2>8. Public Methods for State Control 🎛️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>We need a way for OTHER scripts (like PlayerAnimationEvents) to control the player's movement
+                        state. <strong>Public methods</strong> provide a clean interface for enabling/disabling movement
+                        and jumping from outside the PlayerController.</p>
+                </div>
+
+                <h3>Creating the Control Method</h3>
+                <div class="example">
+                    <div class="example-header">Public Enable/Disable Method</div>
+                    <code>// In PlayerController script<br>
+<br>
+public void EnableMovementAndJump(bool enable)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;canMove = enable;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;canJump = enable;<br>
+}<br>
+<br>
+// Called with true: Both become true (enabled)<br>
+// Called with false: Both become false (disabled)</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 How This Works</h4>
+                    <ul>
+                        <li><strong>Parameter 'enable':</strong> Passed value (true/false) controls both flags</li>
+                        <li><strong>Call with true:</strong> Re-enables movement and jumping</li>
+                        <li><strong>Call with false:</strong> Disables both actions</li>
+                        <li><strong>Single Method:</strong> Controls both booleans together (usually want both)</li>
+                        <li><strong>Public Access:</strong> Any script can call this method</li>
+                    </ul>
+                </div>
+
+                <h3>Why Public Instead of Private?</h3>
+                <div class="example">
+                    <div class="example-header">Access Level Comparison</div>
+                    <code>PRIVATE METHOD:<br>
+- Only callable from within the same script<br>
+- Internal implementation detail<br>
+- Example: HandleMovement(), HandleInput()<br>
+<br>
+PUBLIC METHOD:<br>
+- Callable from ANY script<br>
+- Interface/API for other systems<br>
+- Example: EnableMovementAndJump(), TakeDamage()<br>
+<br>
+Our case: PlayerAnimationEvents needs to call this<br>
+Must be public!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Encapsulation Principle:</strong> Make methods private by default. Only make them public
+                    when other scripts need access. Keeps code organized and prevents unintended calls.
+                </div>
+
+                <h3>Using Parameters for Flexibility</h3>
+                <div class="example">
+                    <div class="example-header">Parameter-Based Design</div>
+                    <code>// ONE METHOD instead of TWO:<br>
+public void EnableMovementAndJump(bool enable) { ... }<br>
+<br>
+// Instead of separate methods:<br>
+// public void EnableMovement() { ... }<br>
+// public void DisableMovement() { ... }<br>
+<br>
+Called from other scripts:<br>
+playerController.EnableMovementAndJump(false); // Disable<br>
+playerController.EnableMovementAndJump(true);  // Enable</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Benefits of Parameter Approach</h4>
+                    <ul>
+                        <li><strong>Less Code:</strong> One method instead of two</li>
+                        <li><strong>Clear Intent:</strong> Caller explicitly passes true/false</li>
+                        <li><strong>Flexible:</strong> Value can come from variable, not hardcoded</li>
+                        <li><strong>Maintainable:</strong> One place to modify the logic</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 9: GetComponentInParent Explained -->
+            <div class="topic">
+                <h2>9. GetComponentInParent Explained 👨‍👦</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>GetComponentInParent</strong> searches UP the hierarchy tree to find a component on a
+                        parent GameObject. Essential when your script is on a child object but needs to communicate with
+                        components on the parent.</p>
+                </div>
+
+                <h3>Understanding GameObject Hierarchy</h3>
+                <div class="example">
+                    <div class="example-header">Typical Character Setup</div>
+                    <code>Player (Parent GameObject)<br>
+├─ PlayerController script<br>
+├─ Rigidbody2D<br>
+├─ Capsule Collider 2D<br>
+├─ Animator<br>
+└─ PlayerAnimationEvents script<br>
+<br>
+PlayerVisuals (Child GameObject)<br>
+└─ Sprite Renderer<br>
+<br>
+Common in 2D: Logic on parent, visuals on child</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔍 GetComponent Variants</h4>
+                    <ul>
+                        <li><strong>GetComponent:</strong> Searches SAME GameObject only</li>
+                        <li><strong>GetComponentInChildren:</strong> Searches child GameObjects</li>
+                        <li><strong>GetComponentInParent:</strong> Searches parent GameObjects</li>
+                        <li><strong>All return:</strong> First matching component found</li>
+                        <li><strong>All require:</strong> Component type in angle brackets</li>
+                    </ul>
+                </div>
+
+                <h3>Implementing in PlayerAnimationEvents</h3>
+                <div class="example">
+                    <div class="example-header">Getting Reference to PlayerController</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class PlayerAnimationEvents : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private PlayerController player;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player = GetComponentInParent&lt;PlayerController&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Important:</strong> Since PlayerAnimationEvents is on the SAME GameObject as
+                    PlayerController in our setup, we could use GetComponent. But if you ever move PlayerAnimationEvents
+                    to a child, GetComponentInParent still works!
+                </div>
+
+                <h3>Why Use Awake for References?</h3>
+                <div class="key-points">
+                    <h4>⏱️ Unity Lifecycle: Awake vs Start</h4>
+                    <ul>
+                        <li><strong>Awake:</strong> Called FIRST, before any Start methods</li>
+                        <li><strong>Best for:</strong> Getting references, initializing variables</li>
+                        <li><strong>Guaranteed:</strong> Always runs before object is used</li>
+                        <li><strong>Start:</strong> Called after all Awake methods complete</li>
+                        <li><strong>Best for:</strong> Setup that depends on other objects' Awake</li>
+                        <li><strong>Our case:</strong> Awake perfect for GetComponent calls</li>
+                    </ul>
+                </div>
+
+                <h3>What If Component Not Found?</h3>
+                <div class="example">
+                    <div class="example-header">Error Handling</div>
+                    <code>private void Awake()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;player = GetComponentInParent&lt;PlayerController&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Optional: Check if found<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (player == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.LogError("PlayerController not found on parent!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+            </div>
+
+            <!-- Topic 10: Implementing Disable/Enable Methods -->
+            <div class="topic">
+                <h2>10. Implementing Disable and Enable Methods 🎬</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Now we create wrapper methods in PlayerAnimationEvents that will be called by animation events.
+                        These methods simply forward the call to PlayerController's EnableMovementAndJump with
+                        appropriate true/false values.</p>
+                </div>
+
+                <h3>The Complete PlayerAnimationEvents Script</h3>
+                <div class="example">
+                    <div class="example-header">Full Implementation</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class PlayerAnimationEvents : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private PlayerController player;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player = GetComponentInParent&lt;PlayerController&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Called by animation event at start of attack<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void DisableMovementAndJump()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player.EnableMovementAndJump(false);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Called by animation event at end of attack<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void EnableMovementAndJump()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player.EnableMovementAndJump(true);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Method Flow</h4>
+                    <ul>
+                        <li><strong>Animation Event:</strong> Triggers at specific frame</li>
+                        <li><strong>Calls:</strong> DisableMovementAndJump() in PlayerAnimationEvents</li>
+                        <li><strong>Which Calls:</strong> player.EnableMovementAndJump(false)</li>
+                        <li><strong>Which Sets:</strong> canMove = false, canJump = false</li>
+                        <li><strong>Result:</strong> Player can't move or jump</li>
+                    </ul>
+                </div>
+
+                <h3>Lambda Expression Alternative</h3>
+                <div class="example">
+                    <div class="example-header">Shorthand Syntax</div>
+                    <code>// Traditional method syntax:<br>
+private void DisableMovementAndJump()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;player.EnableMovementAndJump(false);<br>
+}<br>
+<br>
+// Lambda expression (one-liner):<br>
+private void DisableMovementAndJump() => player.EnableMovementAndJump(false);<br>
+<br>
+// Both do exactly the same thing!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>📚 Lambda Expressions:</strong> When a method contains only ONE line of code, you can use
+                    the => (arrow) syntax. Good for keeping scripts compact. The => means "this method returns/executes
+                    this expression."
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ When to Use Lambda Expressions</h4>
+                    <ul>
+                        <li><strong>Single Line:</strong> Only works for one-line methods</li>
+                        <li><strong>Space Saving:</strong> Reduces vertical space in long scripts</li>
+                        <li><strong>Readability:</strong> Cleaner for simple wrapper/delegation methods</li>
+                        <li><strong>Personal Choice:</strong> Both styles are correct, pick what you prefer</li>
+                        <li><strong>Good Practice:</strong> Start developing the habit now for professional code</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 11: Placing Animation Events -->
+            <div class="topic">
+                <h2>11. Placing Animation Events in Timeline 🎬</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Now we place two animation events: one at the start of the attack animation (to disable movement)
+                        and one at the end (to re-enable movement). Precise placement ensures the character locks during
+                        the entire attack duration.</p>
+                </div>
+
+                <h3>Adding the Start Event</h3>
+                <div class="example">
+                    <div class="example-header">Disable Movement Event</div>
+                    <code>1. Open Animator, select Player_Attack animation<br>
+2. Open Animation window<br>
+3. Scrub timeline to FIRST frame (start of attack)<br>
+4. Click "Add Event" button<br>
+5. In Event Inspector:<br>
+   - Function: DisableMovementAndJump<br>
+6. White marker appears at start</code>
+                </div>
+
+                <h3>Adding the End Event</h3>
+                <div class="example">
+                    <div class="example-header">Enable Movement Event</div>
+                    <code>1. Scrub timeline to LAST frame (end of attack)<br>
+2. Click "Add Event" button<br>
+3. In Event Inspector:<br>
+   - Function: EnableMovementAndJump<br>
+4. White marker appears at end<br>
+<br>
+Now have two events: Start and End</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Event Placement Tips</h4>
+                    <ul>
+                        <li><strong>First Frame:</strong> Exactly at animation start (frame 0)</li>
+                        <li><strong>Last Frame:</strong> Very last frame before loop/exit</li>
+                        <li><strong>Visual Check:</strong> See both white markers in timeline</li>
+                        <li><strong>Test Timing:</strong> Events must cover entire attack duration</li>
+                        <li><strong>Adjust if Needed:</strong> Can drag events to different frames</li>
+                    </ul>
+                </div>
+
+                <h3>How Animation Events Execute</h3>
+                <div class="example">
+                    <div class="example-header">Execution Flow</div>
+                    <code>Player clicks attack button<br>
+↓<br>
+SetTrigger("Attack") called<br>
+↓<br>
+Transition to Player_Attack animation<br>
+↓<br>
+Frame 0: DisableMovementAndJump event fires<br>
+  → canMove = false, canJump = false<br>
+↓<br>
+Frames 1-N: Attack animation plays (player locked)<br>
+↓<br>
+Last Frame: EnableMovementAndJump event fires<br>
+  → canMove = true, canJump = true<br>
+↓<br>
+Exit transition to Idle_Move<br>
+↓<br>
+Player can move again</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🔧 Debugging Events:</strong> Add Debug.Log messages in your event methods temporarily.
+                    Check Console to verify events fire at correct times during animation playback.
+                </div>
+            </div>
+
+            <!-- Topic 12: Final Polish - Preventing Slide -->
+            <div class="topic">
+                <h2>12. Final Polish: Preventing Slide with Else 🎨</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Even with canMove = false, physics materials can cause residual sliding. The solution: add an
+                        <code>else</code> statement to HandleMovement that actively sets X velocity to zero when
+                        movement is disabled.
+                    </p>
+                </div>
+
+                <h3>The Slippery Material Problem</h3>
+                <div class="key-points">
+                    <h4>⚠️ Physics Interaction Issue</h4>
+                    <ul>
+                        <li><strong>We Have:</strong> Slippery Physics Material (friction = 0) from Lesson 8</li>
+                        <li><strong>Problem:</strong> Zero friction means character continues sliding slightly</li>
+                        <li><strong>During Attack:</strong> canMove = false stops NEW input, not existing velocity</li>
+                        <li><strong>Result:</strong> Small "drift" during attack animation</li>
+                        <li><strong>Solution:</strong> Actively force velocity to zero</li>
+                    </ul>
+                </div>
+
+                <h3>Adding the Else Statement</h3>
+                <div class="example">
+                    <div class="example-header">Complete HandleMovement</div>
+                    <code>private void HandleMovement()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (canMove)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Allow movement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Force stop movement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Why This Works</h4>
+                    <ul>
+                        <li><strong>If canMove = true:</strong> Normal movement with xInput</li>
+                        <li><strong>If canMove = false:</strong> X velocity forced to 0 every frame</li>
+                        <li><strong>Continuous Enforcement:</strong> Every Update() frame, velocity reset</li>
+                        <li><strong>No Drift:</strong> Character completely locked in place</li>
+                        <li><strong>Y Velocity Preserved:</strong> Gravity still works (falling, etc.)</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Design Pattern:</strong> If/else for "enabled" vs "disabled" states is common. Enabled
+                    does normal logic, disabled enforces locked state. Use this pattern for many game systems!
+                </div>
+
+                <h3>Testing the Complete System</h3>
+                <div class="example">
+                    <div class="example-header">Final Test Checklist</div>
+                    <code>✅ Standing still → Attack → Character locked in place<br>
+✅ Running right → Attack → Stops instantly, no slide<br>
+✅ Running left → Attack → Stops instantly, no slide<br>
+✅ During attack → Press left/right → No movement<br>
+✅ During attack → Press space → No jump<br>
+✅ Attack finishes → Can move again immediately<br>
+✅ Attack finishes → Can jump again immediately<br>
+✅ Jump → Try to attack → Attack blocked (grounded check)<br>
+<br>
+Perfect! Combat system working flawlessly!</code>
+                </div>
+            </div>
+
+            <!-- Topic 13: What You've Accomplished -->
+            <div class="topic">
+                <h2>13. What You've Accomplished 🎉</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>You've now built a complete attack system with proper state management, animation
+                        synchronization, and player control. This architecture scales to combo systems, special moves,
+                        and advanced combat mechanics.</p>
+                </div>
+
+                <h3>Complete Feature Set</h3>
+                <div class="key-points">
+                    <h4>✨ What Your System Does</h4>
+                    <ul>
+                        <li><strong>Attack Animation:</strong> Plays complete attack sequence with proper recovery</li>
+                        <li><strong>Input Detection:</strong> Left mouse button triggers attacks</li>
+                        <li><strong>Grounded Check:</strong> Only attacks when standing on ground</li>
+                        <li><strong>Movement Lock:</strong> Character stops and locks during attack</li>
+                        <li><strong>Jump Prevention:</strong> Can't jump while attacking</li>
+                        <li><strong>Automatic Re-enable:</strong> Movement restores after attack ends</li>
+                        <li><strong>No Sliding:</strong> Physics properly handled with velocity control</li>
+                    </ul>
+                </div>
+
+                <h3>Technical Skills Learned</h3>
+                <div class="key-points">
+                    <h4>🎓 New Concepts Mastered</h4>
+                    <ul>
+                        <li><strong>Animation Triggers:</strong> One-time events vs continuous booleans</li>
+                        <li><strong>Animation Events:</strong> Calling code at specific animation frames</li>
+                        <li><strong>Helper Scripts:</strong> Separating concerns for clean architecture</li>
+                        <li><strong>Boolean Flags:</strong> State management with canMove/canJump</li>
+                        <li><strong>Public Methods:</strong> Creating interfaces for inter-script communication</li>
+                        <li><strong>GetComponentInParent:</strong> Accessing parent GameObject components</li>
+                        <li><strong>Lambda Expressions:</strong> Shorthand syntax for one-line methods</li>
+                        <li><strong>Velocity Control:</strong> Manual physics manipulation for gameplay needs</li>
+                    </ul>
+                </div>
+
+                <h3>Architecture Patterns Used</h3>
+                <div class="example">
+                    <div class="example-header">Professional Code Structure</div>
+                    <code>SEPARATION OF CONCERNS:<br>
+- PlayerController: Game logic<br>
+- PlayerAnimationEvents: Animation callbacks<br>
+- Animator: Visual state machine<br>
+<br>
+STATE MANAGEMENT:<br>
+- Boolean flags control permissions<br>
+- Public methods provide clean interface<br>
+- Private implementation hidden<br>
+<br>
+EVENT-DRIVEN DESIGN:<br>
+- Animation events trigger state changes<br>
+- Loose coupling between systems<br>
+- Easy to extend and modify</code>
+                </div>
+
+                <h3>Foundation for Advanced Combat</h3>
+                <div class="key-points">
+                    <h4>🚀 What This Enables</h4>
+                    <ul>
+                        <li><strong>Combo Systems:</strong> Chain attacks together with additional states</li>
+                        <li><strong>Special Moves:</strong> Different attacks with different button combinations</li>
+                        <li><strong>Hitboxes:</strong> Add damage detection at specific attack frames</li>
+                        <li><strong>Attack Canceling:</strong> Interrupt attacks with dodges/blocks</li>
+                        <li><strong>Charge Attacks:</strong> Hold button for stronger attacks</li>
+                        <li><strong>Aerial Attacks:</strong> Remove grounded check for air combos</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Course Note:</strong> In the main course section, you'll expand this system with multiple
+                    attacks, combo chains, and a full state machine. This lesson builds the essential foundation!
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="key-points">
+                    <h4>Exercise 1: Add Second Attack Animation</h4>
+                    <p><strong>Task:</strong> Implement a second attack with different button</p>
+                    <ul>
+                        <li>Create "Player_Attack2" animation from second attack sprite sequence</li>
+                        <li>Add "Attack2" trigger parameter to Animator</li>
+                        <li>Set up transitions from Idle_Move to Attack2 and back</li>
+                        <li>Bind to right mouse button (KeyCode.Mouse1)</li>
+                        <li>Test both attacks work independently</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 2: Add Attack Sound Effect</h4>
+                    <p><strong>Task:</strong> Play audio when attack animation plays</p>
+                    <ul>
+                        <li>Find/download a free sword swing sound effect</li>
+                        <li>Import into Unity and add AudioSource component to Player</li>
+                        <li>Create PlayAttackSound() method in PlayerAnimationEvents</li>
+                        <li>Add animation event at attack's impact frame to call PlayAttackSound()</li>
+                        <li>Verify sound plays at exact moment weapon would hit</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 3: Implement Attack Buffer</h4>
+                    <p><strong>Task:</strong> Allow attack input slightly before landing</p>
+                    <ul>
+                        <li>Create float variable: attackBufferTime = 0.2f</li>
+                        <li>Track time since attack button pressed</li>
+                        <li>In HandleCollision, check if attack requested within buffer time</li>
+                        <li>If landing and buffer active, execute attack</li>
+                        <li>Makes attacks feel more responsive—test the difference!</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 4: Create Simple Combo System</h4>
+                    <p><strong>Task:</strong> Chain two attacks together</p>
+                    <ul>
+                        <li>Add bool "canCombo" that becomes true mid-attack</li>
+                        <li>Use animation event to set canCombo = true during attack window</li>
+                        <li>If attack pressed while canCombo true, transition to Attack2</li>
+                        <li>Otherwise, return to idle after first attack</li>
+                        <li>Create 2-hit combo: Attack1 → Attack2</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Challenge Exercise: Add Aerial Attack</h4>
+                    <p><strong>Task:</strong> Allow attacking while jumping</p>
+                    <ul>
+                        <li>Create "Player_AirAttack" animation (simpler, 2-3 frames)</li>
+                        <li>Modify TryToAttack to check: if grounded use ground attack, else use air attack</li>
+                        <li>Air attack should NOT disable movement (allow air control)</li>
+                        <li>Air attack animation should work with Jump_Fall blend tree</li>
+                        <li>Test: Jump → Attack mid-air → Continue falling smoothly</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white !important; border-left: none !important;">
+                <h4 style="color: white !important;">📚 Lesson 9 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95) !important;"><strong>Incredible work!</strong> You've built a
+                    professional
+                    combat system with proper state management. Here's everything you mastered:</p>
+                <ul style="color: rgba(255,255,255,0.9) !important;">
+                    <li>✅ <strong>Attack Animation:</strong> Created responsive attack animation with recovery frames
+                        for complete attack arc</li>
+                    <li>✅ <strong>Animation Triggers:</strong> Mastered trigger parameters for one-time events that
+                        auto-reset</li>
+                    <li>✅ <strong>State Machine Transitions:</strong> Entry transition with trigger, exit transition
+                        with Has Exit Time</li>
+                    <li>✅ <strong>Mouse Input:</strong> Implemented left-click attack with KeyCode.Mouse0</li>
+                    <li>✅ <strong>Try Methods:</strong> Named methods to indicate conditional execution (TryToAttack,
+                        TryToJump)</li>
+                    <li>✅ <strong>Animation Events:</strong> Called functions at specific animation frames for perfect
+                        timing</li>
+                    <li>✅ <strong>Helper Scripts:</strong> Created PlayerAnimationEvents for clean separation of
+                        concerns</li>
+                    <li>✅ <strong>Boolean State Flags:</strong> Used canMove and canJump to control player permissions
+                    </li>
+                    <li>✅ <strong>Public Methods:</strong> Created interfaces for inter-script communication with
+                        EnableMovementAndJump</li>
+                    <li>✅ <strong>GetComponentInParent:</strong> Accessed parent GameObject components for script
+                        communication</li>
+                    <li>✅ <strong>Lambda Expressions:</strong> Used => syntax for concise one-line methods</li>
+                    <li>✅ <strong>Velocity Control:</strong> Stopped movement by zeroing velocity in else statement</li>
+                    <li>✅ <strong>Complete Lock System:</strong> Character fully locked during attacks—no sliding, no
+                        jumping</li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95) !important; margin-top: 15px;"><strong>Next Up:</strong> In
+                    Lesson 10,
+                    we'll add enemy characters and implement hit detection so your attacks actually damage enemies. Time
+                    to make your combat system dangerous! 💥</p>
+            </div>
+        </div>
+        <footer>
+            <p>Your character is now a combat-ready warrior with responsive attacks and professional state management!
+                You've learned advanced animation techniques used in AAA games. Keep practicing and experimenting! ⚔️✨
+            </p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

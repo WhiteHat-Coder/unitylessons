@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Day 1: Unity Basics - Learn Unity interface, GameObjects, Components, and create your first Unity project.">
+    <meta name="keywords" content="Unity basics, Unity interface, GameObjects, Unity components, Unity tutorial">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Lesson 1: Unity Basics | Unity 3D Tutorial</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🎮 Lesson 1: Unity Basics</h1>
+            <p>Master the fundamentals of Unity in 1 hour</p>
+        </header>
+
+        <div class="content">
+
+            <!-- Time Overview -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">⏱️ Total Time: 60 Minutes</h4>
+                <p style="color: rgba(255,255,255,0.9);">This lesson is designed to give you hands-on Unity experience
+                    in just one hour. Follow along step by step!</p>
+            </div>
+
+            <!-- Section 1: What is Unity? -->
+            <div class="topic">
+                <h2>🔹 0–10 min: What is Unity?</h2>
+
+                <div class="concept">
+                    <h3>✅ Goal:</h3>
+                    <p>Understand <strong>what Unity is and why we use it</strong></p>
+                </div>
+
+                <h3>🧠 Key Concepts:</h3>
+                <ul>
+                    <li><strong>Unity</strong> = Game Engine (used to build games, apps, simulations)</li>
+                    <li><strong>Supports:</strong>
+                        <ul style="margin-left: 30px;">
+                            <li>2D & 3D games</li>
+                            <li>Mobile, PC, Console</li>
+                        </ul>
+                    </li>
+                    <li><strong>Uses C#</strong> as the scripting language</li>
+                </ul>
+
+                <div class="key-points">
+                    <h4>💡 Simple Understanding:</h4>
+                    <p
+                        style="font-size: 1.2em; text-align: center; padding: 20px; background: white; border-radius: 8px; border: 2px solid #2196F3;">
+                        <strong>Unity = Editor + Engine + Physics + Rendering + Scripting</strong>
+                    </p>
+                </div>
+
+                <div class="tip">
+                    <strong>Why Unity?</strong> Unity is one of the most popular game engines used by indie developers
+                    and AAA studios alike. It's beginner-friendly yet powerful enough to create commercial games!
+                </div>
+            </div>
+
+            <!-- Section 2: Unity Interface -->
+            <div class="topic">
+                <h2>🔹 10–25 min: Unity Interface (VERY IMPORTANT)</h2>
+
+                <div class="concept">
+                    <h3>✅ Goal:</h3>
+                    <p>Get comfortable with Unity windows (you'll use these daily)</p>
+                </div>
+
+                <h3>🧩 Core Windows:</h3>
+
+                <table>
+                    <tr>
+                        <th>Window</th>
+                        <th>Purpose</th>
+                        <th>What You Do Here</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Scene View</strong></td>
+                        <td>Design workspace</td>
+                        <td>Where you <em>design your game world</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Game View</strong></td>
+                        <td>Player perspective</td>
+                        <td>What the player actually sees</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hierarchy</strong></td>
+                        <td>Object list</td>
+                        <td>List of all objects in the scene</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inspector</strong></td>
+                        <td>Properties panel</td>
+                        <td>Modify selected object properties</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Project Window</strong></td>
+                        <td>Asset browser</td>
+                        <td>All assets (scripts, images, models)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Console</strong></td>
+                        <td>Debug output</td>
+                        <td>Errors, logs, debug messages</td>
+                    </tr>
+                </table>
+
+                <div class="key-points">
+                    <h4>💡 Analogy:</h4>
+                    <ul>
+                        <li><strong>Hierarchy</strong> = Tree structure (parent-child relationships)</li>
+                        <li><strong>Inspector</strong> = Settings panel (like right-click properties)</li>
+                        <li><strong>Scene</strong> = Workspace (your design canvas)</li>
+                        <li><strong>Game</strong> = Final output (what players experience)</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> You can customize the Unity layout! Go to Window → Layouts to choose
+                    different arrangements. Start with the "Default" layout as a beginner.
+                </div>
+            </div>
+
+            <!-- Section 3: GameObjects & Components -->
+            <div class="topic">
+                <h2>🔹 25–40 min: GameObjects & Components</h2>
+
+                <div class="concept">
+                    <h3>✅ Goal:</h3>
+                    <p>Understand Unity's core concept - the foundation of everything in Unity</p>
+                </div>
+
+                <div class="key-points" style="background: #fff3cd; border-left-color: #ffc107;">
+                    <h4 style="color: #856404;">🧠 The Most Important Concept in Unity:</h4>
+                    <p
+                        style="font-size: 1.3em; text-align: center; padding: 20px; background: white; border-radius: 8px; margin: 15px 0;">
+                        👉 <strong>Everything in Unity = GameObject + Components</strong>
+                    </p>
+                </div>
+
+                <h3>🧱 GameObject:</h3>
+                <div class="concept">
+                    <p>A <strong>GameObject</strong> is like an <em>empty container</em> (think of it as a box)</p>
+                    <p>By itself, it does nothing. It's just a container waiting for components.</p>
+                </div>
+
+                <h3>🔧 Components:</h3>
+                <p>Components add functionality to GameObjects:</p>
+                <table>
+                    <tr>
+                        <th>Component</th>
+                        <th>What It Does</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Transform</strong></td>
+                        <td>Position, rotation, scale (every GameObject has this!)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sprite Renderer</strong></td>
+                        <td>Makes object visible (2D graphics)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rigidbody</strong></td>
+                        <td>Adds physics (gravity, forces, movement)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Collider</strong></td>
+                        <td>Enables collision detection</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Script</strong></td>
+                        <td>Custom behavior you program</td>
+                    </tr>
+                </table>
+
+                <h3>💡 Real Example:</h3>
+                <div class="example">
+                    <div class="example-header">Example: A Player Character</div>
+                    <div style="padding: 10px; color: #f8f8f2;">
+                        <strong style="color: #50fa7b;">GameObject:</strong> Player<br><br>
+                        <strong style="color: #ff79c6;">Components attached:</strong><br>
+                        &nbsp;&nbsp;• Transform (position: x=0, y=0, z=0)<br>
+                        &nbsp;&nbsp;• Sprite Renderer (displays player image)<br>
+                        &nbsp;&nbsp;• Rigidbody2D (adds physics)<br>
+                        &nbsp;&nbsp;• BoxCollider2D (collision detection)<br>
+                        &nbsp;&nbsp;• PlayerController (custom script for movement)
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Think of it this way:</strong> GameObject = Car body, Components = Engine, wheels,
+                    steering wheel, seats. Without components, the car (GameObject) is just an empty shell!
+                </div>
+            </div>
+
+            <!-- Section 4: Hands-On - Unity Components Example -->
+            <div class="topic">
+                <h2>🔹 40–50 min: Hands-On - Building Your First Scene</h2>
+
+                <div class="key-points"
+                    style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-left-color: #667eea;">
+                    <h4 style="color: #667eea;">🎯 Project: Circle Player + Square Platform</h4>
+                    <p>Learn components by building a simple physics-based scene!</p>
+                </div>
+
+                <h3>📦 Step 1: Scene Setup</h3>
+                <ol style="line-height: 2;">
+                    <li><strong>Create a Circle (Player):</strong>
+                        <ul style="margin-left: 30px;">
+                            <li>Hierarchy → Right-click → 2D Object → Sprites → Circle</li>
+                            <li>Rename it to "Player" in the Inspector</li>
+                        </ul>
+                    </li>
+                    <li><strong>Create a Square (Platform):</strong>
+                        <ul style="margin-left: 30px;">
+                            <li>Hierarchy → Right-click → 2D Object → Sprites → Square</li>
+                            <li>Rename it to "Platform"</li>
+                            <li>In Transform: Set Scale X = 5, Y = 0.5 (makes it look like a platform)</li>
+                            <li>Position: X = 0, Y = -3 (move it down)</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>🧩 Step 2: What is a Component?</h3>
+                <div class="concept">
+                    <p><strong>Component</strong> = A behavior or property attached to a GameObject</p>
+                    <p><strong>Important Rules:</strong></p>
+                    <ul>
+                        <li>Every GameObject <strong>MUST</strong> have a <code>Transform</code> component</li>
+                        <li>All other components are <strong>optional</strong></li>
+                        <li>Components define what a GameObject can do</li>
+                    </ul>
+                </div>
+
+                <h3>🎨 Step 3: Sprite Renderer Component</h3>
+                <p>Controls how the GameObject looks visually:</p>
+                <ol style="line-height: 2;">
+                    <li>Select <strong>Platform</strong> in Hierarchy</li>
+                    <li>Look at Inspector → Find <strong>Sprite Renderer</strong> component</li>
+                    <li>Click <strong>Color</strong> → Change to dark blue</li>
+                    <li>See the <strong>Sprite</strong> field → shows "Square" (the shape)</li>
+                </ol>
+
+                <div class="example">
+                    <div class="example-header">Understanding Sprite Renderer Properties</div>
+                    <div style="padding: 10px; color: #f8f8f2;">
+                        <strong style="color: #50fa7b;">Sprite:</strong> The actual image/shape to display<br>
+                        <strong style="color: #ff79c6;">Color:</strong> Tint applied to the sprite<br>
+                        <strong style="color: #8be9fd;">Order in Layer:</strong> Controls which objects appear in
+                        front<br>
+                        &nbsp;&nbsp;• Higher number = appears in front<br>
+                        &nbsp;&nbsp;• Lower number = appears behind
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Try This:</strong> Set Player's "Order in Layer" to 1, Platform to 0. This ensures the
+                    player always appears in front!
+                </div>
+
+                <h3>⚙️ Step 4: Add Physics (Rigidbody2D)</h3>
+                <p>Make objects behave like real-world physics!</p>
+                <ol style="line-height: 2;">
+                    <li>Select <strong>Player</strong> in Hierarchy</li>
+                    <li>Inspector → Click "Add Component"</li>
+                    <li>Type "Rigidbody 2D" → Select it</li>
+                    <li>Press <strong>Play ▶️</strong> → Watch the player fall!</li>
+                </ol>
+
+                <div class="key-points">
+                    <h4>🧠 What Just Happened?</h4>
+                    <p><strong>Rigidbody2D</strong> makes the GameObject react to gravity and forces, just like real
+                        objects!</p>
+                </div>
+
+                <h3>🔧 Adjust Gravity:</h3>
+                <ol style="line-height: 2;">
+                    <li>Stop the game (click Play button again)</li>
+                    <li>Select Player → Inspector → Rigidbody2D component</li>
+                    <li>Find <strong>Gravity Scale</strong> → Change from 1 to 5</li>
+                    <li>Press Play → Player falls faster!</li>
+                </ol>
+
+                <h3>❌ The Problem:</h3>
+                <div class="concept" style="background: #fff3cd; border-left-color: #ffc107;">
+                    <p style="color: #856404;"><strong>⚠️ Problem:</strong> The player falls <em>through</em> the
+                        platform!</p>
+                    <p style="color: #856404;"><strong>Why?</strong> Unity doesn't know the <strong>shape</strong> of
+                        objects yet. It can't detect collisions without colliders.</p>
+                </div>
+
+                <h3>🛡️ Step 5: Add Colliders</h3>
+                <p>Colliders define the physical shape for collision detection:</p>
+
+                <h4>Add Circle Collider to Player:</h4>
+                <ol style="line-height: 2;">
+                    <li>Stop the game</li>
+                    <li>Select <strong>Player</strong></li>
+                    <li>Add Component → "Circle Collider 2D"</li>
+                </ol>
+
+                <h4>Add Box Collider to Platform:</h4>
+                <ol style="line-height: 2;">
+                    <li>Select <strong>Platform</strong></li>
+                    <li>Add Component → "Box Collider 2D"</li>
+                </ol>
+
+                <h4>Test It:</h4>
+                <p><strong>Press Play ▶️</strong> → Player now lands on the platform! 🎉</p>
+
+                <div class="key-points">
+                    <h4>🧩 Collider Components Explained:</h4>
+                    <table style="margin-top: 15px;">
+                        <tr>
+                            <th>Collider Type</th>
+                            <th>Best For</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Circle Collider 2D</strong></td>
+                            <td>Round objects (balls, coins, player)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Box Collider 2D</strong></td>
+                            <td>Square/rectangular objects (platforms, walls)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Polygon Collider 2D</strong></td>
+                            <td>Complex irregular shapes</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>🔍 Step 6: Adjust Collider Size</h3>
+                <ol style="line-height: 2;">
+                    <li>Select Player → Inspector → Circle Collider 2D</li>
+                    <li>Change <strong>Radius</strong> from 0.5 to 0.3</li>
+                    <li>Press Play → Notice the collision area is smaller than the visual!</li>
+                </ol>
+
+                <div class="tip">
+                    <strong>💡 Important:</strong> Collider size doesn't have to match the sprite size. You can make hit
+                    boxes smaller or larger for gameplay purposes!
+                </div>
+
+                <h3>🎾 Optional: Add Bounciness!</h3>
+                <ol style="line-height: 2;">
+                    <li>Project window → Right-click → Create → 2D → Physics Material 2D</li>
+                    <li>Name it "Bouncy"</li>
+                    <li>Select it → Inspector → Set <strong>Bounciness</strong> to 0.7</li>
+                    <li>Select Player → Circle Collider 2D → Drag "Bouncy" material to <strong>Material</strong> field
+                    </li>
+                    <li>Press Play → Player bounces! 🎾</li>
+                </ol>
+            </div>
+
+            <!-- Section 5: Custom Components (C# Scripts) -->
+            <div class="topic">
+                <h2>🔹 50–60 min: Custom Components (C# Scripts)</h2>
+
+                <div class="concept">
+                    <h3>✅ Goal:</h3>
+                    <p>Create custom behavior using C# scripts - your own components!</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Important Concept:</h4>
+                    <p><strong>Scripts ARE Components!</strong> When you write a C# script that inherits from
+                        <code>MonoBehaviour</code>, you're creating a custom component that can be attached to
+                        GameObjects.</p>
+                </div>
+
+                <h3>🪜 Create Player Movement Script:</h3>
+                <ol style="line-height: 2;">
+                    <li>Project window → Right-click → Create → C# Script</li>
+                    <li>Name it <code>PlayerController</code> (no spaces!)</li>
+                    <li>Double-click to open in Visual Studio Code</li>
+                </ol>
+
+                <h3>✍️ Add Movement Code:</h3>
+                <div class="example">
+                    <div class="example-header">PlayerController.cs - Horizontal Movement</div>
+                    <code>
+using UnityEngine;<br>
+<br>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public Rigidbody2D rb;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float moveSpeed = 5f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Get input (A/D or Left/Right arrows)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float moveX = Input.GetAxis("Horizontal");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Move player left/right<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.velocity = new Vector2(moveX * moveSpeed, rb.velocity.y);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+                    </code>
+                </div>
+
+                <h3>🎯 Attach and Configure:</h3>
+                <ol style="line-height: 2;">
+                    <li>Stop the game (if playing)</li>
+                    <li>Select <strong>Player</strong> in Hierarchy</li>
+                    <li>Drag <strong>PlayerController</strong> script onto Player (or Add Component)</li>
+                    <li>In Inspector, find the PlayerController component</li>
+                    <li>Drag the <strong>Player</strong> GameObject into the <strong>Rb</strong> field (this links the
+                        Rigidbody2D)</li>
+                    <li>Press Play → Use <strong>A/D</strong> or <strong>Arrow Keys</strong> to move!</li>
+                </ol>
+
+                <div class="key-points">
+                    <h4>🧠 Code Breakdown:</h4>
+                    <ul>
+                        <li><code>public Rigidbody2D rb;</code> → Reference to the Rigidbody component</li>
+                        <li><code>Input.GetAxis("Horizontal")</code> → Gets keyboard input (-1 to 1)</li>
+                        <li><code>rb.velocity</code> → Controls the movement speed of the object</li>
+                        <li><code>moveSpeed</code> → You can adjust this in the Inspector!</li>
+                    </ul>
+                </div>
+
+                <div class="tip" style="background: #fff3cd; border-left-color: #ffc107;">
+                    <strong>⚠️ If input doesn't work:</strong><br>
+                    File → Project Settings → Player → Other Settings → Active Input Handling → Change to
+                    <strong>"Both"</strong><br>
+                    (This enables the old input system)
+                </div>
+
+                <h3>🎮 Extra: Platform Physics Challenge</h3>
+                <p>Make the game more interesting:</p>
+                <ol style="line-height: 2;">
+                    <li>Select <strong>Platform</strong></li>
+                    <li>Add Component → Rigidbody2D</li>
+                    <li>In Rigidbody2D component:
+                        <ul style="margin-left: 30px;">
+                            <li>Constraints → Check <strong>Freeze Position X, Y</strong></li>
+                            <li>Check <strong>Freeze Rotation Z</strong></li>
+                            <li>Set <strong>Mass</strong> to 10</li>
+                        </ul>
+                    </li>
+                    <li>Now when the player lands, the platform has weight but doesn't fall!</li>
+                </ol>
+
+                <div class="concept">
+                    <h3>🎯 Gameplay Idea:</h3>
+                    <p>You could create a balancing game where:</p>
+                    <ul>
+                        <li>Platform can rotate (unfreeze rotation)</li>
+                        <li>Player must balance while collecting items</li>
+                        <li>Add more platforms with different physics properties</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Homework Section -->
+            <div class="topic"
+                style="background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); padding: 30px; border-radius: 10px;">
+                <h2 style="color: #856404;">🧪 Homework (IMPORTANT)</h2>
+
+                <p style="font-size: 1.1em; margin-bottom: 20px;">Complete these tasks to reinforce what you learned:
+                </p>
+
+                <div class="key-points" style="background: white;">
+                    <h4>✅ Task 1: Create More GameObjects</h4>
+                    <p>Create these GameObjects with components:</p>
+                    <ul>
+                        <li><strong>Player</strong> object with: Sprite Renderer, Box Collider 2D, Rigidbody2D</li>
+                        <li><strong>Enemy</strong> object with: Sprite Renderer, Circle Collider 2D</li>
+                        <li><strong>Ground</strong> object with: Sprite Renderer, Box Collider 2D</li>
+                    </ul>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>✅ Task 2: Make Something Move</h4>
+                    <p>Modify your PlayerMovement script to make the object move automatically:</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Homework Code: Auto-Movement</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Move object to the right automatically<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform.Translate(Vector3.right * Time.deltaTime);<br>
+}<br>
+                    </code>
+                    <div class="output">
+                        <div class="output-label">👉 What This Does:</div>
+                        The object will automatically move to the right at a steady speed!
+                    </div>
+                </div>
+
+                <div class="key-points" style="background: white; margin-top: 20px;">
+                    <h4>✅ Task 3: Thinking Questions</h4>
+                    <p>Answer these to check your understanding:</p>
+                    <ol>
+                        <li>What is a GameObject?</li>
+                        <li>What is a Component?</li>
+                        <li>What's the difference between Scene view and Game view?</li>
+                        <li>When does the Update() method run?</li>
+                        <li>What does Transform component control?</li>
+                    </ol>
+                </div>
+
+                <div class="tip" style="margin-top: 20px;">
+                    <strong>🔥 Bonus Challenge:</strong> Add 2 more GameObjects (like Coin, Obstacle) and change their
+                    colors or positions. Experiment with different Component combinations!
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🚀 Lesson 1 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);">By completing this lesson, you now understand:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Navigate the Unity interface confidently</li>
+                    <li>✅ What components are and why they're essential</li>
+                    <li>✅ How to combine components: Visual (Sprite Renderer) + Physics (Rigidbody) + Shape (Collider) +
+                        Logic (Script)</li>
+                    <li>✅ Create GameObjects and add components</li>
+                    <li>✅ Build a simple physics-based scene</li>
+                    <li>✅ Write custom components with C# scripts</li>
+                </ul>
+                <p style="color: white; margin-top: 20px; font-size: 1.2em; text-align: center;">
+                    <strong>🎉 Congratulations! You've completed Lesson 1!</strong>
+                </p>
+            </div>
+
+            <!-- Reflection Question -->
+            <div class="key-points" style="margin-top: 30px; background: #e7f3ff; border-left-color: #2196F3;">
+                <h4>🤔 Reflection Question:</h4>
+                <p style="font-size: 1.2em; font-weight: bold; color: #1976D2;">"What is a component in Unity?"</p>
+                <p>Try to answer this out loud in your own words. If you can explain it clearly, you've mastered the
+                    concept!</p>
+                <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 5px;">
+                    <strong>Answer:</strong> Components are building blocks that give GameObjects behavior and
+                    properties. You combine different components (visual, physics, collision, custom scripts) to create
+                    gameplay.
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Keep practicing! The more you experiment in Unity, the better you'll get! 💪🎮</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

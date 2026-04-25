@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 13: Master Encapsulation with properties, getters, setters, and data protection in C#">
+    <meta name="keywords"
+        content="Unity, OOP, encapsulation, properties, getters, setters, data hiding, access control, C# properties">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+    <title>Lesson 13: Encapsulation & Data Protection | Unity Tutorial</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🔒 Lesson 13: Encapsulation & Data Protection</h1>
+            <p>Master controlling access to your data with properties, getters, and setters</p>
+        </header>
+        <div class="content">
+            <!-- What You'll Learn section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white !important; border-left: none !important;">
+                <h4 style="color: white !important;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9) !important;">
+                    <li>✅ Understand Encapsulation—the third pillar of OOP</li>
+                    <li>✅ Why making everything public causes project chaos</li>
+                    <li>✅ Create getter methods to safely expose protected data</li>
+                    <li>✅ Use C# properties with get and set accessors</li>
+                    <li>✅ Implement "public get; private set;" pattern for read-only access</li>
+                    <li>✅ Control who can read vs modify your variables</li>
+                    <li>✅ Debug code more easily with controlled access points</li>
+                    <li>✅ Follow professional encapsulation patterns</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: What is Encapsulation? -->
+            <div class="topic">
+                <h2>1. What is Encapsulation? 🔒</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Encapsulation</strong> is the practice of hiding internal data and exposing only what's
+                        necessary through controlled interfaces. It's the third and final pillar of Object-Oriented
+                        Programming, and it protects your code from unwanted modification and makes debugging easier.
+                    </p>
+                </div>
+
+                <h3>The Core Principle</h3>
+                <div class="example">
+                    <div class="example-header">Encapsulation Definition</div>
+                    <code>ENCAPSULATION = Data Hiding + Controlled Access<br>
+<br>
+Keep data PRIVATE/PROTECTED<br>
+Expose through PUBLIC METHODS/PROPERTIES<br>
+<br>
+REAL-WORLD ANALOGY:<br>
+Your car engine:<br>
+- Internal parts are hidden (encapsulated)<br>
+- You interact through: steering wheel, pedals, buttons<br>
+- You don't need to know how engine works<br>
+- You can't accidentally break internal parts<br>
+<br>
+PROGRAMMING:<br>
+Enemy health:<br>
+- Health variable is private<br>
+- You interact through: TakeDamage(), Heal(), GetHealth()<br>
+- You can't accidentally set health to negative<br>
+- You can't bypass game rules</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Why Encapsulation Matters</h4>
+                    <ul>
+                        <li><strong>Data Protection:</strong> Prevent accidental or malicious modification</li>
+                        <li><strong>Controlled Access:</strong> Decide who can read vs write data</li>
+                        <li><strong>Easier Debugging:</strong> Know exactly where data is modified</li>
+                        <li><strong>Flexibility:</strong> Change internal implementation without breaking other code
+                        </li>
+                        <li><strong>Validation:</strong> Enforce rules when data is modified</li>
+                        <li><strong>Cleaner Inspector:</strong> Hide internal variables from Unity Inspector</li>
+                    </ul>
+                </div>
+
+                <h3>The Three Pillars Complete</h3>
+                <div class="example">
+                    <div class="example-header">OOP Pillars Recap</div>
+                    <code>1. INHERITANCE (Lesson 11):<br>
+   - Share code between classes<br>
+   - Parent-child relationships<br>
+   - Code reusability<br>
+<br>
+2. POLYMORPHISM (Lesson 12):<br>
+   - Same method, different behaviors<br>
+   - virtual and override keywords<br>
+   - Flexible, scalable systems<br>
+<br>
+3. ENCAPSULATION (This Lesson):<br>
+   - Hide internal data<br>
+   - Control access with methods/properties<br>
+   - Protect code integrity<br>
+<br>
+TOGETHER: Professional, maintainable, scalable code!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Philosophy:</strong> "Make everything as private as possible, then selectively expose
+                    what's needed." This is the golden rule of encapsulation and the key to clean, professional code!
+                </div>
+            </div>
+
+            <!-- Topic 2: The Problem - Why Not Public Everything? -->
+            <div class="topic">
+                <h2>2. The Problem: Why Not Make Everything Public? ⚠️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The easiest solution to accessing variables from other scripts is making them
+                        <code>public</code>. But this creates massive problems in real projects. Let's see why this
+                        "easy" solution is actually a disaster waiting to happen.</p>
+                </div>
+
+                <h3>The Scenario</h3>
+                <div class="example">
+                    <div class="example-header">Needing Data from Another Script</div>
+                    <code>// Enemy.cs<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected string enemyName = "Skeleton";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected int maxHealth = 100;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected int currentHealth;<br>
+}<br>
+<br>
+// PlayerController.cs<br>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void OnTriggerEnter2D(Collider2D collision)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enemy enemy = collision.GetComponent&lt;Enemy&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (enemy != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enemy.TakeDamage(10);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Want to log which enemy we damaged<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("I damaged enemy: " + ???);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ❌ Can't access enemyName - it's protected!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>The Tempting "Solution": Make It Public</h3>
+                <div class="example">
+                    <div class="example-header">❌ BAD: Public Everything</div>
+                    <code>// Enemy.cs<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Made public to access from Player<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string enemyName = "Skeleton";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int maxHealth = 100;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int currentHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float moveSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public bool isDead;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float attackCooldown;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int damage;<br>
+}<br>
+<br>
+// PlayerController.cs<br>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void OnTriggerEnter2D(Collider2D collision)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enemy enemy = collision.GetComponent&lt;Enemy&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (enemy != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enemy.TakeDamage(10);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("I damaged enemy: " + enemy.enemyName);  // ✅ Works!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>⚠️ Problems with Public Everything</h4>
+                    <ul>
+                        <li><strong>Anyone Can Modify:</strong> Any script can do enemy.currentHealth = -999</li>
+                        <li><strong>No Validation:</strong> Can't enforce rules (health >= 0)</li>
+                        <li><strong>Hard to Debug:</strong> Who changed isDead? Could be 50 different scripts!</li>
+                        <li><strong>Cluttered Inspector:</strong> 20+ public fields make Inspector messy</li>
+                        <li><strong>Breaking Changes:</strong> Renaming a public variable breaks all code that uses it
+                        </li>
+                        <li><strong>No Encapsulation:</strong> Internal implementation is exposed</li>
+                        <li><strong>Not Professional:</strong> Real projects would be unmaintainable chaos</li>
+                    </ul>
+                </div>
+
+                <h3>The Chaos in Action</h3>
+                <div class="example">
+                    <div class="example-header">Real Problems That Happen</div>
+                    <code>// BuggyScript.cs - Someone's buggy code<br>
+Enemy enemy = FindObjectOfType&lt;Enemy&gt;();<br>
+<br>
+// Accidentally sets health to 0 instead of checking it<br>
+if (enemy.currentHealth = 0)  // ❌ Assignment instead of ==<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Enemy is dead");<br>
+}<br>
+// Now enemy instantly dies! Hard to find this bug!<br>
+<br>
+// Another script does something crazy<br>
+enemy.isDead = true;<br>
+enemy.currentHealth = 100;  // Dead but full health?<br>
+enemy.moveSpeed = -5f;  // Moves backwards?<br>
+<br>
+// Power-up script accidentally breaks everything<br>
+foreach (Enemy e in allEnemies)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;e.attackCooldown = 0;  // Now ALL enemies attack instantly!<br>
+}<br>
+<br>
+DEBUGGING NIGHTMARE:<br>
+"Why is enemy dead with full health?"<br>
+"Who set attackCooldown to 0?"<br>
+"Where did moveSpeed become negative?"<br>
+→ Could be ANY of 50 scripts!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🚨 Real Story:</strong> In large game projects, making variables public is one of the #1
+                    causes of bugs. A single public bool changed by the wrong script at the wrong time can cause days of
+                    debugging!
+                </div>
+            </div>
+
+            <!-- Topic 3: Solution 1 - Getter Methods -->
+            <div class="topic">
+                <h2>3. Solution 1: Getter Methods 📤</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>A <strong>getter method</strong> is a public method that returns a protected/private variable.
+                        The variable stays protected (can't be modified externally), but other scripts can read its
+                        value through the method. This is classic encapsulation.</p>
+                </div>
+
+                <h3>Creating a Getter Method</h3>
+                <div class="example">
+                    <div class="example-header">Enemy.cs - Encapsulated with Getter</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Protected - only this class and children can access<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected string enemyName = "Enemy";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected int maxHealth = 100;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected int currentHealth;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Public getter method - allows reading from outside<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string GetEnemyName()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return enemyName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Another getter for health<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int GetCurrentHealth()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return currentHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentHealth = maxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public virtual void TakeDamage(int damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentHealth -= damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (currentHealth <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Die();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Die()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " dies!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 How Getter Methods Work</h4>
+                    <ul>
+                        <li><strong>Method Returns Value:</strong> GetEnemyName() returns the enemyName string</li>
+                        <li><strong>Variable Stays Protected:</strong> Can't modify enemyName from outside</li>
+                        <li><strong>Read-Only Access:</strong> Other scripts can read but not write</li>
+                        <li><strong>Naming Convention:</strong> Get[VariableName]() is standard (GetHealth, GetSpeed)
+                        </li>
+                        <li><strong>Return Type Matches:</strong> Method return type = variable type</li>
+                    </ul>
+                </div>
+
+                <h3>Using the Getter in Player Script</h3>
+                <div class="example">
+                    <div class="example-header">PlayerController.cs</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void OnTriggerEnter2D(Collider2D collision)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Get the Enemy component<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enemy enemyScript = collision.GetComponent&lt;Enemy&gt;();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (enemyScript != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Damage the enemy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enemyScript.TakeDamage(10);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Get enemy name using getter method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string name = enemyScript.GetEnemyName();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("I damaged enemy: " + name);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Can also use directly in string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("I damaged enemy: " + enemyScript.GetEnemyName());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>What You Can and Can't Do</h3>
+                <div class="example">
+                    <div class="example-header">Access Control</div>
+                    <code>Enemy enemyScript = collision.GetComponent&lt;Enemy&gt;();<br>
+<br>
+// ✅ CAN DO: Read value through getter<br>
+string name = enemyScript.GetEnemyName();<br>
+int health = enemyScript.GetCurrentHealth();<br>
+Debug.Log("Enemy: " + name + " has " + health + " HP");<br>
+<br>
+// ❌ CAN'T DO: Access variable directly<br>
+// string name = enemyScript.enemyName;  // ERROR: inaccessible<br>
+<br>
+// ❌ CAN'T DO: Modify the value<br>
+// enemyScript.enemyName = "NewName";  // ERROR: inaccessible<br>
+// You can't assign to a method: enemyScript.GetEnemyName() = "NewName";<br>
+<br>
+// ✅ CAN DO: Use public methods to modify safely<br>
+enemyScript.TakeDamage(10);  // Uses controlled method<br>
+<br>
+RESULT: Read-only access from outside, full control inside!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💼 Professional Pattern:</strong> Getter methods are the classic OOP approach. They're
+                    clear, explicit, and easy to understand. Many professional codebases use this pattern extensively!
+                </div>
+            </div>
+
+            <!-- Topic 4: Solution 2 - C# Properties -->
+            <div class="topic">
+                <h2>4. Solution 2: C# Properties (Get/Set) 🎛️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>C# <strong>properties</strong> are a more elegant way to encapsulate data. They look like
+                        variables but act like methods, allowing you to control read and write access. The syntax is
+                        cleaner than getter methods and is the modern C# approach.</p>
+                </div>
+
+                <h3>Basic Property Syntax</h3>
+                <div class="example">
+                    <div class="example-header">Properties vs Getter Methods</div>
+                    <code>// OLD WAY: Getter method<br>
+private string enemyName = "Skeleton";<br>
+<br>
+public string GetEnemyName()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return enemyName;<br>
+}<br>
+<br>
+// NEW WAY: Property<br>
+private string _enemyName = "Skeleton";<br>
+<br>
+public string EnemyName<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;get { return _enemyName; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;set { _enemyName = value; }<br>
+}<br>
+<br>
+// USAGE COMPARISON:<br>
+// Getter method:<br>
+string name = enemy.GetEnemyName();<br>
+<br>
+// Property:<br>
+string name = enemy.EnemyName;  // Cleaner!</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Property Basics</h4>
+                    <ul>
+                        <li><strong>get Accessor:</strong> Returns the value (like a getter method)</li>
+                        <li><strong>set Accessor:</strong> Assigns a value (value keyword is the new value)</li>
+                        <li><strong>Backing Field:</strong> Usually private variable with underscore (_enemyName)</li>
+                        <li><strong>Naming Convention:</strong> Property name is PascalCase (EnemyName, not enemyName)
+                        </li>
+                        <li><strong>Looks Like Variable:</strong> Used like variable but runs method code</li>
+                    </ul>
+                </div>
+
+                <h3>Full Property Example</h3>
+                <div class="example">
+                    <div class="example-header">Enemy.cs with Properties</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Backing fields (private)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private string _enemyName = "Enemy";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private int _maxHealth = 100;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private int _currentHealth;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Property with full get/set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string EnemyName<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get { return _enemyName; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set { _enemyName = value; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Property with validation in setter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int CurrentHealth<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get { return _currentHealth; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Validation: health can't go below 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_currentHealth = Mathf.Clamp(value, 0, _maxHealth);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Automatically die if health reaches 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (_currentHealth <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Die();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_currentHealth = _maxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Die()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(_enemyName + " dies!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>Using Properties</h3>
+                <div class="example">
+                    <div class="example-header">PlayerController.cs</div>
+                    <code>// Reading property (calls get)<br>
+string name = enemyScript.EnemyName;<br>
+int health = enemyScript.CurrentHealth;<br>
+Debug.Log(name + " has " + health + " HP");<br>
+<br>
+// Writing property (calls set)<br>
+enemyScript.CurrentHealth = 50;  // Setter runs with validation<br>
+enemyScript.EnemyName = "Elite Skeleton";<br>
+<br>
+// Looks like variable access, but methods run behind the scenes!<br>
+<br>
+// Operations work too<br>
+enemyScript.CurrentHealth -= 10;  // get, subtract, then set<br>
+// Equivalent to:<br>
+// enemyScript.CurrentHealth = enemyScript.CurrentHealth - 10;</code>
+                </div>
+
+                <div class="tip">
+                    <strong>✨ Power of Properties:</strong> Properties can run complex logic in get/set. Clamp health to
+                    valid range, trigger events, validate input—all invisible to the caller! This is encapsulation at
+                    its finest.
+                </div>
+            </div>
+
+            <!-- Topic 5: The Magic Pattern - "public get; private set;" -->
+            <div class="topic">
+                <h2>5. The Magic Pattern: "public get; private set;" 🪄</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The most common property pattern in Unity: <strong>public get; private set;</strong> This creates
+                        a property that anyone can read, but only the owning class can modify. It's the perfect balance
+                        of accessibility and protection.</p>
+                </div>
+
+                <h3>The Auto-Property Syntax</h3>
+                <div class="example">
+                    <div class="example-header">Short and Sweet</div>
+                    <code>// LONG WAY: Manual backing field<br>
+private string _enemyName = "Skeleton";<br>
+public string EnemyName<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;get { return _enemyName; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private set { _enemyName = value; }<br>
+}<br>
+<br>
+// SHORT WAY: Auto-property (C# does backing field automatically)<br>
+public string EnemyName { get; private set; } = "Skeleton";<br>
+<br>
+// Even shorter (set default in constructor/Awake)<br>
+public string EnemyName { get; private set; }<br>
+<br>
+// Multiple examples<br>
+public int CurrentHealth { get; private set; }<br>
+public float MoveSpeed { get; private set; } = 3f;<br>
+public bool IsDead { get; private set; } = false;</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 How It Works</h4>
+                    <ul>
+                        <li><strong>public get:</strong> Anyone can read the property</li>
+                        <li><strong>private set:</strong> Only this class can modify the property</li>
+                        <li><strong>Auto-Property:</strong> C# creates backing field automatically (you don't see it)
+                        </li>
+                        <li><strong>Read-Only to Outside:</strong> Other scripts see it as read-only</li>
+                        <li><strong>Full Control Inside:</strong> This class can set it freely</li>
+                    </ul>
+                </div>
+
+                <h3>Complete Example</h3>
+                <div class="example">
+                    <div class="example-header">Enemy.cs - Modern Pattern</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Public read, private write properties<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string EnemyName { get; private set; } = "Enemy";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int MaxHealth { get; private set; } = 100;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int CurrentHealth { get; private set; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public bool IsDead { get; private set; } = false;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Still need SerializeField for Inspector visibility<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private string _inspectorName = "Skeleton";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private int _inspectorMaxHealth = 100;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Set property values from inspector fields<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EnemyName = _inspectorName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MaxHealth = _inspectorMaxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CurrentHealth = MaxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public virtual void TakeDamage(int damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CurrentHealth -= damage;  // ✅ Can modify inside this class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CurrentHealth = Mathf.Max(CurrentHealth, 0);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (CurrentHealth <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Die();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Die()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsDead = true;  // ✅ Can set inside this class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(EnemyName + " dies!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>Using Read-Only Properties</h3>
+                <div class="example">
+                    <div class="example-header">PlayerController.cs</div>
+                    <code>Enemy enemyScript = collision.GetComponent&lt;Enemy&gt;();<br>
+<br>
+// ✅ CAN READ: Public get allows reading<br>
+string name = enemyScript.EnemyName;<br>
+int health = enemyScript.CurrentHealth;<br>
+bool dead = enemyScript.IsDead;<br>
+<br>
+Debug.Log("I damaged enemy: " + name);<br>
+Debug.Log("Remaining health: " + health);<br>
+<br>
+// ❌ CANNOT WRITE: Private set prevents modification<br>
+// enemyScript.EnemyName = "NewName";  // ERROR: inaccessible setter<br>
+// enemyScript.CurrentHealth = 999;  // ERROR: inaccessible setter<br>
+// enemyScript.IsDead = true;  // ERROR: inaccessible setter<br>
+<br>
+// ✅ Must use public methods for controlled modification<br>
+enemyScript.TakeDamage(10);</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💼 Industry Standard:</strong> "public get; private set;" is the most common pattern in
+                    professional Unity projects. It's clean, clear, and protects data while allowing read access. Use
+                    this by default!
+                </div>
+            </div>
+
+            <!-- Topic 6: When to Use Each Approach -->
+            <div class="topic">
+                <h2>6. When to Use Each Approach 🤔</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>You now know three ways to expose data: getter methods, full properties, and auto-properties with
+                        "get; private set;". Each has its place. Here's when to use which approach.</p>
+                </div>
+
+                <h3>Method 1: Getter Methods</h3>
+                <div class="key-points">
+                    <h4>✅ Use Getter Methods When:</h4>
+                    <ul>
+                        <li><strong>Complex Calculation:</strong> GetDamageOutput() calculates damage with formulas</li>
+                        <li><strong>Method Indicates Action:</strong> "Get" suggests something happens</li>
+                        <li><strong>Multiple Parameters:</strong> GetHealthPercentage(bool includeShield)</li>
+                        <li><strong>Working with Legacy Code:</strong> Existing codebase uses getter methods</li>
+                        <li><strong>Personal Preference:</strong> Some teams prefer explicit methods</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Getter Method Example</div>
+                    <code>public float GetHealthPercentage()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return (float)currentHealth / maxHealth * 100f;<br>
+}<br>
+<br>
+public int GetTotalDamage()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return baseDamage + weaponDamage + buffDamage;<br>
+}<br>
+<br>
+public string GetDisplayName()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return isElite ? "Elite " + enemyName : enemyName;<br>
+}</code>
+                </div>
+
+                <h3>Method 2: Full Properties (get + set)</h3>
+                <div class="key-points">
+                    <h4>✅ Use Full Properties When:</h4>
+                    <ul>
+                        <li><strong>Validation Needed:</strong> Clamp, check range, enforce rules in setter</li>
+                        <li><strong>Side Effects:</strong> Setting value triggers events or updates UI</li>
+                        <li><strong>Computed Values:</strong> Get calculates, set updates backing fields</li>
+                        <li><strong>Public Read/Write:</strong> Both get and set should be public</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Full Property Example</div>
+                    <code>private int _currentHealth;<br>
+<br>
+public int CurrentHealth<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;get { return _currentHealth; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Validation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_currentHealth = Mathf.Clamp(value, 0, maxHealth);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Side effect: update UI<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UpdateHealthBar();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Side effect: check death<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (_currentHealth <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Die();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>Method 3: Auto-Properties (get; private set;)</h3>
+                <div class="key-points">
+                    <h4>✅ Use Auto-Properties When:</h4>
+                    <ul>
+                        <li><strong>Simple Data Storage:</strong> Just storing a value, no computation</li>
+                        <li><strong>Read-Only to Outside:</strong> Public read, private write pattern</li>
+                        <li><strong>Clean Syntax Preferred:</strong> Shorter, more readable code</li>
+                        <li><strong>Modern C# Style:</strong> Industry standard for Unity</li>
+                        <li><strong>No Validation Needed:</strong> Direct value storage</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Auto-Property Example</div>
+                    <code>public string EnemyName { get; private set; }<br>
+public int MaxHealth { get; private set; } = 100;<br>
+public bool IsDead { get; private set; } = false;<br>
+public float MoveSpeed { get; private set; } = 3f;</code>
+                </div>
+
+                <h3>Decision Tree</h3>
+                <div class="example">
+                    <div class="example-header">Which Approach to Use?</div>
+                    <code>DECISION TREE:<br>
+<br>
+Need calculation or complex logic?<br>
+→ YES: Use Getter Method (GetHealthPercentage())<br>
+<br>
+Need validation or side effects when setting?<br>
+→ YES: Use Full Property with custom get/set<br>
+<br>
+Need public read, private write, simple storage?<br>
+→ YES: Use Auto-Property { get; private set; }<br>
+<br>
+Need public read AND write with validation?<br>
+→ YES: Use Full Property with public get/set<br>
+<br>
+Need public read AND write, no validation?<br>
+→ Consider: Do you REALLY need public write?<br>
+→ Usually better: Keep private, use method like SetHealth(int value)<br>
+<br>
+DEFAULT CHOICE:<br>
+When in doubt → Auto-Property { get; private set; }</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎯 Professional Mix:</strong> Real projects use ALL three approaches in different places.
+                    Auto-properties for simple data, full properties for validated data, getter methods for
+                    calculations. Use the right tool for the job!
+                </div>
+            </div>
+
+            <!-- Topic 7: Debugging Benefits of Encapsulation -->
+            <div class="topic">
+                <h2>7. Debugging Benefits of Encapsulation 🔍</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>One of the biggest benefits of encapsulation is <strong>easier debugging</strong>. When data can
+                        only be modified through specific methods or setters, you know exactly where to look when
+                        something goes wrong.</p>
+                </div>
+
+                <h3>The Public Variable Nightmare</h3>
+                <div class="example">
+                    <div class="example-header">❌ Public Variable Debugging Nightmare</div>
+                    <code>// Enemy.cs<br>
+public int currentHealth = 100;<br>
+<br>
+BUG REPORT: "Enemy has negative health!"<br>
+<br>
+WHERE IS IT MODIFIED?<br>
+- Could be PlayerController.cs (line 45)<br>
+- Could be TrapScript.cs (line 92)<br>
+- Could be PoisonEffect.cs (line 31)<br>
+- Could be BossAttack.cs (line 78)<br>
+- Could be CheatConsole.cs (line 104)<br>
+- Could be PowerUpManager.cs (line 56)<br>
+- Could be 30 other scripts!<br>
+<br>
+DEBUGGING PROCESS:<br>
+1. Search entire project for "currentHealth"<br>
+2. Find 147 references<br>
+3. Check each one manually<br>
+4. Add Debug.Log everywhere<br>
+5. Spend 2 hours finding the bug<br>
+6. It was a typo in obscure script you forgot about<br>
+<br>
+CONCLUSION: Nightmare!</code>
+                </div>
+
+                <h3>The Encapsulated Solution</h3>
+                <div class="example">
+                    <div class="example-header">✅ Encapsulated Debugging Paradise</div>
+                    <code>// Enemy.cs<br>
+public int CurrentHealth { get; private set; } = 100;<br>
+<br>
+public void TakeDamage(int damage)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log($"TakeDamage called: {damage} damage");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;CurrentHealth -= damage;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (CurrentHealth < 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.LogError($"Health went negative! CurrentHealth: {CurrentHealth}");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+BUG REPORT: "Enemy has negative health!"<br>
+<br>
+WHERE IS IT MODIFIED?<br>
+- Only in TakeDamage() method<br>
+- That's it. ONE place.<br>
+<br>
+DEBUGGING PROCESS:<br>
+1. Put breakpoint in TakeDamage()<br>
+2. See which call makes health negative<br>
+3. Fix the bug in 5 minutes<br>
+<br>
+CONCLUSION: Easy!</code>
+                </div>
+
+                <h3>Adding Debugging to Properties</h3>
+                <div class="example">
+                    <div class="example-header">Debug-Friendly Property</div>
+                    <code>private int _currentHealth;<br>
+<br>
+public int CurrentHealth<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return _currentHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Log every change for debugging<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log($"Health changed: {_currentHealth} → {value}");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Catch invalid values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (value < 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.LogError($"Attempting to set negative health: {value}");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.LogError($"Stack trace: {System.Environment.StackTrace}");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_currentHealth = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Now you see EVERY health change with stack trace!<br>
+// Turn on/off with bool flag for release builds</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Encapsulation Debugging Benefits</h4>
+                    <ul>
+                        <li><strong>Single Point of Modification:</strong> Only one place to check</li>
+                        <li><strong>Easy Breakpoints:</strong> Put breakpoint in setter/method</li>
+                        <li><strong>Logging:</strong> Add Debug.Log in one place</li>
+                        <li><strong>Validation:</strong> Catch invalid values before they cause problems</li>
+                        <li><strong>Stack Traces:</strong> Know exactly what called the setter</li>
+                        <li><strong>Quick Fixes:</strong> Find and fix bugs in minutes, not hours</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🚨 Real Experience:</strong> Senior developers spend 70% of time debugging. Encapsulation
+                    can reduce debugging time by 80%. That's the difference between 1 hour and 5 minutes to find a bug.
+                    Worth it!
+                </div>
+            </div>
+
+            <!-- Topic 8: Encapsulation with SerializeField -->
+            <div class="topic">
+                <h2>8. Encapsulation with [SerializeField] 🎨</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Unity's <code>[SerializeField]</code> attribute lets you show private/protected variables in the
+                        Inspector without making them public. This maintains encapsulation while allowing designers to
+                        tune values—the best of both worlds!</p>
+                </div>
+
+                <h3>The Problem with Properties in Inspector</h3>
+                <div class="example">
+                    <div class="example-header">❌ Properties Don't Show in Inspector</div>
+                    <code>// This WON'T show in Inspector<br>
+public int MaxHealth { get; private set; } = 100;<br>
+<br>
+// Neither will this<br>
+public string EnemyName { get; private set; } = "Skeleton";<br>
+<br>
+WHY?<br>
+Unity only serializes FIELDS (variables), not PROPERTIES.<br>
+Properties are technically methods, not data storage.<br>
+<br>
+PROBLEM:<br>
+Can't tune MaxHealth per enemy in Inspector!</code>
+                </div>
+
+                <h3>The Solution: SerializeField + Private Field + Property</h3>
+                <div class="example">
+                    <div class="example-header">✅ Inspector + Encapsulation Pattern</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Private field - visible in Inspector via SerializeField<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private string _enemyName = "Skeleton";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private int _maxHealth = 100;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Public read-only properties for code access<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string EnemyName { get; private set; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int MaxHealth { get; private set; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int CurrentHealth { get; private set; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Copy Inspector values to properties<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EnemyName = _enemyName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MaxHealth = _maxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CurrentHealth = MaxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+RESULT:<br>
+✅ Inspector shows _enemyName and _maxHealth (tunable)<br>
+✅ Code uses EnemyName and MaxHealth properties (read-only)<br>
+✅ Encapsulation maintained<br>
+✅ Designer-friendly</code>
+                </div>
+
+                <h3>Alternative: Getter Method Pattern</h3>
+                <div class="example">
+                    <div class="example-header">Simpler Pattern for Getters</div>
+                    <code>public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// SerializeField + protected = Inspector visible + child accessible<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected string enemyName = "Skeleton";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected int maxHealth = 100;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Public getter methods<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string GetEnemyName() => enemyName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int GetMaxHealth() => maxHealth;<br>
+}<br>
+<br>
+// Usage in other scripts:<br>
+string name = enemy.GetEnemyName();<br>
+int health = enemy.GetMaxHealth();<br>
+<br>
+PROS:<br>
+✅ Simpler - fewer variables<br>
+✅ Inspector-friendly<br>
+✅ Child classes can access protected fields<br>
+<br>
+CONS:<br>
+❌ Method call syntax (parentheses)<br>
+❌ Less "modern" than properties</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 SerializeField Best Practices</h4>
+                    <ul>
+                        <li><strong>Use Underscore:</strong> Private fields with underscore (_maxHealth) distinguish
+                            from properties</li>
+                        <li><strong>Set in Awake:</strong> Copy Inspector values to properties in Awake()</li>
+                        <li><strong>Protected OK:</strong> [SerializeField] protected works for child class access</li>
+                        <li><strong>Header Attribute:</strong> Use [Header("Stats")] to organize Inspector</li>
+                        <li><strong>Tooltip Attribute:</strong> Use [Tooltip("text")] to add descriptions</li>
+                    </ul>
+                </div>
+
+                <h3>Full Professional Example</h3>
+                <div class="example">
+                    <div class="example-header">Production-Ready Pattern</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Header("Identity")]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private string _enemyName = "Skeleton";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private Sprite _enemyIcon;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[Header("Stats")]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] [Tooltip("Maximum health points")]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private int _maxHealth = 100;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] [Range(1f, 10f)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private float _moveSpeed = 3f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Public properties (code access)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string EnemyName { get; private set; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int MaxHealth { get; private set; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int CurrentHealth { get; private set; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float MoveSpeed { get; private set; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EnemyName = _enemyName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MaxHealth = _maxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CurrentHealth = MaxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MoveSpeed = _moveSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+INSPECTOR RESULT:<br>
+Clean, organized sections with tooltips and sliders<br>
+Designers can tune without touching code<br>
+<br>
+CODE RESULT:<br>
+enemy.EnemyName - clean property access<br>
+enemy.CurrentHealth - read-only from outside</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎨 Team Workflow:</strong> This pattern lets programmers protect code while giving designers
+                    full Inspector control. Perfect for team projects where non-programmers need to tune values!
+                </div>
+            </div>
+
+            <!-- Topic 9: Real-World Testing Example -->
+            <div class="topic">
+                <h2>9. Real-World Testing Example 🎮</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Let's put everything together with a complete, working example. We'll create an Enemy with
+                        encapsulated data and a Player that damages enemies while accessing their protected information
+                        properly.</p>
+                </div>
+
+                <h3>Complete Enemy Script</h3>
+                <div class="example">
+                    <div class="example-header">Enemy.cs - Fully Encapsulated</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// SerializeField for Inspector, private for encapsulation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private string _enemyName = "Skeleton";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private int _maxHealth = 100;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Public get, private set properties<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string EnemyName { get; private set; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int MaxHealth { get; private set; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int CurrentHealth { get; private set; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public bool IsDead { get; private set; } = false;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EnemyName = _enemyName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MaxHealth = _maxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CurrentHealth = MaxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public virtual void TakeDamage(int damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (IsDead) return;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CurrentHealth -= damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CurrentHealth = Mathf.Max(CurrentHealth, 0);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log($"{EnemyName} took {damage} damage! Health: {CurrentHealth}/{MaxHealth}");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (CurrentHealth <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Die();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Die()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsDead = true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log($"{EnemyName} dies!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>Player Script Using Encapsulated Data</h3>
+                <div class="example">
+                    <div class="example-header">PlayerController.cs</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private int attackDamage = 10;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void OnTriggerEnter2D(Collider2D collision)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Try to get Enemy component<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enemy enemyScript = collision.GetComponent&lt;Enemy&gt;();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (enemyScript != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Damage the enemy (public method)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enemyScript.TakeDamage(attackDamage);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Access encapsulated data (read-only properties)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string name = enemyScript.EnemyName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int health = enemyScript.CurrentHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool dead = enemyScript.IsDead;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Log what happened<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (!dead)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log($"I damaged enemy: {name} (Remaining HP: {health})");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log($"I killed enemy: {name}!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>Setup in Unity</h3>
+                <div class="example">
+                    <div class="example-header">Scene Setup Steps</div>
+                    <code>1. CREATE ENEMIES:<br>
+   - Create 3 GameObjects: "Skeleton", "Goblin", "Archer"<br>
+   - Add Enemy script to each<br>
+   - Add BoxCollider2D to each<br>
+   - Check "Is Trigger" on colliders<br>
+   - Set Layer to "Enemy"<br>
+<br>
+2. SET NAMES IN INSPECTOR:<br>
+   - Skeleton: _enemyName = "Skeleton", _maxHealth = 50<br>
+   - Goblin: _enemyName = "Goblin", _maxHealth = 80<br>
+   - Archer: _enemyName = "Archer", _maxHealth = 60<br>
+<br>
+3. PLAYER SETUP:<br>
+   - Add PlayerController script<br>
+   - Set attackDamage = 10<br>
+   - Add collider (trigger)<br>
+<br>
+4. PLAY MODE:<br>
+   - Move player into enemies<br>
+   - See console messages:<br>
+     "Skeleton took 10 damage! Health: 40/50"<br>
+     "I damaged enemy: Skeleton (Remaining HP: 40)"</code>
+                </div>
+
+                <h3>Console Output Example</h3>
+                <div class="example">
+                    <div class="example-header">Testing Results</div>
+                    <code>// Hit Skeleton (50 HP)<br>
+Skeleton took 10 damage! Health: 40/50<br>
+I damaged enemy: Skeleton (Remaining HP: 40)<br>
+<br>
+Skeleton took 10 damage! Health: 30/50<br>
+I damaged enemy: Skeleton (Remaining HP: 30)<br>
+<br>
+// ... continued hits ...<br>
+<br>
+Skeleton took 10 damage! Health: 0/50<br>
+Skeleton dies!<br>
+I killed enemy: Skeleton!<br>
+<br>
+// Hit Goblin (80 HP)<br>
+Goblin took 10 damage! Health: 70/80<br>
+I damaged enemy: Goblin (Remaining HP: 70)<br>
+<br>
+// Hit Archer (60 HP)<br>
+Archer took 10 damage! Health: 50/60<br>
+I damaged enemy: Archer (Remaining HP: 50)<br>
+<br>
+ENCAPSULATION SUCCESS:<br>
+✅ Can read enemy names (properties)<br>
+✅ Can read health status (properties)<br>
+✅ Cannot modify directly (private set)<br>
+✅ Must use TakeDamage() method (controlled)</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎮 Complete Example:</strong> This demonstrates professional encapsulation in action. Data
+                    is protected, access is controlled, debugging is easy, and the code is clean and maintainable!
+                </div>
+            </div>
+
+            <!-- Topic 10: OOP Complete - Three Pillars Mastered -->
+            <div class="topic">
+                <h2>10. OOP Complete: Three Pillars Mastered 🏛️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Congratulations! You've now learned all three pillars of Object-Oriented Programming. Let's
+                        review how they work together to create professional, maintainable game code.</p>
+                </div>
+
+                <h3>The Three Pillars Working Together</h3>
+                <div class="example">
+                    <div class="example-header">Complete OOP Example</div>
+                    <code>// INHERITANCE: Base class with shared functionality<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ENCAPSULATION: Protected data with public properties<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private string _enemyName = "Enemy";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string EnemyName { get; private set; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private int _maxHealth = 100;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int CurrentHealth { get; private set; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// POLYMORPHISM: Virtual method for child customization<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(EnemyName + " attacks!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ENCAPSULATION: Controlled access through public method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void TakeDamage(int damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CurrentHealth -= damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Validation and side effects here<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// INHERITANCE: Child class inherits from Enemy<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// POLYMORPHISM: Override parent behavior<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected override void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base.Attack();  // Parent behavior<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StealGold();    // Unique behavior<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ENCAPSULATION: Private helper method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void StealGold()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Access parent's encapsulated data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(EnemyName + " steals gold!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+ALL THREE PILLARS WORKING IN HARMONY!</code>
+                </div>
+
+                <h3>Benefits of Complete OOP</h3>
+                <div class="key-points">
+                    <h4>✨ What You've Achieved</h4>
+                    <ul>
+                        <li><strong>Code Reusability:</strong> Inheritance eliminates duplication</li>
+                        <li><strong>Flexibility:</strong> Polymorphism allows customization without breaking base code
+                        </li>
+                        <li><strong>Safety:</strong> Encapsulation protects data from unwanted modification</li>
+                        <li><strong>Maintainability:</strong> Easy to find bugs, make changes, add features</li>
+                        <li><strong>Scalability:</strong> Add new enemy types in minutes</li>
+                        <li><strong>Team-Friendly:</strong> Clear interfaces, protected internals</li>
+                        <li><strong>Professional Quality:</strong> Industry-standard code architecture</li>
+                    </ul>
+                </div>
+
+                <h3>Real-World Impact</h3>
+                <div class="example">
+                    <div class="example-header">Before vs After OOP</div>
+                    <code>BEFORE OOP (Beginner Code):<br>
+- 10 enemy types = 10 scripts × 200 lines = 2,000 lines<br>
+- Public variables everywhere<br>
+- Bugs take hours to find<br>
+- Copy-paste code duplication<br>
+- Hard to add new enemies<br>
+- Spaghetti code<br>
+<br>
+AFTER OOP (Professional Code):<br>
+- 10 enemy types = 1 base (150 lines) + 10 children (30 lines each) = 450 lines<br>
+- Encapsulated properties<br>
+- Bugs found in minutes<br>
+- No code duplication<br>
+- New enemies in 10 minutes<br>
+- Clean, organized code<br>
+<br>
+IMPROVEMENT:<br>
+77% less code<br>
+90% faster debugging<br>
+Professional quality<br>
+Team-ready codebase</code>
+                </div>
+
+                <h3>Your Journey Continues</h3>
+                <div class="key-points">
+                    <h4>🚀 What's Next?</h4>
+                    <ul>
+                        <li><strong>Practice:</strong> Apply OOP to your own game projects</li>
+                        <li><strong>Patterns:</strong> Learn design patterns (Singleton, Observer, Factory)</li>
+                        <li><strong>SOLID Principles:</strong> Advanced OOP guidelines</li>
+                        <li><strong>Interfaces:</strong> Another powerful OOP feature</li>
+                        <li><strong>Generic Classes:</strong> Code that works with multiple types</li>
+                        <li><strong>Real Projects:</strong> Use OOP in actual game development</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Congratulations!</strong> You've completed the OOP trilogy! Inheritance, Polymorphism,
+                    and Encapsulation are now in your toolkit. These concepts apply to ALL object-oriented languages
+                    (C#, Java, C++, Python). You're ready for professional game development!
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="key-points">
+                    <h4>Exercise 1: Add Getter Methods</h4>
+                    <p><strong>Task:</strong> Add encapsulation to existing Enemy class</p>
+                    <ul>
+                        <li>Change enemyName from protected to private</li>
+                        <li>Create public string GetEnemyName() method that returns enemyName</li>
+                        <li>Change maxHealth to private</li>
+                        <li>Create public int GetMaxHealth() method</li>
+                        <li>Test accessing these from PlayerController</li>
+                        <li>Verify you can't access variables directly but methods work</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 2: Convert to Properties</h4>
+                    <p><strong>Task:</strong> Replace getter methods with C# properties</p>
+                    <ul>
+                        <li>Remove GetEnemyName() and GetMaxHealth() methods</li>
+                        <li>Create private backing fields: _enemyName, _maxHealth</li>
+                        <li>Create public properties: EnemyName { get; private set; }</li>
+                        <li>Create property: MaxHealth { get; private set; }</li>
+                        <li>Set property values in Awake() from backing fields</li>
+                        <li>Update PlayerController to use properties instead of methods</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 3: Property with Validation</h4>
+                    <p><strong>Task:</strong> Create health property with validation logic</p>
+                    <ul>
+                        <li>Create private int _currentHealth backing field</li>
+                        <li>Create full property: public int CurrentHealth { get; set; }</li>
+                        <li>In setter, clamp value between 0 and MaxHealth</li>
+                        <li>In setter, if value <= 0, call Die() method</li>
+                        <li>Test by manually setting CurrentHealth = -50 (should clamp to 0)</li>
+                        <li>Add Debug.Log in setter to track all health changes</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 4: SerializeField + Property Pattern</h4>
+                    <p><strong>Task:</strong> Make properties Inspector-visible</p>
+                    <ul>
+                        <li>Add [SerializeField] to all private backing fields (_enemyName, _maxHealth)</li>
+                        <li>Verify they show in Inspector</li>
+                        <li>Create 3 enemy GameObjects with different values</li>
+                        <li>Properties should reflect Inspector values at runtime</li>
+                        <li>Add [Header("Stats")] and [Tooltip] attributes for organization</li>
+                        <li>Test that changes in Inspector affect property values</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Challenge Exercise: Complete Encapsulated System</h4>
+                    <p><strong>Task:</strong> Build professional enemy system with all three OOP pillars</p>
+                    <ul>
+                        <li>Create Entity base class with encapsulated health system</li>
+                        <li>Entity has: public int Health { get; private set; } with validation</li>
+                        <li>Create virtual void TakeDamage(int damage) method</li>
+                        <li>Enemy class inherits from Entity</li>
+                        <li>EnemyGoblin overrides TakeDamage to reduce damage (armor)</li>
+                        <li>EnemyGhost overrides TakeDamage with 50% dodge chance</li>
+                        <li>All health changes logged for debugging</li>
+                        <li>Player can access Health (read) but not modify directly</li>
+                        <li>Test all three pillars: Inheritance, Polymorphism, Encapsulation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white !important; border-left: none !important;">
+                <h4 style="color: white !important;">📚 Lesson 13 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95) !important;"><strong>Incredible achievement!</strong> You've
+                    mastered the third and final pillar of Object-Oriented Programming. Here's everything you learned:
+                </p>
+                <ul style="color: rgba(255,255,255,0.9) !important;">
+                    <li>✅ <strong>Encapsulation Definition:</strong> Hiding internal data and exposing through
+                        controlled interfaces</li>
+                    <li>✅ <strong>Why Not Public:</strong> Public variables cause debugging nightmares and break
+                        encapsulation</li>
+                    <li>✅ <strong>Getter Methods:</strong> Public methods that return protected/private variables for
+                        read-only access</li>
+                    <li>✅ <strong>C# Properties:</strong> Elegant syntax with get and set accessors for controlled
+                        access</li>
+                    <li>✅ <strong>"public get; private set;":</strong> The magic pattern for read-only properties
+                    </li>
+                    <li>✅ <strong>Auto-Properties:</strong> Clean, modern syntax for simple data storage</li>
+                    <li>✅ <strong>Property Validation:</strong> Enforce rules and trigger side effects in setters</li>
+                    <li>✅ <strong>Debugging Benefits:</strong> Single modification points make bugs easy to find</li>
+                    <li>✅ <strong>[SerializeField] Pattern:</strong> Inspector visibility while maintaining
+                        encapsulation</li>
+                    <li>✅ <strong>Three Pillars Complete:</strong> Inheritance + Polymorphism + Encapsulation =
+                        Professional OOP</li>
+                    <li>✅ <strong>When to Use Each:</strong> Getter methods vs properties vs auto-properties decision
+                        framework</li>
+                    <li>✅ <strong>Real-World Application:</strong> Complete enemy system with proper encapsulation
+                    </li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95) !important; margin-top: 15px;"><strong>OOP Mastery
+                        Achieved!</strong> You now understand all three pillars of Object-Oriented Programming.
+                    Inheritance (code reuse), Polymorphism (flexible behaviors), and Encapsulation (data protection)
+                    work together to create professional, maintainable code. Apply these principles to all your
+                    projects! 🏛️</p>
+            </div>
+        </div>
+        <footer>
+            <p>You've completed the Object-Oriented Programming trilogy! These three pillars—Inheritance, Polymorphism,
+                and Encapsulation—are the foundation of professional software development. Master these concepts and
+                you'll write cleaner, safer, more maintainable code for the rest of your career! 🔒✨</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

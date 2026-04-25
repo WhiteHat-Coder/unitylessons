@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 10: Master timers, cooldowns, and time-based systems using Time.deltaTime, Time.time, and Invoke methods">
+    <meta name="keywords"
+        content="Unity, timers, cooldowns, Time.deltaTime, Time.time, Invoke, frame rate independence, game loops">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+    <title>Lesson 10: Timers & Cooldowns in Unity | Unity Tutorial</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>⏱️ Lesson 10: Timers & Cooldowns in Unity</h1>
+            <p>Master time-based systems essential for skills, respawning, and game mechanics</p>
+        </header>
+        <div class="content">
+            <!-- What You'll Learn section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Understand why timers and cooldowns are essential in game development</li>
+                    <li>✅ Use Invoke() method for simple delayed function calls</li>
+                    <li>✅ Master Time.deltaTime for frame-rate independent timing</li>
+                    <li>✅ Create countdown timers that work consistently across all devices</li>
+                    <li>✅ Use Time.time for tracking game duration and events</li>
+                    <li>✅ Implement cooldown systems with multiple approaches</li>
+                    <li>✅ Choose the right timer method for different situations</li>
+                    <li>✅ Create visual feedback systems (damage indication)</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: Why Timers and Cooldowns Matter -->
+            <div class="topic">
+                <h2>1. Why Timers and Cooldowns Matter ⏰</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Timers and cooldowns</strong> are fundamental game development concepts that control when
+                        things can happen. They're essential for pacing gameplay, preventing spam, and creating
+                        strategic depth. Understanding timers is crucial for any game programmer.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎮 Common Timer Use Cases</h4>
+                    <ul>
+                        <li><strong>Skill Cooldowns:</strong> Prevent players from spamming powerful abilities</li>
+                        <li><strong>Enemy Respawning:</strong> Bring enemies back after a delay</li>
+                        <li><strong>Power-Up Duration:</strong> Temporary boosts that wear off</li>
+                        <li><strong>Invincibility Frames:</strong> Brief invulnerability after taking damage</li>
+                        <li><strong>Reload Times:</strong> Weapon reload delays in shooters</li>
+                        <li><strong>Animation Delays:</strong> Waiting for animations to complete</li>
+                        <li><strong>Wave Timers:</strong> Delays between enemy waves</li>
+                        <li><strong>Cutscene Timing:</strong> Controlling when events happen</li>
+                    </ul>
+                </div>
+
+                <h3>Why RPGs Especially Need Timers</h3>
+                <div class="example">
+                    <div class="example-header">RPG Timer Requirements</div>
+                    <code>ABILITY COOLDOWNS:<br>
+- Fireball: 3 second cooldown<br>
+- Heal: 10 second cooldown<br>
+- Ultimate: 60 second cooldown<br>
+<br>
+BUFF/DEBUFF DURATIONS:<br>
+- Speed boost: 5 seconds<br>
+- Poison damage: 10 seconds (damage over time)<br>
+- Shield: 8 seconds<br>
+<br>
+RESPAWN SYSTEMS:<br>
+- Boss respawn: 5 minutes<br>
+- Chest respawn: 24 hours (real-time)<br>
+- NPC respawn: 30 seconds</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Design Principle:</strong> Cooldowns create strategic gameplay. Without them, players
+                    would spam the strongest ability endlessly. Timers force decision-making: "Should I use this skill
+                    now or save it?"
+                </div>
+
+                <h3>What You'll Build</h3>
+                <div class="key-points">
+                    <h4>📚 Three Timer Approaches</h4>
+                    <ul>
+                        <li><strong>Invoke Method:</strong> Simplest approach for basic delays</li>
+                        <li><strong>Time.deltaTime Countdown:</strong> Professional approach for most cases</li>
+                        <li><strong>Time.time Tracking:</strong> Advanced approach for complex systems</li>
+                        <li><strong>Practical Example:</strong> Enemy damage indicator with timed color change</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 2: Setting Up Visual Feedback -->
+            <div class="topic">
+                <h2>2. Setting Up Visual Feedback System 🎨</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Before diving into timers, we'll create a practical example: an enemy that turns <strong>red when
+                            damaged</strong>, then returns to white after a delay. This gives us a real-world scenario
+                        to practice different timer approaches.</p>
+                </div>
+
+                <h3>Creating the Enemy Script</h3>
+                <div class="example">
+                    <div class="example-header">Basic Enemy Setup</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private SpriteRenderer sr;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sr = GetComponent&lt;SpriteRenderer&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void TakeDamage()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Enemy damaged!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.red;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Need to turn white again after delay...<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 How It Works</h4>
+                    <ul>
+                        <li><strong>SpriteRenderer Reference:</strong> Cached in Awake for performance</li>
+                        <li><strong>Color.red:</strong> Unity built-in color (same as new Color(1, 0, 0, 1))</li>
+                        <li><strong>Public Method:</strong> Can be called from attack hitboxes or other scripts</li>
+                        <li><strong>Visual Feedback:</strong> Player immediately sees enemy was hit</li>
+                        <li><strong>Problem:</strong> Enemy stays red forever—we need a timer!</li>
+                    </ul>
+                </div>
+
+                <h3>Why Visual Feedback Matters</h3>
+                <div class="tip">
+                    <strong>🎮 Game Feel:</strong> Visual feedback is critical for player satisfaction. When attacks
+                    have no visible impact, combat feels weak. Color flashing, particle effects, and screen shake all
+                    require timers!
+                </div>
+
+                <h3>Adding Duration Variable</h3>
+                <div class="example">
+                    <div class="example-header">Configurable Red Duration</div>
+                    <code>[SerializeField] private float redColorDuration = 1f;<br>
+<br>
+// Now we can adjust in Inspector:<br>
+// - 0.2f for quick flash<br>
+// - 1.0f for noticeable indication<br>
+// - 3.0f for dramatic effect</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>⚙️ Design Tuning</h4>
+                    <ul>
+                        <li><strong>Short Duration (0.1-0.3s):</strong> Quick feedback for fast-paced games</li>
+                        <li><strong>Medium Duration (0.5-1.5s):</strong> Standard for most games</li>
+                        <li><strong>Long Duration (2-5s):</strong> Dramatic effects or status indicators</li>
+                        <li><strong>Adjustable:</strong> SerializeField lets designers tweak without code changes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 3: The Invoke Method -->
+            <div class="topic">
+                <h2>3. The Invoke Method: Simple Delayed Calls 📞</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Invoke()</strong> is Unity's built-in method for calling a function after a delay. It's
+                        the simplest timer approach—perfect for one-off delays that don't need updates every frame.
+                        Great for beginners!</p>
+                </div>
+
+                <h3>Basic Invoke Syntax</h3>
+                <div class="example">
+                    <div class="example-header">Using Invoke</div>
+                    <code>// Create the method to be called<br>
+private void TurnWhite()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.white;<br>
+}<br>
+<br>
+// Call it with delay<br>
+public void TakeDamage()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.red;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Invoke("TurnWhite", 1f);  // Call TurnWhite() after 1 second<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 How Invoke Works</h4>
+                    <ul>
+                        <li><strong>First Parameter:</strong> Method name as string ("TurnWhite")</li>
+                        <li><strong>Second Parameter:</strong> Delay in seconds (1f = 1 second)</li>
+                        <li><strong>Runs Once:</strong> Method executes exactly once after delay</li>
+                        <li><strong>No Update Needed:</strong> Unity handles the timing automatically</li>
+                        <li><strong>Simple & Clean:</strong> Perfect for straightforward delays</li>
+                    </ul>
+                </div>
+
+                <h3>The Problem: String References</h3>
+                <div class="example">
+                    <div class="example-header">Dangerous String Approach</div>
+                    <code>// ❌ DANGEROUS - Easy to make mistakes:<br>
+Invoke("TurnWhite", 1f);<br>
+<br>
+// What if you typo?<br>
+Invoke("TurnWite", 1f);  // Fails silently! No error!<br>
+<br>
+// What if you rename TurnWhite() to ResetColor()?<br>
+// Invoke still calls "TurnWhite" which no longer exists!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ String Dangers:</strong> Strings aren't checked by the compiler. Typos, renames, and
+                    refactoring can break Invoke calls without any error messages until runtime!
+                </div>
+
+                <h3>The Solution: nameof() Operator</h3>
+                <div class="example">
+                    <div class="example-header">Safe Invoke with nameof()</div>
+                    <code>// ✅ SAFE - Compiler-checked:<br>
+Invoke(nameof(TurnWhite), 1f);<br>
+<br>
+// Benefits:<br>
+// - Typos cause compile errors<br>
+// - Refactoring tools update automatically<br>
+// - IntelliSense autocomplete works<br>
+// - No silent failures</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ nameof() Benefits</h4>
+                    <ul>
+                        <li><strong>Compile-Time Safety:</strong> Errors caught before running</li>
+                        <li><strong>Refactoring Support:</strong> Rename method → string updates automatically</li>
+                        <li><strong>Autocomplete:</strong> IDE helps you type the method name</li>
+                        <li><strong>Professional Practice:</strong> Industry standard for string references</li>
+                        <li><strong>Zero Performance Cost:</strong> Converted to string at compile time</li>
+                    </ul>
+                </div>
+
+                <h3>Complete Invoke Implementation</h3>
+                <div class="example">
+                    <div class="example-header">Full Code</div>
+                    <code>[SerializeField] private float redColorDuration = 1f;<br>
+private SpriteRenderer sr;<br>
+<br>
+private void Awake()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr = GetComponent&lt;SpriteRenderer&gt;();<br>
+}<br>
+<br>
+public void TakeDamage()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.red;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Invoke(nameof(TurnWhite), redColorDuration);<br>
+}<br>
+<br>
+private void TurnWhite()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.white;<br>
+}</code>
+                </div>
+
+                <h3>Invoke Limitations</h3>
+                <div class="key-points">
+                    <h4>⚠️ When NOT to Use Invoke</h4>
+                    <ul>
+                        <li><strong>No Parameters:</strong> Can't pass arguments to invoked methods</li>
+                        <li><strong>No Cancellation:</strong> Hard to cancel Invoke calls cleanly</li>
+                        <li><strong>String-Based:</strong> Less type-safe even with nameof()</li>
+                        <li><strong>Limited Control:</strong> Can't check time remaining or progress</li>
+                        <li><strong>Not Flexible:</strong> Can't adjust delay dynamically once called</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 4: Understanding Time.deltaTime -->
+            <div class="topic">
+                <h2>4. Understanding Time.deltaTime ⏲️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Time.deltaTime</strong> is the time in seconds between the current and previous frame.
+                        This tiny value (usually 0.016s at 60 FPS) is the foundation of smooth, frame-rate independent
+                        game logic. Mastering deltaTime is essential for professional game development.</p>
+                </div>
+
+                <h3>What is Time.deltaTime?</h3>
+                <div class="example">
+                    <div class="example-header">Visualizing Delta Time</div>
+                    <code>private void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(Time.deltaTime);<br>
+}<br>
+<br>
+// Console output at 60 FPS:<br>
+// 0.0166667<br>
+// 0.0166667<br>
+// 0.0166667<br>
+// = Approximately 1/60th of a second<br>
+<br>
+// At 30 FPS:<br>
+// 0.0333333<br>
+// = Approximately 1/30th of a second</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Key Facts</h4>
+                    <ul>
+                        <li><strong>Always Small:</strong> Typically 0.016 - 0.033 seconds</li>
+                        <li><strong>Varies Per Frame:</strong> Changes based on frame rate</li>
+                        <li><strong>Higher FPS = Smaller deltaTime:</strong> More frames = less time between them</li>
+                        <li><strong>Lower FPS = Larger deltaTime:</strong> Fewer frames = more time between them</li>
+                        <li><strong>Automatically Compensates:</strong> Ensures smooth behavior across devices</li>
+                    </ul>
+                </div>
+
+                <h3>Why Frame Rate Independence Matters</h3>
+                <div class="example">
+                    <div class="example-header">Without deltaTime (WRONG)</div>
+                    <code>// ❌ BAD - Frame rate dependent<br>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform.position += Vector3.right * 5f;<br>
+}<br>
+<br>
+// On 60 FPS machine: Moves 5 * 60 = 300 units/second<br>
+// On 30 FPS machine: Moves 5 * 30 = 150 units/second<br>
+// On 120 FPS machine: Moves 5 * 120 = 600 units/second<br>
+<br>
+// PROBLEM: Speed depends on hardware!</code>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">With deltaTime (CORRECT)</div>
+                    <code>// ✅ GOOD - Frame rate independent<br>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform.position += Vector3.right * 5f * Time.deltaTime;<br>
+}<br>
+<br>
+// On 60 FPS: Moves 5 * 0.0166 * 60 = 5 units/second<br>
+// On 30 FPS: Moves 5 * 0.0333 * 30 = 5 units/second<br>
+// On 120 FPS: Moves 5 * 0.0083 * 120 = 5 units/second<br>
+<br>
+// SUCCESS: Always 5 units per second!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Golden Rule:</strong> Multiply by Time.deltaTime in Update(). This ensures your game runs
+                    the same speed on ALL devices—from weak phones to powerful PCs!
+                </div>
+
+                <h3>The Math Behind deltaTime</h3>
+                <div class="example">
+                    <div class="example-header">Understanding the Compensation</div>
+                    <code>CONCEPT: Small adjustments per frame = Consistent result<br>
+<br>
+60 FPS Example:<br>
+- Each frame: timer -= 0.016<br>
+- 60 frames later: timer reduced by ~1 second<br>
+<br>
+30 FPS Example:<br>
+- Each frame: timer -= 0.033<br>
+- 30 frames later: timer reduced by ~1 second<br>
+<br>
+Different frame counts, SAME total change!<br>
+deltaTime automatically adjusts!</code>
+                </div>
+
+                <h3>Common deltaTime Use Cases</h3>
+                <div class="key-points">
+                    <h4>📊 Where to Use deltaTime</h4>
+                    <ul>
+                        <li><strong>Movement:</strong> position += direction * speed * Time.deltaTime</li>
+                        <li><strong>Rotation:</strong> rotation += rotationSpeed * Time.deltaTime</li>
+                        <li><strong>Timers:</strong> timer -= Time.deltaTime (countdown)</li>
+                        <li><strong>Lerping:</strong> Lerp(a, b, Time.deltaTime * smoothSpeed)</li>
+                        <li><strong>Custom Physics:</strong> velocity += acceleration * Time.deltaTime</li>
+                        <li><strong>Anything in Update():</strong> That should be time-based</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 5: Countdown Timer Implementation -->
+            <div class="topic">
+                <h2>5. Countdown Timer with Time.deltaTime ⏳</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>A <strong>countdown timer</strong> starts at a value and decreases each frame until it reaches
+                        zero. This is the most common timer pattern in games—perfect for cooldowns, durations, and timed
+                        events. Professional and flexible.</p>
+                </div>
+
+                <h3>Creating the Timer Variable</h3>
+                <div class="example">
+                    <div class="example-header">Timer Setup</div>
+                    <code>public float timer;  // Make public to see in Inspector<br>
+<br>
+private void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timer -= Time.deltaTime;<br>
+}<br>
+<br>
+// Countdown in action:<br>
+// Start: 5.0<br>
+// Frame 1: 4.984<br>
+// Frame 2: 4.968<br>
+// ... keeps going ...<br>
+// Eventually: 0.0, -0.016, -0.032... (goes negative)</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Timer Behavior</h4>
+                    <ul>
+                        <li><strong>Decreases Every Frame:</strong> Smooth countdown, not jumpy</li>
+                        <li><strong>Frame Rate Independent:</strong> Takes same real-time regardless of FPS</li>
+                        <li><strong>Goes Negative:</strong> Doesn't stop at zero automatically</li>
+                        <li><strong>Check When Zero:</strong> Use if (timer <= 0) to detect completion</li>
+                        <li><strong>Reset When Needed:</strong> Set timer = duration to restart</li>
+                    </ul>
+                </div>
+
+                <h3>Alternative Syntax</h3>
+                <div class="example">
+                    <div class="example-header">Different Ways to Write It</div>
+                    <code>// All these do the same thing:<br>
+<br>
+// 1. Long form (clearest for beginners)<br>
+timer = timer - Time.deltaTime;<br>
+<br>
+// 2. Compound assignment (most common)<br>
+timer -= Time.deltaTime;<br>
+<br>
+// 3. Addition (counts up instead)<br>
+timer += Time.deltaTime;<br>
+<br>
+// Professional code uses #2 (timer -= Time.deltaTime)</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Coding Style:</strong> <code>timer -= Time.deltaTime</code> is preferred in professional
+                    code. It's concise but clear. Get comfortable with compound assignment operators (+=, -=, *=, /=)!
+                </div>
+
+                <h3>Resetting the Timer</h3>
+                <div class="example">
+                    <div class="example-header">Reset Method</div>
+                    <code>[SerializeField] private float redColorDuration = 2f;<br>
+private float timer;<br>
+<br>
+// Method to reset timer (call when damage taken)<br>
+private void UpdateTimer()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timer = redColorDuration;<br>
+}<br>
+<br>
+// For testing in Inspector:<br>
+[ContextMenu("Update Timer")]<br>
+private void UpdateTimer_Menu()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;UpdateTimer();<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔧 Context Menu Utility</h4>
+                    <ul>
+                        <li><strong>[ContextMenu]:</strong> Adds method to right-click menu in Inspector</li>
+                        <li><strong>Testing Tool:</strong> Manually trigger methods during development</li>
+                        <li><strong>No Play Mode Needed:</strong> Works in edit mode too</li>
+                        <li><strong>Great for Debugging:</strong> Test timer resets easily</li>
+                    </ul>
+                </div>
+
+                <h3>Complete Countdown Implementation</h3>
+                <div class="example">
+                    <div class="example-header">Full Timer System</div>
+                    <code>[SerializeField] private float redColorDuration = 2f;<br>
+private float timer;<br>
+private SpriteRenderer sr;<br>
+<br>
+private void Awake()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr = GetComponent&lt;SpriteRenderer&gt;();<br>
+}<br>
+<br>
+private void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timer -= Time.deltaTime;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (timer <= 0 && sr.color != Color.white)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.white;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+public void TakeDamage()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.red;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timer = redColorDuration;  // Reset countdown<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ How It Works</h4>
+                    <ul>
+                        <li><strong>Take Damage:</strong> Sets color to red, starts timer at 2 seconds</li>
+                        <li><strong>Every Frame:</strong> Timer decreases by deltaTime</li>
+                        <li><strong>After 2 Seconds:</strong> Timer reaches 0, condition becomes true</li>
+                        <li><strong>Color Check:</strong> Only changes to white if not already white (optimization)</li>
+                        <li><strong>Goes Negative:</strong> Timer continues below 0, but we don't care</li>
+                    </ul>
+                </div>
+
+                <h3>Counting Up Alternative</h3>
+                <div class="example">
+                    <div class="example-header">Opposite Direction</div>
+                    <code>// Some prefer counting UP from negative:<br>
+private float timer;<br>
+<br>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timer += Time.deltaTime;  // Count UP<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (timer >= 0 && sr.color != Color.white)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.white;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+public void TakeDamage()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.red;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timer = -redColorDuration;  // Start at negative<br>
+}<br>
+<br>
+// Works the same, just reversed logic!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎨 Personal Preference:</strong> Counting down from positive feels more intuitive to most
+                    developers. But both work! Choose what makes sense to you and be consistent across your project.
+                </div>
+            </div>
+
+            <!-- Topic 6: Time.time for Advanced Tracking -->
+            <div class="topic">
+                <h2>6. Time.time for Advanced Tracking 🕐</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Time.time</strong> returns the time in seconds since the game started. Instead of
+                        counting down each frame, we save "when" something happened and check "how much time has passed
+                        since then." This approach is powerful for complex systems and combos.</p>
+                </div>
+
+                <h3>Understanding Time.time</h3>
+                <div class="example">
+                    <div class="example-header">Observing Game Time</div>
+                    <code>public float currentTimeInGame;<br>
+<br>
+private void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;currentTimeInGame = Time.time;<br>
+}<br>
+<br>
+// Watching in Inspector:<br>
+// 0.0 seconds - Game starts<br>
+// 1.0 seconds - One second has passed<br>
+// 2.5 seconds - Two and a half seconds<br>
+// 10.3 seconds - Ten point three seconds<br>
+// ... continues forever, always increasing</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Time.time Characteristics</h4>
+                    <ul>
+                        <li><strong>Starts at Zero:</strong> When game begins (Play button pressed)</li>
+                        <li><strong>Always Increases:</strong> Never decreases, never resets</li>
+                        <li><strong>Independent Value:</strong> Not affected by deltaTime directly</li>
+                        <li><strong>Global Timer:</strong> Same value everywhere in your game</li>
+                        <li><strong>Useful for Comparisons:</strong> "When did X happen?"</li>
+                    </ul>
+                </div>
+
+                <h3>Recording Event Timestamps</h3>
+                <div class="example">
+                    <div class="example-header">Saving When Events Occur</div>
+                    <code>public float lastTimeDamaged;<br>
+<br>
+public void TakeDamage()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.red;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lastTimeDamaged = Time.time;  // Record WHEN damage happened<br>
+}<br>
+<br>
+// Example:<br>
+// Game time 5.3s → Player damages enemy<br>
+// lastTimeDamaged = 5.3<br>
+// <br>
+// Game time 8.7s → Player damages enemy again<br>
+// lastTimeDamaged = 8.7 (overwrites previous)</code>
+                </div>
+
+                <h3>Checking Time Elapsed Since Event</h3>
+                <div class="example">
+                    <div class="example-header">Complete Time.time Implementation</div>
+                    <code>[SerializeField] private float redColorDuration = 2f;<br>
+public float currentTimeInGame;<br>
+public float lastTimeDamaged;<br>
+private SpriteRenderer sr;<br>
+<br>
+private void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;currentTimeInGame = Time.time;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Check if enough time has passed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (currentTimeInGame > lastTimeDamaged + redColorDuration)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (sr.color != Color.white)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.white;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+public void TakeDamage()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.red;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lastTimeDamaged = Time.time;<br>
+}</code>
+                </div>
+
+                <h3>Understanding the Logic</h3>
+                <div class="example">
+                    <div class="example-header">Step-by-Step Breakdown</div>
+                    <code>SCENARIO: redColorDuration = 2 seconds<br>
+<br>
+Step 1: Enemy damaged at game time 5.3s<br>
+- lastTimeDamaged = 5.3<br>
+- sr.color = red<br>
+<br>
+Step 2: Condition check each frame<br>
+- currentTimeInGame (5.4s) > 5.3 + 2.0?<br>
+- 5.4 > 7.3? → FALSE (too soon)<br>
+<br>
+Step 3: Time passes...<br>
+- currentTimeInGame (7.2s) > 7.3? → FALSE<br>
+- currentTimeInGame (7.31s) > 7.3? → TRUE!<br>
+<br>
+Step 4: Condition met<br>
+- 2+ seconds have passed<br>
+- Turn white again</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 The Comparison</h4>
+                    <ul>
+                        <li><strong>lastTimeDamaged:</strong> Records the "moment" damage happened</li>
+                        <li><strong>+ redColorDuration:</strong> Adds cooldown to that moment</li>
+                        <li><strong>Result:</strong> Target time when effect should end</li>
+                        <li><strong>currentTimeInGame:</strong> Continuously checks "are we there yet?"</li>
+                        <li><strong>When Greater:</strong> Enough time has passed, trigger action</li>
+                    </ul>
+                </div>
+
+                <h3>Visualizing the Timeline</h3>
+                <div class="example">
+                    <div class="example-header">Timeline Diagram</div>
+                    <code>Time: 0s──────5.3s────────────7.3s──────10s───→<br>
+              ↑                  ↑<br>
+          Damaged           Should turn white<br>
+      (lastTimeDamaged)    (lastTimeDamaged + duration)<br>
+<br>
+Every frame:<br>
+"Is Time.time > 7.3 yet?"<br>
+<br>
+At 7.31s: YES → Turn white!</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 When to Use Time.time:</strong> Perfect for combo systems ("last attack was 0.5s ago"),
+                    respawn timers ("died 5s ago"), and any system tracking multiple timed events. More complex than
+                    countdown but more powerful!
+                </div>
+            </div>
+
+            <!-- Topic 7: Comparing Timer Approaches -->
+            <div class="topic">
+                <h2>7. Comparing Timer Approaches 📊</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Each timer method has strengths and weaknesses. Understanding when to use which approach
+                        separates beginner programmers from professionals. Let's compare all three methods
+                        side-by-side.</p>
+                </div>
+
+                <h3>Method Comparison Chart</h3>
+                <div class="example">
+                    <div class="example-header">Three Approaches Compared</div>
+                    <code>1. INVOKE METHOD<br>
+✅ Simplest to understand<br>
+✅ Clean code for simple delays<br>
+✅ No Update() needed<br>
+❌ Can't pass parameters<br>
+❌ Hard to cancel<br>
+❌ String-based (error-prone)<br>
+Best for: One-off delays, simple effects<br>
+<br>
+2. TIME.DELTATIME COUNTDOWN<br>
+✅ Professional standard<br>
+✅ Frame-rate independent<br>
+✅ Can check time remaining<br>
+✅ Easy to cancel/reset<br>
+✅ Multiple timers possible<br>
+❌ Requires Update() check<br>
+Best for: Cooldowns, durations, most timers<br>
+<br>
+3. TIME.TIME TRACKING<br>
+✅ No per-frame countdown<br>
+✅ Perfect for comparisons<br>
+✅ Tracks multiple events easily<br>
+✅ Great for combos<br>
+❌ More complex logic<br>
+❌ Harder for beginners<br>
+Best for: Complex systems, combo windows</code>
+                </div>
+
+                <h3>Use Case Decision Tree</h3>
+                <div class="key-points">
+                    <h4>🎯 Which Method to Choose?</h4>
+                    <ul>
+                        <li><strong>Simple delay once:</strong> Use Invoke() with nameof()</li>
+                        <li><strong>Ability cooldown:</strong> Use deltaTime countdown</li>
+                        <li><strong>Buff duration:</strong> Use deltaTime countdown</li>
+                        <li><strong>Combo timing:</strong> Use Time.time tracking</li>
+                        <li><strong>Multiple cooldowns:</strong> Use deltaTime countdown (one timer each)</li>
+                        <li><strong>Respawn timer:</strong> Use deltaTime countdown</li>
+                        <li><strong>Attack window:</strong> Use Time.time tracking</li>
+                        <li><strong>Animation delay:</strong> Use Invoke() or Animation Events</li>
+                    </ul>
+                </div>
+
+                <h3>Real-World Examples</h3>
+                <div class="example">
+                    <div class="example-header">Practical Scenarios</div>
+                    <code>FIREBALL ABILITY COOLDOWN:<br>
+Method: deltaTime countdown<br>
+Why: Need to check "can cast?" every frame<br>
+     Need to show cooldown UI (time remaining)<br>
+<br>
+DAMAGE FLASH EFFECT:<br>
+Method: Invoke()<br>
+Why: Simple one-time color change<br>
+     No need to track progress<br>
+<br>
+COMBO SYSTEM (Attack 1 → Attack 2):<br>
+Method: Time.time tracking<br>
+Why: Need to know "when was last attack?"<br>
+     Multiple attack windows to track<br>
+<br>
+INVINCIBILITY FRAMES AFTER HIT:<br>
+Method: deltaTime countdown<br>
+Why: Need to check collision every frame<br>
+     Simple duration timer</code>
+                </div>
+
+                <h3>Performance Considerations</h3>
+                <div class="key-points">
+                    <h4>⚡ Efficiency Notes</h4>
+                    <ul>
+                        <li><strong>Invoke:</strong> Slight overhead, but negligible for reasonable use</li>
+                        <li><strong>deltaTime:</strong> Minimal—one subtraction per frame</li>
+                        <li><strong>Time.time:</strong> Minimal—one comparison per frame</li>
+                        <li><strong>All Efficient:</strong> Don't worry about performance until hundreds of timers
+                        </li>
+                        <li><strong>Optimization:</strong> Only check timers when needed (not every frame)</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💼 Professional Advice:</strong> Most games primarily use deltaTime countdown. It's the
+                    "default" choice. Use Invoke for quick fixes, Time.time for advanced features. Master deltaTime
+                    first!
+                </div>
+            </div>
+
+            <!-- Topic 8: Best Practices and Optimization -->
+            <div class="topic">
+                <h2>8. Timer Best Practices & Optimization 🎯</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Understanding timer basics is just the start. Professional developers follow best practices
+                        for clean, maintainable, and efficient timer code. Let's explore patterns that scale from
+                        small games to massive projects.</p>
+                </div>
+
+                <h3>Conditional Color Changes</h3>
+                <div class="example">
+                    <div class="example-header">Optimize Unnecessary Updates</div>
+                    <code>// ❌ BAD - Changes color every frame<br>
+if (timer <= 0)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.white;  // Sets white 60 times per second!<br>
+}<br>
+<br>
+// ✅ GOOD - Only changes when needed<br>
+if (timer <= 0 && sr.color != Color.white)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.white;  // Sets once, then stops<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔧 Why This Matters</h4>
+                    <ul>
+                        <li><strong>Avoid Redundant Work:</strong> Don't set the same value repeatedly</li>
+                        <li><strong>Better Performance:</strong> Fewer property sets = faster code</li>
+                        <li><strong>Cleaner Profiler:</strong> Less noise when debugging</li>
+                        <li><strong>Good Habit:</strong> Check before changing state</li>
+                    </ul>
+                </div>
+
+                <h3>Extract Methods for Readability</h3>
+                <div class="example">
+                    <div class="example-header">Refactoring for Clarity</div>
+                    <code>// Before - Everything in Update<br>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timer -= Time.deltaTime;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (timer <= 0 && sr.color != Color.white)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.white;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// After - Clean separation<br>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;UpdateTimer();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ChangeColorIfNeeded();<br>
+}<br>
+<br>
+private void UpdateTimer()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timer -= Time.deltaTime;<br>
+}<br>
+<br>
+private void ChangeColorIfNeeded()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (timer <= 0 && sr.color != Color.white)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.white;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>Clamping Timers</h3>
+                <div class="example">
+                    <div class="example-header">Prevent Negative Overflow</div>
+                    <code>// Optional: Stop timer at zero<br>
+private void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (timer > 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timer -= Time.deltaTime;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timer = Mathf.Max(timer, 0);  // Clamp to 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Now timer stays at 0 instead of going negative<br>
+// Useful for UI display (don't show -0.5 seconds)</code>
+                </div>
+
+                <h3>Multiple Timers Pattern</h3>
+                <div class="example">
+                    <div class="example-header">Managing Multiple Cooldowns</div>
+                    <code>// Multiple abilities, each with cooldown<br>
+private float fireballCooldown;<br>
+private float healCooldown;<br>
+private float dashCooldown;<br>
+<br>
+[SerializeField] private float fireballCooldownDuration = 3f;<br>
+[SerializeField] private float healCooldownDuration = 10f;<br>
+[SerializeField] private float dashCooldownDuration = 5f;<br>
+<br>
+private void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Update all cooldowns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fireballCooldown -= Time.deltaTime;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;healCooldown -= Time.deltaTime;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dashCooldown -= Time.deltaTime;<br>
+}<br>
+<br>
+public void CastFireball()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (fireballCooldown <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Cast fireball<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fireballCooldown = fireballCooldownDuration;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>Timer State Enum Pattern</h3>
+                <div class="example">
+                    <div class="example-header">Advanced: State-Based Timers</div>
+                    <code>public enum EnemyState { Normal, Damaged, Dead }<br>
+private EnemyState currentState;<br>
+private float stateTimer;<br>
+<br>
+private void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;stateTimer -= Time.deltaTime;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;switch (currentState)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case EnemyState.Damaged:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (stateTimer <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentState = EnemyState.Normal;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sr.color = Color.white;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Scales well to complex state machines</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Professional Patterns</h4>
+                    <ul>
+                        <li><strong>Single Responsibility:</strong> One timer, one purpose</li>
+                        <li><strong>Clear Naming:</strong> dashCooldown not timer3</li>
+                        <li><strong>SerializeField Durations:</strong> Let designers tune without code</li>
+                        <li><strong>Check Before Action:</strong> if (cooldown <= 0) before casting</li>
+                        <li><strong>Reset on Use:</strong> cooldown = duration when ability used</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Scaling Up:</strong> For large projects, consider a TimerManager class or
+                    ScriptableObject-based cooldown system. But master simple timers first—they work for 90% of
+                    cases!
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="key-points">
+                    <h4>Exercise 1: Power-Up Duration System</h4>
+                    <p><strong>Task:</strong> Create a speed boost that lasts 5 seconds</p>
+                    <ul>
+                        <li>Add [SerializeField] float speedBoostDuration = 5f</li>
+                        <li>Create speedBoostTimer that counts down</li>
+                        <li>When active, double player moveSpeed</li>
+                        <li>After 5 seconds, restore normal speed</li>
+                        <li>Add visual indicator (change player color during boost)</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 2: Triple Shot Cooldown</h4>
+                    <p><strong>Task:</strong> Add a special attack with 8-second cooldown</p>
+                    <ul>
+                        <li>Create "TripleShot" method that fires 3 projectiles</li>
+                        <li>Add cooldown timer (starts at 8 seconds)</li>
+                        <li>Only allow firing when cooldown <= 0</li>
+                        <li>Show Debug.Log with remaining cooldown if too soon</li>
+                        <li>Bind to right mouse button (KeyCode.Mouse1)</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 3: Enemy Respawn System</h4>
+                    <p><strong>Task:</strong> Respawn enemy 3 seconds after death</p>
+                    <ul>
+                        <li>When enemy health reaches 0, disable sprite renderer</li>
+                        <li>Start respawn timer at 3 seconds</li>
+                        <li>Count down each frame with deltaTime</li>
+                        <li>When timer reaches 0, re-enable sprite and reset health</li>
+                        <li>Test by "killing" enemy multiple times</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 4: Combo Window System</h4>
+                    <p><strong>Task:</strong> Implement 2-attack combo with Time.time</p>
+                    <ul>
+                        <li>Record Time.time when first attack happens</li>
+                        <li>If second attack within 1 second, trigger combo</li>
+                        <li>Use: Time.time < lastAttackTime + comboWindow</li>
+                        <li>Combo does double damage and different animation</li>
+                        <li>Reset combo window if too much time passes</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Challenge Exercise: Multi-Ability Cooldown UI</h4>
+                    <p><strong>Task:</strong> Create UI showing 3 ability cooldowns</p>
+                    <ul>
+                        <li>Three abilities: Attack (2s), Heal (5s), Ultimate (15s)</li>
+                        <li>Each has its own deltaTime countdown timer</li>
+                        <li>Create UI Text elements showing remaining time</li>
+                        <li>Update UI every frame: "Attack: 1.3s"</li>
+                        <li>Disable ability buttons when on cooldown</li>
+                        <li>Add visual feedback (button color gray when cooling down)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white !important; border-left: none !important;">
+                <h4 style="color: white !important;">📚 Lesson 10 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95) !important;"><strong>Fantastic work!</strong> You've
+                    mastered one of the most important concepts in game development. Here's everything you learned:
+                </p>
+                <ul style="color: rgba(255,255,255,0.9) !important;">
+                    <li>✅ <strong>Timer Importance:</strong> Essential for cooldowns, durations, respawns, and
+                        pacing gameplay</li>
+                    <li>✅ <strong>Visual Feedback System:</strong> Created damage indicator with timed color changes
+                    </li>
+                    <li>✅ <strong>Invoke Method:</strong> Simplest timer for delayed function calls with nameof()
+                        for safety</li>
+                    <li>✅ <strong>Time.deltaTime:</strong> Time between frames—foundation of frame-rate independence
+                    </li>
+                    <li>✅ <strong>Frame Rate Independence:</strong> Multiplying by deltaTime ensures consistent
+                        behavior across all devices</li>
+                    <li>✅ <strong>Countdown Timers:</strong> Professional standard using timer -= Time.deltaTime
+                        pattern</li>
+                    <li>✅ <strong>Time.time Tracking:</strong> Recording timestamps for complex systems and combo
+                        windows</li>
+                    <li>✅ <strong>Three Approaches Compared:</strong> Know when to use Invoke, deltaTime, or
+                        Time.time</li>
+                    <li>✅ <strong>Best Practices:</strong> Conditional updates, method extraction, clamping, and
+                        multiple timer management</li>
+                    <li>✅ <strong>Optimization Patterns:</strong> Check before changing, single responsibility,
+                        clear naming</li>
+                    <li>✅ <strong>Real-World Applications:</strong> Ability cooldowns, buff durations, respawning,
+                        and combo systems</li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95) !important; margin-top: 15px;"><strong>Next Up:</strong> In
+                    upcoming lessons, we'll use timers for advanced combat systems including combo attacks,
+                    invincibility frames, and special ability management. Your timer knowledge is the foundation! ⏱️
+                </p>
+            </div>
+        </div>
+        <footer>
+            <p>Timers and cooldowns are now in your toolkit—one of the most versatile skills in game development!
+                These concepts apply to every genre and every platform. Practice building different timer systems to
+                master this essential skill! ⏱️✨</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

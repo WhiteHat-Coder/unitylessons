@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 5: Learn to create movement animations and set up smooth transitions between animation states in Unity.">
+    <meta name="keywords" content="Unity animations, Animator transitions, animation parameters, movement animation, Unity scripting">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+    <title>Lesson 5: Movement Animation & Transitions | Unity Tutorial</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🏃 Lesson 5: Movement Animation & Transitions</h1>
+            <p>Create running animations and learn to smoothly transition between animation states</p>
+        </header>
+        <div class="content">
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Create a movement/running animation</li>
+                    <li>✅ Understand Animator Parameters (bool, float, int, trigger)</li>
+                    <li>✅ Set up transitions between animation states</li>
+                    <li>✅ Control Exit Time and Transition Duration</li>
+                    <li>✅ Access Animator from script with GetComponentInChildren</li>
+                    <li>✅ Use velocity to detect player movement</li>
+                    <li>✅ Control animations dynamically with code</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: Creating a Movement Animation -->
+            <div class="topic">
+                <h2>1. Creating a Movement Animation 🎬</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>A <strong>movement animation</strong> (also called run or walk animation) plays when your character is moving. It creates the illusion of walking or running by cycling through sprite frames.</p>
+                </div>
+
+                <h3>Creating the Animation:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Select your <strong>Graphics</strong> GameObject (the child with Animator)</li>
+                        <li>Open <strong>Window → Animation → Animation</strong></li>
+                        <li>Click the dropdown next to "playerIdle" animation</li>
+                        <li>Select <strong>Create New Clip</strong></li>
+                        <li>Save it in your Animations folder as "playerMove"</li>
+                    </ol>
+                </div>
+
+                <h3>Adding Movement Sprites:</h3>
+                <div class="example">
+                    <div class="example-header">Selecting Run/Walk Frames</div>
+                    <code>
+1. In Project window, expand your sprite sheet<br>
+2. Find the movement/run frames (usually after idle frames)<br>
+3. Select 6-8 consecutive run frames<br>
+   Example: warrior_6 through warrior_13<br>
+4. Drag them into the Animation timeline<br>
+5. Set Sample Rate to <strong>12</strong>
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎨 Sample Rate Guidelines:</h4>
+                    <ul>
+                        <li><strong>Idle:</strong> 6-10 FPS (slow and calm)</li>
+                        <li><strong>Walk:</strong> 10-12 FPS (moderate)</li>
+                        <li><strong>Run:</strong> 12-15 FPS (energetic)</li>
+                        <li><strong>Attack:</strong> 15-24 FPS (fast and snappy)</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Preview your animation by clicking the Play button in the Animation window (not the main Play Mode button). Adjust the sample rate until it looks natural!
+                </div>
+            </div>
+
+            <!-- Topic 2: Understanding the Animator Window -->
+            <div class="topic">
+                <h2>2. Understanding the Animator Window 🎭</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>Animator window</strong> shows your animation states as boxes and lets you create transitions between them. Think of it as a flowchart for your character's animations.</p>
+                </div>
+
+                <h3>Opening the Animator:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>Open <strong>Window → Animation → Animator</strong></li>
+                        <li>Select your Graphics GameObject</li>
+                        <li>You'll see your animation states (playerIdle, playerMove)</li>
+                        <li>Orange state = Default/Entry state</li>
+                    </ol>
+                </div>
+
+                <h3>What You See:</h3>
+                <div class="example">
+                    <div class="example-header">Animator View</div>
+                    <code>
+┌──────────┐<br>
+│  Entry   │──→  ┌─────────────┐<br>
+└──────────┘     │ playerIdle  │  ← Orange (default)<br>
+                 └─────────────┘<br>
+<br>
+                 ┌─────────────┐<br>
+                 │ playerMove  │  ← Gray (not default)<br>
+                 └─────────────┘
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎯 Goal:</strong> We need to create transitions so the character can switch from Idle to Move and back based on whether they're moving or standing still.
+                </div>
+            </div>
+
+            <!-- Topic 3: Animator Parameters -->
+            <div class="topic">
+                <h2>3. Animator Parameters 🎛️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Parameters</strong> are variables in the Animator that control when transitions happen. You can set these from your code to trigger different animations.</p>
+                </div>
+
+                <h3>Types of Parameters:</h3>
+                <div class="example">
+                    <div class="example-header">Parameter Types</div>
+                    <code>
+<strong>Float:</strong> Decimal number (e.g., speed: 0.0 to 5.5)<br>
+&nbsp;&nbsp;Use for: Blend trees, gradual transitions<br>
+<br>
+<strong>Int:</strong> Whole number (e.g., comboIndex: 0, 1, 2)<br>
+&nbsp;&nbsp;Use for: Attack combos, weapon types<br>
+<br>
+<strong>Bool:</strong> True or False (e.g., isMoving: true/false)<br>
+&nbsp;&nbsp;Use for: Simple on/off states<br>
+<br>
+<strong>Trigger:</strong> One-time signal (automatically resets)<br>
+&nbsp;&nbsp;Use for: One-shot actions like attacks, jumps
+                    </code>
+                </div>
+
+                <h3>Creating a Boolean Parameter:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>In Animator window, find the <strong>Parameters</strong> tab (left side)</li>
+                        <li>Click the <strong>+</strong> button</li>
+                        <li>Select <strong>Bool</strong></li>
+                        <li>Name it exactly: <code>isMoving</code></li>
+                        <li>Leave it unchecked (false by default)</li>
+                    </ol>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Important:</strong> Parameter names are case-sensitive! <code>isMoving</code> is different from <code>IsMoving</code>. Be consistent!
+                </div>
+            </div>
+
+            <!-- Topic 4: Creating Transitions -->
+            <div class="topic">
+                <h2>4. Creating Transitions Between States 🔄</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>A <strong>transition</strong> is an arrow connecting two animation states. It defines when and how the Animator should switch from one animation to another.</p>
+                </div>
+
+                <h3>Creating Idle → Move Transition:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li>In Animator window, <strong>right-click on playerIdle</strong></li>
+                        <li>Select <strong>Make Transition</strong></li>
+                        <li>Click on <strong>playerMove</strong> to create the arrow</li>
+                        <li>Click the <strong>arrow (transition)</strong> to select it</li>
+                        <li>In Inspector, find <strong>Conditions</strong></li>
+                        <li>Click <strong>+</strong> to add condition</li>
+                        <li>Set: <code>isMoving</code> = <code>true</code></li>
+                    </ol>
+                </div>
+
+                <h3>Creating Move → Idle Transition:</h3>
+                <div class="key-points">
+                    <h4>📋 Steps:</h4>
+                    <ol>
+                        <li><strong>Right-click on playerMove</strong></li>
+                        <li>Select <strong>Make Transition</strong></li>
+                        <li>Click on <strong>playerIdle</strong></li>
+                        <li>Select the new arrow</li>
+                        <li>Add condition: <code>isMoving</code> = <code>false</code></li>
+                    </ol>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Transition Flow</div>
+                    <code>
+┌─────────────┐                    ┌─────────────┐<br>
+│ playerIdle  │──isMoving=true───→ │ playerMove  │<br>
+│             │←──isMoving=false── │             │<br>
+└─────────────┘                    └─────────────┘
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>🧪 Testing:</strong> Enter Play Mode, select Graphics GameObject, and manually check/uncheck <code>isMoving</code> in the Animator window to test transitions!
+                </div>
+            </div>
+
+            <!-- Topic 5: Exit Time and Transition Duration -->
+            <div class="topic">
+                <h2>5. Exit Time & Transition Duration ⏱️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Exit Time</strong> makes the Animator wait for the current animation to finish before transitioning. <strong>Transition Duration</strong> controls how long the blend between animations takes.</p>
+                </div>
+
+                <h3>The Problem with Defaults:</h3>
+                <div class="example">
+                    <div class="example-header">Default Behavior (Feels Sluggish)</div>
+                    <code>
+Player presses movement key → Delay... → Character starts running<br>
+Player releases key → Delay... → Character stops<br>
+<br>
+<strong>Why?</strong><br>
+- Has Exit Time: ✅ (waits for animation to finish)<br>
+- Transition Duration: 0.25s (slow blend)
+                    </code>
+                </div>
+
+                <h3>Fixing for Instant Response:</h3>
+                <div class="key-points">
+                    <h4>📋 For BOTH Transitions (Idle→Move AND Move→Idle):</h4>
+                    <ol>
+                        <li>Click the transition arrow</li>
+                        <li>In Inspector, <strong>uncheck "Has Exit Time"</strong></li>
+                        <li>Set <strong>Transition Duration to 0</strong></li>
+                        <li>Repeat for the other transition</li>
+                    </ol>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">After Optimization</div>
+                    <code>
+Player presses movement key → Character runs IMMEDIATELY ✅<br>
+Player releases key → Character stops IMMEDIATELY ✅<br>
+<br>
+Settings:<br>
+- Has Exit Time: ❌ (instant transition)<br>
+- Transition Duration: 0 (no blend)
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>⚙️ When to Use Exit Time:</h4>
+                    <ul>
+                        <li><strong>Enable</strong> for: Attack animations, death animations (let them finish)</li>
+                        <li><strong>Disable</strong> for: Movement, idle (need instant response)</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> Movement animations should feel responsive! Players expect immediate feedback when they press a key.
+                </div>
+            </div>
+
+            <!-- Topic 6: Accessing Animator from Script -->
+            <div class="topic">
+                <h2>6. Accessing the Animator from Code 💻</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>To control animations from code, you need a reference to the <strong>Animator component</strong>. Since it's on the child Graphics GameObject, we use <code>GetComponentInChildren</code>.</p>
+                </div>
+
+                <h3>Declaring the Animator Variable:</h3>
+                <div class="example">
+                    <div class="example-header">In Your PlayerController Script</div>
+                    <code>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private Rigidbody2D rb;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>private Animator anim;</strong>  ← Add this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ... other variables
+                    </code>
+                </div>
+
+                <h3>Getting the Component:</h3>
+                <div class="example">
+                    <div class="example-header">In Awake() Method</div>
+                    <code>
+void Awake()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rb = GetComponent&lt;Rigidbody2D&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>anim = GetComponentInChildren&lt;Animator&gt;();</strong><br>
+}
+                    </code>
+                </div>
+
+                <h3>GetComponent vs GetComponentInChildren:</h3>
+                <div class="key-points">
+                    <h4>🔍 Understanding the Difference:</h4>
+                    <ul>
+                        <li><strong>GetComponent&lt;T&gt;():</strong> Searches ONLY on the same GameObject</li>
+                        <li><strong>GetComponentInChildren&lt;T&gt;():</strong> Searches GameObject AND all children</li>
+                        <li>Returns the FIRST matching component it finds</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Your GameObject Structure</div>
+                    <code>
+Player (← Script is here)<br>
+&nbsp;&nbsp;├── Rigidbody2D (same GameObject, use GetComponent)<br>
+&nbsp;&nbsp;├── Collider2D<br>
+&nbsp;&nbsp;└── Graphics (Child GameObject)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── SpriteRenderer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── Animator (child, use GetComponentInChildren)
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Remember:</strong> GetComponentInChildren searches the GameObject itself first, then its children. So even if Animator was on the parent, this would still work!
+                </div>
+            </div>
+
+            <!-- Topic 7: Local vs Global Variables -->
+            <div class="topic">
+                <h2>7. Local vs Global Variables 📦</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Global variables</strong> (fields) are declared at class level and accessible anywhere in the class. <strong>Local variables</strong> are declared inside methods and only exist within that method.</p>
+                </div>
+
+                <h3>Global Variables:</h3>
+                <div class="example">
+                    <div class="example-header">Class-Level (Global)</div>
+                    <code>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>private Animator anim;</strong>  ← Global: accessible everywhere<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>private Rigidbody2D rb;</strong>  ← Global: accessible everywhere<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update() { /* can use anim and rb */ }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void FixedUpdate() { /* can use anim and rb */ }<br>
+}
+                    </code>
+                </div>
+
+                <h3>Local Variables:</h3>
+                <div class="example">
+                    <div class="example-header">Method-Level (Local)</div>
+                    <code>
+void HandleAnimations()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>bool isMoving = rb.linearVelocity.x != 0;</strong>  ← Local<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// isMoving only exists inside this method<br>
+}<br>
+<br>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// CANNOT use isMoving here! It doesn't exist outside HandleAnimations()<br>
+}
+                    </code>
+                </div>
+
+                <h3>When to Use Each:</h3>
+                <div class="key-points">
+                    <h4>🎯 Best Practices:</h4>
+                    <ul>
+                        <li><strong>Global:</strong> Components, settings, data needed by multiple methods</li>
+                        <li><strong>Local:</strong> Temporary calculations, data used only in one method</li>
+                        <li><strong>Why?</strong> Local variables save memory and prevent bugs from unintended access</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Rule of Thumb:</strong> Make variables as local as possible. Only make them global if multiple methods need access!
+                </div>
+            </div>
+
+            <!-- Topic 8: Detecting Movement with Velocity -->
+            <div class="topic">
+                <h2>8. Detecting Movement with Velocity 🏃</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Velocity</strong> measures how fast an object is moving and in what direction. If velocity.x is 0, the player is standing still. If it's not 0, they're moving!</p>
+                </div>
+
+                <h3>Checking Velocity in Play Mode:</h3>
+                <div class="key-points">
+                    <h4>🔬 Experiment:</h4>
+                    <ol>
+                        <li>Enter Play Mode</li>
+                        <li>Select your Player GameObject</li>
+                        <li>In Inspector, expand <strong>Rigidbody2D</strong></li>
+                        <li>Look at <strong>Info → Velocity</strong></li>
+                        <li>Standing still: X = 0</li>
+                        <li>Moving left: X = negative (e.g., -3.5)</li>
+                        <li>Moving right: X = positive (e.g., 3.5)</li>
+                    </ol>
+                </div>
+
+                <h3>Using Velocity to Detect Movement:</h3>
+                <div class="example">
+                    <div class="example-header">The Logic</div>
+                    <code>
+// If velocity.x is NOT zero, player is moving<br>
+bool isMoving = rb.linearVelocity.x != 0;<br>
+<br>
+Examples:<br>
+- velocity.x = 0 → isMoving = false (standing)<br>
+- velocity.x = 3.5 → isMoving = true (moving right)<br>
+- velocity.x = -2.8 → isMoving = true (moving left)
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💡 Why This Works:</h4>
+                    <ul>
+                        <li>We don't care about direction (left/right), only IF they're moving</li>
+                        <li><code>!= 0</code> checks if velocity is anything other than zero</li>
+                        <li>This automatically returns <code>true</code> or <code>false</code></li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎯 Alternative Methods:</strong> You could also check Input.GetKey(), but velocity is more reliable because it reflects actual physics movement, not just key presses!
+                </div>
+            </div>
+
+            <!-- Topic 9: Quick Boolean Assignment -->
+            <div class="topic">
+                <h2>9. Quick Boolean Assignment ⚡</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Instead of writing an if-else statement, you can assign a boolean directly from a condition. This is cleaner and more efficient!</p>
+                </div>
+
+                <h3>The Long Way (Redundant):</h3>
+                <div class="example">
+                    <div class="example-header">Using If-Else (Not Recommended)</div>
+                    <code>
+bool isMoving;<br>
+<br>
+if (rb.linearVelocity.x != 0)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;isMoving = true;<br>
+}<br>
+else<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;isMoving = false;<br>
+}<br>
+<br>
+// 9 lines of code! 😰
+                    </code>
+                </div>
+
+                <h3>The Short Way (Recommended):</h3>
+                <div class="example">
+                    <div class="example-header">Direct Assignment (Clean!)</div>
+                    <code>
+bool isMoving = rb.linearVelocity.x != 0;<br>
+<br>
+// 1 line of code! ✨<br>
+// If condition is true, isMoving = true<br>
+// If condition is false, isMoving = false
+                    </code>
+                </div>
+
+                <h3>How It Works:</h3>
+                <div class="key-points">
+                    <h4>🧠 Understanding the Logic:</h4>
+                    <ul>
+                        <li><code>rb.linearVelocity.x != 0</code> evaluates to <code>true</code> or <code>false</code></li>
+                        <li>That boolean result is directly assigned to <code>isMoving</code></li>
+                        <li>No if-else needed because the condition already returns a boolean!</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">More Examples</div>
+                    <code>
+// Is player grounded?<br>
+bool isGrounded = Physics2D.Raycast(transform.position, Vector2.down, 0.1f);<br>
+<br>
+// Is player jumping?<br>
+bool isJumping = rb.linearVelocity.y > 0;<br>
+<br>
+// Is health low?<br>
+bool isLowHealth = health < 30;
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> Whenever you write <code>if (condition) x = true; else x = false;</code>, replace it with <code>x = condition;</code>!
+                </div>
+            </div>
+
+            <!-- Topic 10: Controlling Animations with SetBool -->
+            <div class="topic">
+                <h2>10. Controlling Animations with SetBool 🎮</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><code>SetBool()</code> is a method that changes a boolean parameter in the Animator, triggering transitions based on the conditions you set up.</p>
+                </div>
+
+                <h3>The SetBool Method:</h3>
+                <div class="example">
+                    <div class="example-header">Syntax</div>
+                    <code>
+animator.SetBool(string parameterName, bool value);<br>
+<br>
+// parameterName: Must match EXACTLY what you named it in Animator<br>
+// value: true or false
+                    </code>
+                </div>
+
+                <h3>Creating the HandleAnimations Method:</h3>
+                <div class="example">
+                    <div class="example-header">Complete Method</div>
+                    <code>
+void HandleAnimations()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Detect if player is moving<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool isMoving = rb.linearVelocity.x != 0;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Update the Animator parameter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;anim.SetBool("isMoving", isMoving);<br>
+}
+                    </code>
+                </div>
+
+                <h3>Calling It Every Frame:</h3>
+                <div class="example">
+                    <div class="example-header">In Update() Method</div>
+                    <code>
+void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleMovement();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleJump();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>HandleAnimations();</strong>  ← Add this<br>
+}
+                    </code>
+                </div>
+
+                <h3>Parameter Name Matching:</h3>
+                <div class="key-points">
+                    <h4>⚠️ Critical Points:</h4>
+                    <ul>
+                        <li>The string <code>"isMoving"</code> MUST match the Animator parameter name exactly</li>
+                        <li>Case-sensitive: <code>"isMoving"</code> ≠ <code>"IsMoving"</code></li>
+                        <li><strong>Pro Tip:</strong> Copy the parameter name from Animator window to avoid typos!</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Complete Code Flow</div>
+                    <code>
+1. Player presses A/D → Velocity changes<br>
+2. Update() calls HandleAnimations()<br>
+3. HandleAnimations() checks velocity.x<br>
+4. isMoving = true (if moving) or false (if stopped)<br>
+5. SetBool updates Animator parameter<br>
+6. Animator checks transition conditions<br>
+7. Animation switches (Idle ↔ Move)
+                    </code>
+                </div>
+
+                <div class="tip">
+                    <strong>🐛 Debugging:</strong> If animations don't work, check: (1) Parameter name spelling, (2) Animator is assigned, (3) Transitions have correct conditions!
+                </div>
+            </div>
+
+            <!-- Topic 11: Complete Implementation -->
+            <div class="topic">
+                <h2>11. Complete Code Implementation 📝</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Let's put everything together and see the complete code for controlling animations based on player movement.</p>
+                </div>
+
+                <h3>Full PlayerController with Animations:</h3>
+                <div class="example">
+                    <div class="example-header">PlayerController.cs</div>
+                    <code>
+using UnityEngine;<br>
+<br>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float moveSpeed = 5f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float jumpForce = 10f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private Rigidbody2D rb;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>private Animator anim;</strong><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb = GetComponent&lt;Rigidbody2D&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>anim = GetComponentInChildren&lt;Animator&gt;();</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HandleMovement();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HandleJump();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>HandleAnimations();</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void HandleMovement()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float horizontalInput = Input.GetAxisRaw("Horizontal");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;void HandleJump()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.Space))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>void HandleAnimations()</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>{</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>// Detect movement using velocity</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>bool isMoving = rb.linearVelocity.x != 0;</strong><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>// Update Animator parameter</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>anim.SetBool("isMoving", isMoving);</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>}</strong><br>
+}
+                    </code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ What This Code Does:</h4>
+                    <ul>
+                        <li><strong>Line 8:</strong> Declares Animator reference</li>
+                        <li><strong>Line 14:</strong> Gets Animator from child GameObject</li>
+                        <li><strong>Line 20:</strong> Calls HandleAnimations every frame</li>
+                        <li><strong>Line 36:</strong> Checks if velocity is not zero</li>
+                        <li><strong>Line 39:</strong> Updates Animator, triggering transitions</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎯 Testing:</strong> Enter Play Mode and move your character. The animation should switch from Idle to Move instantly when you press A/D!
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="key-points">
+                    <h4>Exercise 1: Test Exit Time Settings</h4>
+                    <p><strong>Task:</strong> Experiment with Exit Time and Transition Duration.</p>
+                    <ul>
+                        <li>Enable "Has Exit Time" on both transitions</li>
+                        <li>Set Transition Duration to 0.5</li>
+                        <li>Test in Play Mode - notice the sluggish feel</li>
+                        <li>Revert to instant transitions (Exit Time: OFF, Duration: 0)</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 2: Debug with Public Variable</h4>
+                    <p><strong>Task:</strong> Make isMoving visible in Inspector for debugging.</p>
+                    <ul>
+                        <li>Temporarily change <code>bool isMoving</code> to a class-level public variable</li>
+                        <li>Enter Play Mode and watch it change in Inspector</li>
+                        <li>Move left/right and observe: false (standing), true (moving)</li>
+                        <li>Change it back to local after testing</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 3: Create a Jump Parameter (Preview)</h4>
+                    <p><strong>Task:</strong> Set up for future jump animation.</p>
+                    <ul>
+                        <li>In Animator Parameters, create a new <strong>Trigger</strong></li>
+                        <li>Name it "jump"</li>
+                        <li>Don't create transitions yet (we'll do this in the next lesson)</li>
+                        <li>This prepares you for more complex animation systems</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Challenge: Add Debug Logging</h4>
+                    <p><strong>Task:</strong> Log animation state changes to Console.</p>
+                    <ul>
+                        <li>In HandleAnimations(), add: <code>Debug.Log("isMoving: " + isMoving);</code></li>
+                        <li>Enter Play Mode and check Console window</li>
+                        <li>You'll see messages every frame (it's a lot!)</li>
+                        <li>Understand why we don't log every frame in real games (performance)</li>
+                        <li>Remove the Debug.Log when done</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">📚 Lesson 5 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95);"><strong>Congratulations!</strong> You've learned:</p>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ <strong>Movement Animation:</strong> Created playerMove with 8 sprites at 12 FPS</li>
+                    <li>✅ <strong>Animator Parameters:</strong> Learned about bool, float, int, and trigger types</li>
+                    <li>✅ <strong>Transitions:</strong> Set up Idle ↔ Move with isMoving condition</li>
+                    <li>✅ <strong>Instant Response:</strong> Disabled Exit Time and set Duration to 0</li>
+                    <li>✅ <strong>GetComponentInChildren:</strong> Access components on child GameObjects</li>
+                    <li>✅ <strong>Local Variables:</strong> Declare temporary variables inside methods</li>
+                    <li>✅ <strong>Velocity Detection:</strong> Use velocity.x != 0 to detect movement</li>
+                    <li>✅ <strong>Quick Assignment:</strong> Assign booleans directly from conditions</li>
+                    <li>✅ <strong>SetBool:</strong> Control Animator parameters from code</li>
+                    <li>✅ <strong>Clean Code:</strong> Organized animation logic in separate method</li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95); margin-top: 15px;"><strong>Next Up:</strong> In Lesson 6,
+                    you'll add jump animations, attack animations, and learn about Trigger parameters!</p>
+            </div>
+
+        </div>
+        <footer>
+            <p>Fantastic work! Your character is coming to life with smooth animations! 🏃✨</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>
