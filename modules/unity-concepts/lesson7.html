@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 7: Master collision detection using raycasts to prevent endless jumping and create realistic ground detection">
+    <meta name="keywords"
+        content="Unity, collision detection, raycast, Physics2D, ground check, layer mask, gizmos, Unity 2D">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+    <title>Lesson 7: Collision Detection & Ground Checking | Unity Tutorial</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🎯 Lesson 7: Collision Detection & Ground Checking</h1>
+            <p>Learn how to detect the ground beneath your character using raycasts and prevent endless jumping</p>
+        </header>
+        <div class="content">
+            <!-- What You'll Learn section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left: none;">
+                <h4 style="color: white;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9);">
+                    <li>✅ Understand why collision detection is essential for realistic gameplay</li>
+                    <li>✅ Master the Physics2D.Raycast system for ground detection</li>
+                    <li>✅ Use Gizmos for visual debugging in the Scene view</li>
+                    <li>✅ Implement Layer Masks to detect specific objects</li>
+                    <li>✅ Create proper jump restrictions based on ground state</li>
+                    <li>✅ Organize inspector variables with Headers</li>
+                    <li>✅ Fine-tune physics parameters for better game feel</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: The Problem - Endless Jumping -->
+            <div class="topic">
+                <h2>1. The Problem: Endless Jumping 🚫</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Without collision detection, players can jump infinitely while already in the air. This breaks
+                        the physics realism of your game. We need a way to detect if the character is standing on the
+                        ground before allowing them to jump.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎮 Why This Matters</h4>
+                    <ul>
+                        <li><strong>Game Feel:</strong> Realistic physics make your game feel professional</li>
+                        <li><strong>Fair Gameplay:</strong> Players shouldn't be able to fly by spamming jump</li>
+                        <li><strong>Platformer Standard:</strong> Ground detection is fundamental in 2D games</li>
+                        <li><strong>Design Control:</strong> You control when and how players can jump</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Collision detection might seem complex at first, but with practice it
+                    becomes second nature. Don't worry if you don't understand everything immediately—we'll be using
+                    this technique frequently!
+                </div>
+            </div>
+
+            <!-- Topic 2: Organizing Inspector with Headers -->
+            <div class="topic">
+                <h2>2. Organizing Inspector with Headers 📋</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>As your scripts grow more complex, organization becomes crucial. Unity's <code>[Header]</code>
+                        attribute creates visual sections in the Inspector, making it easier to find and adjust related
+                        variables.</p>
+                </div>
+
+                <h3>Adding Headers to Your Script</h3>
+                <div class="example">
+                    <div class="example-header">Header Organization</div>
+                    <code>[Header("Movement Details")]<br>
+[SerializeField] private float moveSpeed = 5f;<br>
+[SerializeField] private float jumpForce = 12f;<br>
+<br>
+[Header("Collision Details")]<br>
+[SerializeField] private float groundCheckDistance;<br>
+[SerializeField] private LayerMask whatIsGround;</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Benefits of Headers</h4>
+                    <ul>
+                        <li><strong>Visual Separation:</strong> Creates clear sections in the Inspector</li>
+                        <li><strong>Better Workflow:</strong> Quickly find the variables you need</li>
+                        <li><strong>Team Communication:</strong> Other developers understand your code structure</li>
+                        <li><strong>Professional Practice:</strong> Industry-standard code organization</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 3: Ground Check Distance -->
+            <div class="topic">
+                <h2>3. Ground Check Distance Variable 📏</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>Ground Check Distance</strong> determines how far down from the character's center
+                        we'll cast a "laser" (raycast) to detect the ground. Think of it as the length of an invisible
+                        measuring stick pointing downward.</p>
+                </div>
+
+                <h3>Creating the Variable</h3>
+                <div class="example">
+                    <div class="example-header">Ground Check Setup</div>
+                    <code>[Header("Collision Details")]<br>
+[SerializeField] private float groundCheckDistance;</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 How It Works</h4>
+                    <ul>
+                        <li><strong>Origin Point:</strong> Starts from the character's transform.position (center)</li>
+                        <li><strong>Direction:</strong> Shoots straight down (negative Y direction)</li>
+                        <li><strong>Length:</strong> The groundCheckDistance value determines how far</li>
+                        <li><strong>Detection:</strong> If it hits something tagged as "ground," we're standing on
+                            ground</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>⚙️ Typical Value:</strong> For most 2D characters, a groundCheckDistance of 0.4 to 1.4 works
+                    well. You'll fine-tune this based on your character's size and collider shape.
+                </div>
+            </div>
+
+            <!-- Topic 4: Visual Debugging with Gizmos -->
+            <div class="topic">
+                <h2>4. Visual Debugging with OnDrawGizmos 👁️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Gizmos</strong> are visual debugging tools that draw shapes, lines, and icons in the
+                        Scene view (not visible to players). They help you visualize what your code is doing, making it
+                        much easier to debug and fine-tune collision detection.</p>
+                </div>
+
+                <h3>Drawing the Ground Check Line</h3>
+                <div class="example">
+                    <div class="example-header">OnDrawGizmos Method</div>
+                    <code>private void OnDrawGizmos()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Gizmos.DrawLine(transform.position, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.position + new Vector3(0, -groundCheckDistance, 0));<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔍 Understanding the Code</h4>
+                    <ul>
+                        <li><strong>OnDrawGizmos():</strong> Special Unity method that runs in the editor</li>
+                        <li><strong>Gizmos.DrawLine:</strong> Draws a line between two points</li>
+                        <li><strong>First Point:</strong> transform.position (character center)</li>
+                        <li><strong>Second Point:</strong> transform.position + Vector3(0, -groundCheckDistance, 0)</li>
+                        <li><strong>Vector3 Math:</strong> Adding (0, -negative value, 0) moves the point downward</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎨 Important:</strong> Gizmos ONLY draw visual lines—they don't do any actual physics
+                    detection! You need both the gizmo (to see it) and the raycast (to detect collisions) with the same
+                    parameters.
+                </div>
+
+                <h3>Adjusting in the Inspector</h3>
+                <div class="key-points">
+                    <h4>📊 Fine-Tuning Process</h4>
+                    <ul>
+                        <li>Select your character in the Scene view and zoom in</li>
+                        <li>Look for the line drawn below the character</li>
+                        <li>Adjust groundCheckDistance value in the Inspector</li>
+                        <li>Watch the line extend or shrink in real-time</li>
+                        <li>The line should reach slightly into the ground platform</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Typical Values to Try</div>
+                    <code>groundCheckDistance = 30 → Too long (way too far down)<br>
+groundCheckDistance = 1.30 → Still too long<br>
+groundCheckDistance = 0.4 → Good for most characters<br>
+groundCheckDistance = 1.4 → Good if character is taller</code>
+                </div>
+            </div>
+
+            <!-- Topic 5: Adjusting Collider Offset -->
+            <div class="topic">
+                <h2>5. Adjusting Collider Offset 🎯</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Sometimes your character's visual sprite and collider center don't align perfectly. The
+                        <strong>Collider Offset</strong> lets you adjust the collider's position relative to the sprite,
+                        ensuring accurate ground detection.
+                    </p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Fixing Offset Issues</div>
+                    <code>// In the Capsule Collider 2D component:<br>
+Offset X: 0<br>
+Offset Y: 0.3<br>
+<br>
+// This centers the collider properly on the character sprite</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔧 When to Adjust Offset</h4>
+                    <ul>
+                        <li><strong>Visual Misalignment:</strong> Ground check line doesn't appear centered</li>
+                        <li><strong>Collision Problems:</strong> Character sinks into or floats above ground</li>
+                        <li><strong>Sprite Pivot Issues:</strong> Your sprite's pivot point isn't at the center</li>
+                        <li><strong>Trial and Error:</strong> Test values between 0 and 0.3 for Y offset</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 6: Creating the Handle Collision Method -->
+            <div class="topic">
+                <h2>6. Creating the HandleCollision Method 🛠️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Good code organization means separating concerns. The <code>HandleCollision()</code> method will
+                        be responsible for all ground detection logic, keeping your Update() method clean and readable.
+                    </p>
+                </div>
+
+                <h3>Method Structure</h3>
+                <div class="example">
+                    <div class="example-header">HandleCollision Setup</div>
+                    <code>private void HandleCollision()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Ground detection logic will go here<br>
+}<br>
+<br>
+private void Update()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleCollision(); // Call first, before movement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleInput();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;HandleMovement();<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>📌 Why Call It First?</h4>
+                    <ul>
+                        <li><strong>Fresh Data:</strong> Check ground state before processing input</li>
+                        <li><strong>Prevents Bugs:</strong> Ensures ground state is current before jump attempts</li>
+                        <li><strong>Logical Flow:</strong> Detect → Input → React is a clear sequence</li>
+                        <li><strong>Frame Accuracy:</strong> Ground state updates every frame before use</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 7: The isGrounded Boolean -->
+            <div class="topic">
+                <h2>7. The isGrounded Boolean 🚦</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>We need a <strong>boolean variable</strong> (true/false) to store whether the character is
+                        currently touching the ground. This simple flag will control when jumping is allowed.</p>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">Boolean Declaration</div>
+                    <code>private bool isGrounded;</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎮 How It's Used</h4>
+                    <ul>
+                        <li><strong>True:</strong> Character is standing on ground → Can jump</li>
+                        <li><strong>False:</strong> Character is in the air → Cannot jump</li>
+                        <li><strong>Updated Every Frame:</strong> Constantly refreshed by HandleCollision()</li>
+                        <li><strong>Simple Gate:</strong> Single variable controls jump permission</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🔒 Private Variable:</strong> We don't need to expose this in the Inspector initially. We
+                    know it's working when our jump restrictions work correctly.
+                </div>
+            </div>
+
+            <!-- Topic 8: Physics2D.Raycast - The Detection System -->
+            <div class="topic">
+                <h2>8. Physics2D.Raycast - The Detection System ⚡</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Physics2D.Raycast</strong> is Unity's built-in function that shoots an invisible ray
+                        through your game world and returns <code>true</code> if it hits something, or
+                        <code>false</code> if it hits nothing. Think of it as an invisible laser pointer that can detect
+                        objects.
+                    </p>
+                </div>
+
+                <h3>The Complete Raycast</h3>
+                <div class="example">
+                    <div class="example-header">Full Implementation</div>
+                    <code>private void HandleCollision()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;isGrounded = Physics2D.Raycast(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.position,  // Origin: where to start the ray<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vector2.down,         // Direction: which way to shoot<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groundCheckDistance,  // Distance: how far to check<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;whatIsGround          // LayerMask: what to detect<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Breaking Down the Parameters</h4>
+                    <ul>
+                        <li><strong>Origin (transform.position):</strong> Starting point of the ray - the character's
+                            center</li>
+                        <li><strong>Direction (Vector2.down):</strong> Which way to shoot - downward (0, -1)</li>
+                        <li><strong>Distance (groundCheckDistance):</strong> How far the ray travels - our custom value
+                        </li>
+                        <li><strong>LayerMask (whatIsGround):</strong> Filter to detect only specific objects</li>
+                    </ul>
+                </div>
+
+                <h3>Understanding Vector2.down</h3>
+                <div class="example">
+                    <div class="example-header">Direction Vectors</div>
+                    <code>Vector2.down = (0, -1)   // Straight down<br>
+Vector2.up = (0, 1)      // Straight up<br>
+Vector2.left = (-1, 0)   // Straight left<br>
+Vector2.right = (1, 0)   // Straight right</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Pro Tip:</strong> You can shoot raycasts in any direction by changing the Vector2
+                    parameter. Want to detect walls? Use Vector2.right or Vector2.left!
+                </div>
+            </div>
+
+            <!-- Topic 9: Layer Masks and Ground Setup -->
+            <div class="topic">
+                <h2>9. Layer Masks and Ground Layer Setup 🏷️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Without a <strong>LayerMask</strong>, your raycast would detect EVERYTHING—players, enemies,
+                        coins, props. Layer Masks act as filters, allowing you to specify exactly which types of objects
+                        you want to detect.</p>
+                </div>
+
+                <h3>Creating the LayerMask Variable</h3>
+                <div class="example">
+                    <div class="example-header">LayerMask Declaration</div>
+                    <code>[Header("Collision Details")]<br>
+[SerializeField] private float groundCheckDistance;<br>
+[SerializeField] private LayerMask whatIsGround;</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Setup Steps in Unity</h4>
+                    <ul>
+                        <li><strong>Step 1:</strong> In Inspector, go to "Layer" dropdown (top right)</li>
+                        <li><strong>Step 2:</strong> Click "Add Layer"</li>
+                        <li><strong>Step 3:</strong> Type "Ground" in an empty layer slot</li>
+                        <li><strong>Step 4:</strong> Select your Player object</li>
+                        <li><strong>Step 5:</strong> In the Inspector, set "What Is Ground" to "Ground" layer</li>
+                        <li><strong>Step 6:</strong> Select your Platform object</li>
+                        <li><strong>Step 7:</strong> Change its Layer from "Default" to "Ground"</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>⚠️ Critical Step:</strong> Don't forget Step 7! If you create the Ground layer but don't
+                    assign it to your platform, the raycast will never detect it. This is a very common mistake!
+                </div>
+
+                <h3>Why Layers Matter</h3>
+                <div class="key-points">
+                    <h4>🛡️ Layer Benefits</h4>
+                    <ul>
+                        <li><strong>Performance:</strong> Raycast only checks relevant objects, not everything</li>
+                        <li><strong>Precision:</strong> Detect exactly what you want, ignore what you don't</li>
+                        <li><strong>Flexibility:</strong> Different raycasts can detect different layers</li>
+                        <li><strong>Organization:</strong> Clear categorization of game objects</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 10: Testing Ground Detection -->
+            <div class="topic">
+                <h2>10. Testing Ground Detection 🧪</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Once everything is set up, you can test the ground detection by making the
+                        <code>isGrounded</code> variable temporarily visible in the Inspector. This lets you see in
+                        real-time whether the raycast is detecting the ground.
+                    </p>
+                </div>
+
+                <h3>Temporary Visibility for Testing</h3>
+                <div class="example">
+                    <div class="example-header">Making isGrounded Visible</div>
+                    <code>// For testing only:<br>
+[SerializeField] private bool isGrounded;<br>
+<br>
+// After testing, hide it again:<br>
+private bool isGrounded;</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎮 What to Look For</h4>
+                    <ul>
+                        <li><strong>Standing Still:</strong> isGrounded should show "True"</li>
+                        <li><strong>Jumping:</strong> isGrounded should switch to "False" immediately</li>
+                        <li><strong>In Air:</strong> isGrounded stays "False" while airborne</li>
+                        <li><strong>Landing:</strong> isGrounded switches back to "True" upon landing</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🔧 Troubleshooting:</strong> If isGrounded is always False, check: (1) Platform has Ground
+                    layer assigned, (2) groundCheckDistance is long enough, (3) whatIsGround is set to Ground layer, (4)
+                    HandleCollision() is being called in Update().
+                </div>
+
+                <h3>Adjusting Distance Based on Testing</h3>
+                <div class="example">
+                    <div class="example-header">Finding the Right Value</div>
+                    <code>// Too short - won't detect ground:<br>
+groundCheckDistance = 0.1;<br>
+<br>
+// Good range for most characters:<br>
+groundCheckDistance = 0.4 to 1.4;<br>
+<br>
+// The raycast must reach from character center to slightly into the ground</code>
+                </div>
+            </div>
+
+            <!-- Topic 11: Implementing Jump Restrictions -->
+            <div class="topic">
+                <h2>11. Implementing Jump Restrictions 🚫</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Now that we can detect the ground, we use that information to control when jumping is allowed. A
+                        simple <code>if</code> statement checks the <code>isGrounded</code> variable before applying
+                        jump force.</p>
+                </div>
+
+                <h3>Updated Jump Method</h3>
+                <div class="example">
+                    <div class="example-header">Jump with Ground Check</div>
+                    <code>private void Jump()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (isGrounded)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb.velocity = new Vector2(rb.velocity.x, jumpForce);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✅ How It Works</h4>
+                    <ul>
+                        <li><strong>Ground Check First:</strong> Before jumping, check if isGrounded is true</li>
+                        <li><strong>Permission Gate:</strong> If true, allow jump; if false, do nothing</li>
+                        <li><strong>Button Mashing Protected:</strong> Player can spam jump button—it won't work in air
+                        </li>
+                        <li><strong>Clean Physics:</strong> Jump only happens when physically possible</li>
+                    </ul>
+                </div>
+
+                <h3>Testing the Restriction</h3>
+                <div class="key-points">
+                    <h4>🎮 Expected Behavior</h4>
+                    <ul>
+                        <li>Standing on ground → Press jump → Character jumps ✅</li>
+                        <li>In the air → Press jump → Nothing happens ✅</li>
+                        <li>Mashing jump button → Only jumps once per landing ✅</li>
+                        <li>No more flying by holding jump button ✅</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎯 Success!</strong> Your character now has realistic jump physics that prevents
+                    air-jumping. This is a fundamental mechanic in professional platformers!
+                </div>
+            </div>
+
+            <!-- Topic 12: Fine-Tuning Physics Parameters -->
+            <div class="topic">
+                <h2>12. Fine-Tuning Physics Parameters ⚙️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>Rigidbody2D component</strong> has several physics parameters that dramatically
+                        affect how your character feels to control. "Game feel" is all about tweaking these values until
+                        movement feels responsive and satisfying.</p>
+                </div>
+
+                <h3>Gravity Scale</h3>
+                <div class="example">
+                    <div class="example-header">Adjusting Gravity</div>
+                    <code>// In Rigidbody2D component:<br>
+Gravity Scale: 3.5<br>
+<br>
+// Higher values = falls faster (feels heavier)<br>
+// Lower values = floaty feeling</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🌍 Gravity Scale Effects</h4>
+                    <ul>
+                        <li><strong>1.0:</strong> Default Unity gravity—usually too floaty</li>
+                        <li><strong>2.0-3.0:</strong> Lighter, more arcade-like feel</li>
+                        <li><strong>3.5-4.5:</strong> Snappy, responsive feel (recommended for platformers)</li>
+                        <li><strong>5.0+:</strong> Very fast falling—can feel too heavy</li>
+                    </ul>
+                </div>
+
+                <h3>Linear Drag (Air Resistance)</h3>
+                <div class="example">
+                    <div class="example-header">Adding Air Resistance</div>
+                    <code>// In Rigidbody2D component:<br>
+Linear Drag: 0.5<br>
+<br>
+// Simulates air resistance—character slows down naturally</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>💨 Linear Drag Effects</h4>
+                    <ul>
+                        <li><strong>0:</strong> No air resistance—character slides forever</li>
+                        <li><strong>0.1-0.5:</strong> Subtle resistance—feels natural</li>
+                        <li><strong>1.0+:</strong> Strong resistance—movement feels sluggish</li>
+                        <li><strong>Recommendation:</strong> 0.5 for a slight, realistic feel</li>
+                    </ul>
+                </div>
+
+                <h3>Jump Force</h3>
+                <div class="example">
+                    <div class="example-header">Adjusting Jump Height</div>
+                    <code>// In your script:<br>
+[SerializeField] private float jumpForce = 12f;<br>
+<br>
+// Test different values to find what feels right</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🚀 Jump Force Guidelines</h4>
+                    <ul>
+                        <li><strong>5-8:</strong> Small hops—good for quick, nimble characters</li>
+                        <li><strong>10-15:</strong> Medium jumps—versatile range for most platformers</li>
+                        <li><strong>12:</strong> Recommended starting point for testing</li>
+                        <li><strong>20+:</strong> Very high jumps—use for super jump abilities</li>
+                    </ul>
+                </div>
+
+                <h3>The Recommended Setup</h3>
+                <div class="example">
+                    <div class="example-header">Optimal Starting Values</div>
+                    <code>// Rigidbody2D settings:<br>
+Gravity Scale: 3.5<br>
+Linear Drag: 0.5<br>
+<br>
+// Script variables:<br>
+jumpForce = 12f;<br>
+groundCheckDistance = 0.4f to 1.4f; (depends on character size)</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎨 Game Feel is Subjective:</strong> These values are starting recommendations. The best
+                    approach is to playtest extensively and adjust based on how YOUR game feels. Try different
+                    combinations and see what matches your vision!
+                </div>
+            </div>
+
+            <!-- Topic 13: Understanding Raycast vs Gizmos -->
+            <div class="topic">
+                <h2>13. Understanding Raycast vs Gizmos 🔄</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>This is a common source of confusion for beginners: <strong>Gizmos and Raycasts are completely
+                            separate systems</strong>. Gizmos are for visualization only. Raycasts do the actual physics
+                        detection. You need both, with matching parameters, for a complete debugging setup.</p>
+                </div>
+
+                <h3>Two Separate Systems</h3>
+                <div class="example">
+                    <div class="example-header">Gizmos vs Raycast</div>
+                    <code>// GIZMOS - Only draws a visible line (no detection):<br>
+private void OnDrawGizmos()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Gizmos.DrawLine(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.position,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.position + new Vector3(0, -groundCheckDistance, 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+}<br>
+<br>
+// RAYCAST - Does actual physics detection (invisible):<br>
+private void HandleCollision()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;isGrounded = Physics2D.Raycast(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.position,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vector2.down,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groundCheckDistance,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;whatIsGround<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Key Differences</h4>
+                    <ul>
+                        <li><strong>Gizmos:</strong> Visual only • Visible in Scene view • No physics calculation</li>
+                        <li><strong>Raycast:</strong> Physics detection • Invisible to everyone • Returns true/false
+                        </li>
+                        <li><strong>Both Use Same Values:</strong> Same origin, same distance for accurate debugging
+                        </li>
+                        <li><strong>Can Work Independently:</strong> Raycast works without gizmos, but gizmos help
+                            debugging</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🔍 Debugging Workflow:</strong> Draw gizmos to SEE where your raycast is shooting. If the
+                    gizmo line looks correct but detection isn't working, the problem is with your raycast parameters or
+                    layer setup, not the gizmo.
+                </div>
+
+                <h3>Why Use Both?</h3>
+                <div class="key-points">
+                    <h4>🛠️ The Perfect Debugging Combo</h4>
+                    <ul>
+                        <li><strong>Visual Confirmation:</strong> See exactly where and how far you're checking</li>
+                        <li><strong>Easy Adjustment:</strong> Change groundCheckDistance and see instant visual feedback
+                        </li>
+                        <li><strong>No Guessing:</strong> Know immediately if your distance is too short or too long
+                        </li>
+                        <li><strong>Professional Practice:</strong> Industry standard for debugging invisible systems
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 14: Cleaning Up Inspector Variables -->
+            <div class="topic">
+                <h2>14. Cleaning Up Inspector Variables 🧹</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Once you've verified that systems work, hide debugging variables from the Inspector to keep it
+                        clean. Only expose variables that need adjustment during development or design iteration.</p>
+                </div>
+
+                <h3>What to Hide vs Show</h3>
+                <div class="example">
+                    <div class="example-header">Clean Inspector Practice</div>
+                    <code>// HIDE - Internal state (working correctly):<br>
+private bool facingRight;<br>
+private float xInput;<br>
+private bool isGrounded;<br>
+<br>
+// SHOW - Designer needs to adjust these:<br>
+[SerializeField] private float moveSpeed;<br>
+[SerializeField] private float jumpForce;<br>
+[SerializeField] private float groundCheckDistance;<br>
+[SerializeField] private LayerMask whatIsGround;</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Inspector Hygiene</h4>
+                    <ul>
+                        <li><strong>Hide Working Systems:</strong> If isGrounded works, make it private</li>
+                        <li><strong>Show Tunable Values:</strong> Speed, jump height, distances need adjustment</li>
+                        <li><strong>Show Required References:</strong> Layer masks, prefab references must be assigned
+                        </li>
+                        <li><strong>Group with Headers:</strong> Related variables under clear section names</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎯 Pro Practice:</strong> A clean Inspector means faster iteration. Designers and artists
+                    can find and adjust the values they need without digging through debug variables.
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="key-points">
+                    <h4>Exercise 1: Experiment with Ground Check Distance</h4>
+                    <p><strong>Task:</strong> Test how ground check distance affects detection</p>
+                    <ul>
+                        <li>Set groundCheckDistance to 0.1 and test jumping—what happens?</li>
+                        <li>Set it to 5.0—can you still control jumping properly?</li>
+                        <li>Find the smallest value that consistently detects your platform</li>
+                        <li>Document why too short or too long causes problems</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 2: Create Wall Detection</h4>
+                    <p><strong>Task:</strong> Use raycast to detect walls beside the character</p>
+                    <ul>
+                        <li>Create a new float variable: wallCheckDistance</li>
+                        <li>Create a gizmo to draw a horizontal line (left or right)</li>
+                        <li>Add a raycast that shoots Vector2.right or Vector2.left</li>
+                        <li>Create a "Wall" layer and assign it to vertical obstacles</li>
+                        <li>Display in console when touching a wall</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 3: Physics Feel Testing</h4>
+                    <p><strong>Task:</strong> Compare different physics parameter combinations</p>
+                    <ul>
+                        <li>Test: Gravity 1.0, Jump 12 vs Gravity 3.5, Jump 12</li>
+                        <li>Test: Linear Drag 0 vs Linear Drag 2.0</li>
+                        <li>Create 3 different "feels": Floaty, Snappy, Heavy</li>
+                        <li>Note which combination feels best for your game idea</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 4: Debug Multiple Platforms</h4>
+                    <p><strong>Task:</strong> Test ground detection with multiple platforms</p>
+                    <ul>
+                        <li>Create 3-5 platforms at different heights in your scene</li>
+                        <li>Ensure ALL platforms have the "Ground" layer assigned</li>
+                        <li>Jump between platforms and verify isGrounded changes correctly</li>
+                        <li>Try jumping while falling through platforms—what happens?</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Challenge Exercise: Coyote Time</h4>
+                    <p><strong>Task:</strong> Allow jumping briefly after leaving the ground</p>
+                    <ul>
+                        <li>Research "coyote time" in game design</li>
+                        <li>Create a float variable: coyoteTimeCounter</li>
+                        <li>When leaving ground, start counting down (use Time.deltaTime)</li>
+                        <li>Allow jumping if counter > 0, even if not grounded</li>
+                        <li>This makes platforming feel more forgiving!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white !important; border-left: none !important;">
+                <h4 style="color: white !important;">📚 Lesson 7 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95) !important;"><strong>Congratulations!</strong> You've mastered
+                    collision
+                    detection and ground checking. Here's what you learned:</p>
+                <ul style="color: rgba(255,255,255,0.9) !important;">
+                    <li>✅ <strong>Collision Detection Purpose:</strong> Prevents endless jumping and creates realistic
+                        physics behavior</li>
+                    <li>✅ <strong>Inspector Organization:</strong> Use [Header] attributes to group related variables
+                        professionally</li>
+                    <li>✅ <strong>Physics2D.Raycast:</strong> Unity's built-in system for shooting invisible rays to
+                        detect objects</li>
+                    <li>✅ <strong>Gizmos Debugging:</strong> OnDrawGizmos() visualizes invisible raycasts in the Scene
+                        view for easier development</li>
+                    <li>✅ <strong>Layer Masks:</strong> Filter raycasts to detect only specific object types (Ground,
+                        Walls, etc.)</li>
+                    <li>✅ <strong>Ground Check Distance:</strong> Controls how far down the raycast extends—tune based
+                        on character size</li>
+                    <li>✅ <strong>Boolean Gates:</strong> isGrounded acts as a simple permission system for jumping</li>
+                    <li>✅ <strong>Physics Parameters:</strong> Gravity Scale (3.5), Linear Drag (0.5), and Jump Force
+                        (12) create satisfying game feel</li>
+                    <li>✅ <strong>Two-System Approach:</strong> Gizmos for visualization + Raycast for detection =
+                        powerful debugging</li>
+                    <li>✅ <strong>Testing Workflow:</strong> Make variables temporarily visible, verify behavior, then
+                        hide for clean Inspector</li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95) !important; margin-top: 15px;"><strong>Next Up:</strong> In
+                    Lesson 8, we'll
+                    add jump and fall animations to make your character movement look professional and polished. Get
+                    ready to bring your character to life visually! 🎨</p>
+            </div>
+        </div>
+        <footer>
+            <p>You've unlocked the power of collision detection—the foundation of solid platformer physics! Keep
+                experimenting with physics values until your character feels just right. 🎯✨</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

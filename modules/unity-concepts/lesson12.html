@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 12: Master Polymorphism with virtual methods, method overriding, and customizing inherited behavior">
+    <meta name="keywords"
+        content="Unity, OOP, polymorphism, virtual methods, override, base class, method overriding, object-oriented programming">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+    <title>Lesson 12: Polymorphism & Method Overriding | Unity Tutorial</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎭</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🎭 Lesson 12: Polymorphism & Method Overriding</h1>
+            <p>Master customizing inherited methods with virtual, override, and base keywords</p>
+        </header>
+        <div class="content">
+            <!-- What You'll Learn section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white !important; border-left: none !important;">
+                <h4 style="color: white !important;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9) !important;">
+                    <li>✅ Understand Polymorphism—the second pillar of OOP</li>
+                    <li>✅ Use the virtual keyword to make methods overridable</li>
+                    <li>✅ Override parent methods with custom child behavior</li>
+                    <li>✅ Call parent implementation with base.Method()</li>
+                    <li>✅ Add functionality to inherited methods (extend behavior)</li>
+                    <li>✅ Replace inherited methods completely (new behavior)</li>
+                    <li>✅ Design flexible enemy systems with polymorphic attacks</li>
+                    <li>✅ Master "one interface, many implementations" concept</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: What is Polymorphism? -->
+            <div class="topic">
+                <h2>1. What is Polymorphism? 🎭</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Polymorphism</strong> allows you to change the functionality of inherited methods. Two
+                        different objects can use the same method name, but what happens inside that method can be
+                        completely different. It's the second pillar of Object-Oriented Programming and means "many
+                        forms" in Greek.</p>
+                </div>
+
+                <h3>The Perfect Real-World Analogy</h3>
+                <div class="example">
+                    <div class="example-header">Dancing Example</div>
+                    <code>SCENARIO:<br>
+You and I are standing in a room.<br>
+Someone walks in and says: "DANCE!"<br>
+<br>
+RESULT:<br>
+- You dance in YOUR own way<br>
+- I dance in MY own way<br>
+<br>
+OBSERVATION:<br>
+✅ Same command: "Dance"<br>
+✅ Same action: Dancing<br>
+❗ Different execution: Unique styles<br>
+<br>
+This is polymorphism:<br>
+ONE COMMAND, DIFFERENT BEHAVIORS</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Polymorphism in Programming</h4>
+                    <ul>
+                        <li><strong>Same Method Name:</strong> Attack(), Move(), TakeDamage()</li>
+                        <li><strong>Different Implementations:</strong> Each class does it differently</li>
+                        <li><strong>Skeleton.Attack():</strong> Swings sword</li>
+                        <li><strong>Goblin.Attack():</strong> Swings sword + steals gold</li>
+                        <li><strong>Archer.Attack():</strong> Shoots arrow (completely different)</li>
+                    </ul>
+                </div>
+
+                <h3>Why Polymorphism Matters</h3>
+                <div class="example">
+                    <div class="example-header">Without Polymorphism</div>
+                    <code>// ❌ BAD: Need different method names for each enemy<br>
+skeleton.MeleeAttack();<br>
+goblin.MeleeAttackAndSteal();<br>
+archer.ShootArrow();<br>
+mage.CastFireball();<br>
+<br>
+PROBLEMS:<br>
+- Hard to remember different method names<br>
+- Can't treat all enemies the same way<br>
+- Loops become complicated<br>
+- Not scalable</code>
+                </div>
+
+                <div class="example">
+                    <div class="example-header">✅ With Polymorphism</div>
+                    <code>// ✅ GOOD: Same method name, different behaviors<br>
+skeleton.Attack();  // Melee<br>
+goblin.Attack();    // Melee + Steal<br>
+archer.Attack();    // Shoot Arrow<br>
+mage.Attack();      // Cast Fireball<br>
+<br>
+// Can loop through all enemies uniformly<br>
+foreach (Enemy enemy in allEnemies)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enemy.Attack();  // Each does their version<br>
+}<br>
+<br>
+BENEFITS:<br>
+✅ Consistent interface<br>
+✅ Easy to loop through collections<br>
+✅ Clean, readable code<br>
+✅ Easy to add new enemy types</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Core Principle:</strong> Polymorphism enables "one interface, many implementations." You
+                    call the same method on different objects, and each object responds in its own unique way!
+                </div>
+            </div>
+
+            <!-- Topic 2: The Wrong Way (Creating New Methods) -->
+            <div class="topic">
+                <h2>2. The Wrong Approach: Creating New Methods ❌</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Before learning polymorphism, let's see the common mistake beginners make: creating new methods
+                        instead of overriding existing ones. This approach works but is inefficient and not
+                        professional.</p>
+                </div>
+
+                <h3>The Problem Scenario</h3>
+                <div class="example">
+                    <div class="example-header">Goblin Should Steal When Attacking</div>
+                    <code>// Goal: When Goblin attacks, also steal gold<br>
+<br>
+// Enemy.cs (base class)<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Attack()  // ❌ Private - can't access in child<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " attacks!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// EnemyGoblin.cs<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void StealMoney()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " steals gold!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ Problem: Attack() is private, can't access it!<br>
+}</code>
+                </div>
+
+                <h3>Beginner Solution: Make Attack Protected</h3>
+                <div class="example">
+                    <div class="example-header">First Attempt</div>
+                    <code>// Enemy.cs<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected void Attack()  // Changed to protected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " attacks!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// EnemyGoblin.cs<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void StealMoney()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " steals gold!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Create NEW method that calls both<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void SpecialAttack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attack();  // ✅ Now accessible because protected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[ContextMenu("Special Attack")]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void SpecialAttack_Test()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SpecialAttack();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>⚠️ Why This Works But Is Wrong</h4>
+                    <ul>
+                        <li><strong>✅ Works:</strong> You can call SpecialAttack() to do both actions</li>
+                        <li><strong>❌ Two Methods:</strong> Now have Attack() AND SpecialAttack()</li>
+                        <li><strong>❌ Inconsistent:</strong> Skeleton uses Attack(), Goblin uses SpecialAttack()</li>
+                        <li><strong>❌ Breaks Polymorphism:</strong> Can't treat all enemies the same</li>
+                        <li><strong>❌ Not Scalable:</strong> Need UltimateAttack(), SuperAttack(), etc. for variations
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Testing the Wrong Approach</h3>
+                <div class="example">
+                    <div class="example-header">Results</div>
+                    <code>// Press F key (calls Attack() on all enemies)<br>
+Skeleton attacks!<br>
+Goblin attacks!  // ❌ Doesn't steal - wrong method called<br>
+<br>
+// Right-click Goblin → SpecialAttack<br>
+Goblin steals gold!<br>
+Goblin attacks!  // ✅ Works, but need to manually call SpecialAttack<br>
+<br>
+PROBLEM:<br>
+- When Update() calls Attack(), Goblin doesn't steal<br>
+- Need to remember to call SpecialAttack() instead<br>
+- Code becomes confusing</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 The Right Way:</strong> Instead of creating new methods, we should
+                    <strong>override</strong> the existing Attack() method and customize its behavior for Goblin. That's
+                    polymorphism!
+                </div>
+            </div>
+
+            <!-- Topic 3: Virtual Keyword - Making Methods Overridable -->
+            <div class="topic">
+                <h2>3. The Virtual Keyword: Making Methods Overridable 🔓</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>virtual</strong> keyword marks a method as overridable by child classes. By default,
+                        methods in parent classes are "sealed"—child classes can't change them. Adding
+                        <code>virtual</code> opens them for customization.</p>
+                </div>
+
+                <h3>Making Attack() Virtual</h3>
+                <div class="example">
+                    <div class="example-header">Enemy.cs - Base Class</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected string enemyName = "Enemy";<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Virtual method - child classes CAN override this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " attacks!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.F))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attack();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Virtual Keyword Effects</h4>
+                    <ul>
+                        <li><strong>protected virtual:</strong> Method is accessible to children AND overridable</li>
+                        <li><strong>Default Behavior:</strong> Base implementation still exists</li>
+                        <li><strong>Optional Override:</strong> Child classes CAN override, but don't have to</li>
+                        <li><strong>Not Sealed:</strong> Removes the "sealed" status from the method</li>
+                        <li><strong>Professional Standard:</strong> Use virtual when you expect child classes to
+                            customize behavior</li>
+                    </ul>
+                </div>
+
+                <h3>What Can Be Virtual?</h3>
+                <div class="example">
+                    <div class="example-header">Virtual Options</div>
+                    <code>public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ Virtual method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Attack() { }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ Virtual property<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public virtual int MaxHealth => 100;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ Virtual event (advanced)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void OnDeath() { }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ Can't be virtual: static methods<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// public static virtual void Test() { }  // ERROR<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ Can't be virtual: constructors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// public virtual Enemy() { }  // ERROR<br>
+}<br>
+<br>
+RULE: Methods, properties, and events can be virtual.<br>
+Constructors and static members cannot.</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎨 Design Pattern:</strong> Mark methods as <code>virtual</code> when you expect different
+                    enemy types to have different implementations. Common virtual methods: Attack(), Die(),
+                    TakeDamage(), Move().
+                </div>
+
+                <h3>Non-Virtual vs Virtual</h3>
+                <div class="example">
+                    <div class="example-header">Comparison</div>
+                    <code>// WITHOUT virtual<br>
+protected void Attack() { }  // Sealed - can't override<br>
+<br>
+// EnemyGoblin.cs<br>
+// ❌ Can't override - method is sealed<br>
+<br>
+<br>
+// WITH virtual<br>
+protected virtual void Attack() { }  // Overridable<br>
+<br>
+// EnemyGoblin.cs<br>
+// ✅ Can override - method is virtual<br>
+protected override void Attack() { }</code>
+                </div>
+            </div>
+
+            <!-- Topic 4: Override Keyword - Customizing Behavior -->
+            <div class="topic">
+                <h2>4. The Override Keyword: Customizing Behavior 🎨</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>override</strong> keyword allows a child class to provide a new implementation of a
+                        virtual method from the parent class. This is where polymorphism happens—you're changing what
+                        the method does for a specific child class.</p>
+                </div>
+
+                <h3>Overriding Attack in EnemyGoblin</h3>
+                <div class="example">
+                    <div class="example-header">EnemyGoblin.cs</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void StealMoney()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " steals gold from player!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Override the Attack method from Enemy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected override void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base.Attack();  // Call parent implementation first<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();   // Add unique Goblin behavior<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 How Override Works</h4>
+                    <ul>
+                        <li><strong>protected override:</strong> Must match parent's access level and add override
+                            keyword</li>
+                        <li><strong>base.Attack():</strong> Calls the parent's implementation (Enemy's Attack)</li>
+                        <li><strong>StealMoney():</strong> Adds new behavior after parent's behavior</li>
+                        <li><strong>Automatic Selection:</strong> When Update() calls Attack(), Goblin's version is used
+                        </li>
+                        <li><strong>Polymorphism in Action:</strong> Same method name, different behavior</li>
+                    </ul>
+                </div>
+
+                <h3>IntelliSense Shortcut</h3>
+                <div class="example">
+                    <div class="example-header">Easy Override with IntelliSense</div>
+                    <code>// In EnemyGoblin.cs, type:<br>
+override<br>
+<br>
+// IntelliSense shows all overridable methods:<br>
+- override Attack()<br>
+- override TakeDamage()<br>
+- override Die()<br>
+- override Awake()<br>
+- override ToString()<br>
+<br>
+// Select the one you want, IntelliSense generates:<br>
+protected override void Attack()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;base.Attack();<br>
+}<br>
+<br>
+// ✅ Template ready, just add custom code!</code>
+                </div>
+
+                <h3>Testing Goblin Override</h3>
+                <div class="example">
+                    <div class="example-header">Results in Console</div>
+                    <code>SETUP:<br>
+- Skeleton GameObject with Enemy script<br>
+- Goblin GameObject with EnemyGoblin script<br>
+<br>
+Press F key:<br>
+<br>
+OUTPUT:<br>
+Goblin attacks!           // ← base.Attack() called<br>
+Goblin steals gold from player!  // ← StealMoney() called<br>
+Skeleton attacks!         // ← Only base Attack()<br>
+<br>
+OBSERVATION:<br>
+✅ Same key press (F)<br>
+✅ Same method call (Attack())<br>
+✅ Different behaviors (Goblin steals, Skeleton doesn't)</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎭 This is Polymorphism:</strong> Both Skeleton and Goblin have Attack() methods, but they
+                    behave differently. Goblin's version <em>extends</em> the base behavior by adding gold stealing!
+                </div>
+            </div>
+
+            <!-- Topic 5: Using base.Method() -->
+            <div class="topic">
+                <h2>5. Understanding base.Method() 🔗</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The <strong>base</strong> keyword lets you call the parent class's version of a method. This is
+                        crucial when you want to <em>extend</em> behavior (keep the original + add new) rather than
+                        <em>replace</em> it entirely.</p>
+                </div>
+
+                <h3>How base.Method() Works</h3>
+                <div class="example">
+                    <div class="example-header">Execution Flow</div>
+                    <code>// Enemy.cs (base class)<br>
+protected virtual void Attack()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " attacks!");  // Step 2: This runs<br>
+}<br>
+<br>
+// EnemyGoblin.cs (child class)<br>
+protected override void Attack()  // Step 1: This is called<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;base.Attack();  // Step 2: Calls parent's Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();   // Step 3: Then does this<br>
+}<br>
+<br>
+FLOW:<br>
+1. EnemyGoblin.Attack() called<br>
+2. base.Attack() → Enemy.Attack() runs<br>
+3. Returns to EnemyGoblin.Attack()<br>
+4. StealMoney() runs<br>
+5. Method completes</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 base Keyword Rules</h4>
+                    <ul>
+                        <li><strong>base.Method():</strong> Calls parent's implementation</li>
+                        <li><strong>Optional:</strong> You don't HAVE to call base (can completely replace)</li>
+                        <li><strong>Order Matters:</strong> Call base first, middle, or last depending on needs</li>
+                        <li><strong>One Level Up:</strong> base refers to immediate parent, not grandparent</li>
+                        <li><strong>Constructor Use:</strong> base() commonly used in constructors (advanced)</li>
+                    </ul>
+                </div>
+
+                <h3>Different Orders of base</h3>
+                <div class="example">
+                    <div class="example-header">Controlling Execution Order</div>
+                    <code>// OPTION 1: Base first (most common)<br>
+protected override void Attack()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;base.Attack();    // Parent behavior first<br>
+&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();     // Then child behavior<br>
+}<br>
+// Output: "attacks!" → "steals gold!"<br>
+<br>
+// OPTION 2: Base last<br>
+protected override void Attack()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();     // Child behavior first<br>
+&nbsp;&nbsp;&nbsp;&nbsp;base.Attack();    // Then parent behavior<br>
+}<br>
+// Output: "steals gold!" → "attacks!"<br>
+<br>
+// OPTION 3: Base in middle<br>
+protected override void Attack()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PrepareToSteal();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;base.Attack();     // Parent in middle<br>
+&nbsp;&nbsp;&nbsp;&nbsp;CompleteSteal();<br>
+}<br>
+// Output: "preparing..." → "attacks!" → "completing..."</code>
+                </div>
+
+                <h3>With vs Without base</h3>
+                <div class="example">
+                    <div class="example-header">Comparison</div>
+                    <code>// WITH base - EXTENDS parent behavior<br>
+protected override void Attack()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;base.Attack();  // Keep parent's behavior<br>
+&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();   // Add new behavior<br>
+}<br>
+// Result: Does BOTH actions<br>
+<br>
+// WITHOUT base - REPLACES parent behavior<br>
+protected override void Attack()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();  // Only new behavior<br>
+}<br>
+// Result: Only steals, doesn't attack!<br>
+<br>
+WHEN TO USE:<br>
+✅ Use base when extending behavior<br>
+❌ Skip base when completely replacing behavior</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Design Choice:</strong> Whether to call base depends on your design. Goblin should
+                    probably attack AND steal (use base). But if you had a PacifistEnemy that doesn't attack at all,
+                    you'd override Attack() without calling base!
+                </div>
+            </div>
+
+            <!-- Topic 6: Completely Replacing Methods (No base) -->
+            <div class="topic">
+                <h2>6. Completely Replacing Methods 🔄</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Sometimes you don't want to extend the parent's behavior—you want to <strong>completely
+                            replace</strong> it. By overriding a method without calling <code>base.Method()</code>, you
+                        define entirely new behavior.</p>
+                </div>
+
+                <h3>The Archer Example</h3>
+                <div class="example">
+                    <div class="example-header">EnemyArcher.cs - Completely Different Attack</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class EnemyArcher : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private GameObject arrowPrefab;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float arrowSpeed = 10f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Override WITHOUT calling base<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected override void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// No base.Attack() - completely new behavior<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " shoots an arrow!");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// In real project:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Instantiate(arrowPrefab, transform.position, Quaternion.identity);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// arrow.GetComponent<Rigidbody2D>().velocity = ...<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Archer Attack Behavior</h4>
+                    <ul>
+                        <li><strong>No base.Attack():</strong> Parent's melee attack completely ignored</li>
+                        <li><strong>New Implementation:</strong> Shoots arrow instead of melee</li>
+                        <li><strong>Same Method Name:</strong> Still called Attack()</li>
+                        <li><strong>Polymorphism:</strong> Different enemies, different Attack() behaviors</li>
+                        <li><strong>Consistent Interface:</strong> All enemies have Attack(), easy to loop</li>
+                    </ul>
+                </div>
+
+                <h3>Testing Three Enemy Types</h3>
+                <div class="example">
+                    <div class="example-header">Scene Setup</div>
+                    <code>SETUP:<br>
+1. Skeleton GameObject:<br>
+   - Enemy script<br>
+   - moveSpeed = 2, enemyName = "Skeleton"<br>
+<br>
+2. Goblin GameObject:<br>
+   - EnemyGoblin script<br>
+   - moveSpeed = 3, enemyName = "Goblin"<br>
+<br>
+3. Archer GameObject:<br>
+   - EnemyArcher script<br>
+   - moveSpeed = 1.5, enemyName = "Archer"<br>
+<br>
+Press F key:<br>
+<br>
+OUTPUT:<br>
+Skeleton attacks!                    // Base implementation<br>
+Goblin attacks!                      // Base + extended<br>
+Goblin steals gold from player!      // Extended behavior<br>
+Archer shoots an arrow!              // Completely replaced<br>
+<br>
+THREE DIFFERENT BEHAVIORS, ONE METHOD!</code>
+                </div>
+
+                <h3>Real-World Implementation</h3>
+                <div class="example">
+                    <div class="example-header">Full Archer Attack (Production Code)</div>
+                    <code>public class EnemyArcher : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private GameObject arrowPrefab;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private Transform shootPoint;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float shootRange = 10f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float arrowSpeed = 15f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected override void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Check if player in range<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (CanShoot())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShootArrow();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private bool CanShoot()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GameObject player = GameObject.FindGameObjectWithTag("Player");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (player == null) return false;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float distance = Vector2.Distance(transform.position, player.transform.position);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return distance <= shootRange;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void ShootArrow()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " shoots an arrow!");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Spawn arrow<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GameObject arrow = Instantiate(arrowPrefab, shootPoint.position, Quaternion.identity);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Aim at player<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GameObject player = GameObject.FindGameObjectWithTag("Player");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vector2 direction = (player.transform.position - shootPoint.position).normalized;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Launch arrow<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rigidbody2D arrowRb = arrow.GetComponent&lt;Rigidbody2D&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;arrowRb.velocity = direction * arrowSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎮 Design Pattern:</strong> Ranged enemies (Archer, Mage) typically <em>replace</em>
+                    Attack() completely. Melee variations (Goblin, Knight) typically <em>extend</em> Attack() with base.
+                    Choose based on whether behavior is similar or completely different!
+                </div>
+            </div>
+
+            <!-- Topic 7: More Polymorphism Examples -->
+            <div class="topic">
+                <h2>7. More Polymorphism Examples 🎪</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Polymorphism isn't just for Attack() methods. Any behavior that varies between enemy types is a
+                        candidate for virtual/override. Let's explore common examples from real game development.</p>
+                </div>
+
+                <h3>Example 1: Die() Method Variations</h3>
+                <div class="example">
+                    <div class="example-header">Different Death Behaviors</div>
+                    <code>// Enemy.cs - Base class<br>
+protected virtual void Die()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " dies!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;DropLoot();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject);<br>
+}<br>
+<br>
+// EnemySplitter.cs - Splits into smaller enemies<br>
+protected override void Die()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " splits into two!");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Spawn two smaller enemies<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Instantiate(smallEnemyPrefab, transform.position + Vector3.left, Quaternion.identity);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Instantiate(smallEnemyPrefab, transform.position + Vector3.right, Quaternion.identity);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Destroy(gameObject);  // Still dies, but spawns first<br>
+}<br>
+<br>
+// EnemyBoss.cs - Epic death sequence<br>
+protected override void Die()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;base.Die();  // Drop loot like normal enemy<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Additional boss death effects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PlayCutscene();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;UnlockNextArea();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ShowVictoryScreen();<br>
+}</code>
+                </div>
+
+                <h3>Example 2: TakeDamage() Variations</h3>
+                <div class="example">
+                    <div class="example-header">Different Damage Reactions</div>
+                    <code>// Enemy.cs<br>
+public virtual void TakeDamage(int damage)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;currentHealth -= damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;FlashRed();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (currentHealth <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Die();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// EnemyShielded.cs - Has armor that must break first<br>
+public override void TakeDamage(int damage)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (shieldActive)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shieldHealth -= damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Shield absorbed damage! " + shieldHealth + " remaining");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (shieldHealth <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shieldActive = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Shield broken!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base.TakeDamage(damage);  // Normal damage after shield breaks<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// EnemyVampire.cs - Heals nearby enemies when damaged<br>
+public override void TakeDamage(int damage)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;base.TakeDamage(damage);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Heal nearby vampires<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Collider2D[] nearbyEnemies = Physics2D.OverlapCircleAll(transform.position, healRadius);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;foreach (var enemy in nearbyEnemies)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (enemy.GetComponent&lt;EnemyVampire&gt;() != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enemy.GetComponent&lt;EnemyVampire&gt;().Heal(5);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>Example 3: Move() Variations</h3>
+                <div class="example">
+                    <div class="example-header">Different Movement Patterns</div>
+                    <code>// Enemy.cs<br>
+protected virtual void Move()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Simple left-right patrol<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform.Translate(Vector2.right * moveSpeed * Time.deltaTime);<br>
+}<br>
+<br>
+// EnemyFlying.cs - Flies in sine wave<br>
+protected override void Move()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float x = Time.time * moveSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float y = Mathf.Sin(Time.time * 2) * 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform.position = startPosition + new Vector3(x, y, 0);<br>
+}<br>
+<br>
+// EnemyChaser.cs - Always moves toward player<br>
+protected override void Move()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;GameObject player = GameObject.FindGameObjectWithTag("Player");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (player != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vector2 direction = (player.transform.position - transform.position).normalized;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.Translate(direction * moveSpeed * Time.deltaTime);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// EnemyTeleporter.cs - Teleports instead of walking<br>
+protected override void Move()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;teleportTimer -= Time.deltaTime;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (teleportTimer <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vector3 randomPos = GetRandomPosition();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.position = randomPos;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;teleportTimer = teleportCooldown;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Common Virtual Methods in Games</h4>
+                    <ul>
+                        <li><strong>Attack():</strong> Different attack types (melee, ranged, magic)</li>
+                        <li><strong>Die():</strong> Different death effects (explode, split, drop loot)</li>
+                        <li><strong>TakeDamage():</strong> Different damage reactions (armor, reflect, heal allies)</li>
+                        <li><strong>Move():</strong> Different movement patterns (patrol, chase, fly, teleport)</li>
+                        <li><strong>OnPlayerDetected():</strong> Different alert behaviors (attack, flee, call allies)
+                        </li>
+                        <li><strong>Awake()/Start():</strong> Different initialization (load stats, spawn weapons)</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>🎮 Game Design Tip:</strong> Look for behaviors that <em>might</em> vary between enemies and
+                    make those methods virtual. Even if you only have one implementation now, future enemy types will
+                    thank you!
+                </div>
+            </div>
+
+            <!-- Topic 8: Polymorphism with Loops -->
+            <div class="topic">
+                <h2>8. Polymorphism with Loops 🔄</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>The true power of polymorphism shines when working with collections. You can loop through
+                        different enemy types and call the same method—each enemy automatically uses its own version!
+                    </p>
+                </div>
+
+                <h3>Looping Through Mixed Enemy Types</h3>
+                <div class="example">
+                    <div class="example-header">Polymorphic Enemy Manager</div>
+                    <code>using UnityEngine;<br>
+using System.Collections.Generic;<br>
+<br>
+public class EnemyManager : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// List holds ALL enemy types (Skeleton, Goblin, Archer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public List&lt;Enemy&gt; allEnemies = new List&lt;Enemy&gt;();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Start()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Find all enemies in scene<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allEnemies.AddRange(FindObjectsOfType&lt;Enemy&gt;());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Make ALL enemies attack on F key<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.F))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MakeAllEnemiesAttack();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void MakeAllEnemiesAttack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach (Enemy enemy in allEnemies)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enemy.Attack();  // Each uses their own version!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Console output when F pressed:<br>
+// Skeleton attacks!<br>
+// Goblin attacks!<br>
+// Goblin steals gold from player!<br>
+// Archer shoots an arrow!</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Why This Is Powerful</h4>
+                    <ul>
+                        <li><strong>One Loop:</strong> Single foreach handles all enemy types</li>
+                        <li><strong>Automatic Dispatch:</strong> C# automatically calls correct version</li>
+                        <li><strong>No If Statements:</strong> Don't need to check enemy type manually</li>
+                        <li><strong>Easy to Extend:</strong> Add new enemy type, loop still works</li>
+                        <li><strong>Clean Code:</strong> No messy switch statements or type checking</li>
+                    </ul>
+                </div>
+
+                <h3>Without Polymorphism (The Ugly Way)</h3>
+                <div class="example">
+                    <div class="example-header">❌ What You'd Need Without Polymorphism</div>
+                    <code>// WITHOUT polymorphism - ugly and unscalable<br>
+foreach (GameObject enemyObj in allEnemies)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (enemyObj.GetComponent&lt;EnemySkeleton&gt;() != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enemyObj.GetComponent&lt;EnemySkeleton&gt;().MeleeAttack();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else if (enemyObj.GetComponent&lt;EnemyGoblin&gt;() != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enemyObj.GetComponent&lt;EnemyGoblin&gt;().SpecialAttack();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else if (enemyObj.GetComponent&lt;EnemyArcher&gt;() != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enemyObj.GetComponent&lt;EnemyArcher&gt;().ShootArrow();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else if (enemyObj.GetComponent&lt;EnemyMage&gt;() != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enemyObj.GetComponent&lt;EnemyMage&gt;().CastSpell();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Add 20 more else-if blocks for 20 enemy types...<br>
+}<br>
+<br>
+PROBLEMS:<br>
+❌ Massive if-else chain<br>
+❌ Different method names<br>
+❌ Breaks when adding new enemies<br>
+❌ Hard to maintain<br>
+❌ Not professional</code>
+                </div>
+
+                <h3>More Loop Examples</h3>
+                <div class="example">
+                    <div class="example-header">Common Polymorphic Patterns</div>
+                    <code>// Kill all enemies<br>
+foreach (Enemy enemy in allEnemies)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enemy.TakeDamage(999);  // Each handles damage differently<br>
+}<br>
+<br>
+// Make all enemies move<br>
+foreach (Enemy enemy in allEnemies)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enemy.Move();  // Each moves in their unique pattern<br>
+}<br>
+<br>
+// Heal all enemies<br>
+foreach (Enemy enemy in allEnemies)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enemy.Heal(20);  // Each might have different heal logic<br>
+}<br>
+<br>
+// Call custom behavior on all<br>
+foreach (Enemy enemy in allEnemies)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enemy.OnPlayerDetected();  // Each reacts differently<br>
+}</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💼 Professional Insight:</strong> This is why game studios love OOP and polymorphism. You
+                    can have 50 enemy types, and a single loop handles them all uniformly. New programmer adds enemy
+                    #51? It just works!
+                </div>
+            </div>
+
+            <!-- Topic 9: When to Use Virtual/Override -->
+            <div class="topic">
+                <h2>9. When to Use Virtual/Override 🤔</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Not every method should be virtual. Overusing virtual/override can make code confusing and
+                        slower. Here are guidelines for when polymorphism is the right choice vs when simpler approaches
+                        work better.</p>
+                </div>
+
+                <h3>Good Use Cases for Virtual/Override</h3>
+                <div class="key-points">
+                    <h4>✅ Use Polymorphism When:</h4>
+                    <ul>
+                        <li><strong>Behavior Varies by Type:</strong> Different enemies attack differently</li>
+                        <li><strong>Clear Hierarchy:</strong> You have a base class with multiple children</li>
+                        <li><strong>Shared Interface:</strong> Want to call same method on different types</li>
+                        <li><strong>Template Method Pattern:</strong> Base class defines structure, children fill
+                            details</li>
+                        <li><strong>Multiple Implementations:</strong> Have 3+ different versions of behavior</li>
+                        <li><strong>Loop Through Collections:</strong> Need to treat different types uniformly</li>
+                    </ul>
+                </div>
+
+                <h3>Bad Use Cases (Avoid Virtual/Override)</h3>
+                <div class="key-points">
+                    <h4>❌ DON'T Use Polymorphism When:</h4>
+                    <ul>
+                        <li><strong>Only One Implementation:</strong> No child classes override it</li>
+                        <li><strong>Private Helper Methods:</strong> Internal methods not meant for overriding</li>
+                        <li><strong>Performance Critical:</strong> Virtual calls are slightly slower
+                            (micro-optimization)</li>
+                        <li><strong>Simple Flags Work:</strong> If (isBoss) covers it easily</li>
+                        <li><strong>Composition Better:</strong> Mix-and-match components instead</li>
+                        <li><strong>No Clear Hierarchy:</strong> Classes aren't really related</li>
+                    </ul>
+                </div>
+
+                <h3>Decision Framework</h3>
+                <div class="example">
+                    <div class="example-header">Should This Method Be Virtual?</div>
+                    <code>QUESTION CHECKLIST:<br>
+<br>
+1. "Will child classes need different behavior?"<br>
+   ✅ YES → Consider virtual<br>
+   ❌ NO → Leave non-virtual<br>
+<br>
+2. "Do I have 2+ child classes that would override?"<br>
+   ✅ YES → Make it virtual<br>
+   ❌ NO → Wait until you do<br>
+<br>
+3. "Is this a public/protected interface method?"<br>
+   ✅ YES → Good candidate for virtual<br>
+   ❌ NO (private helper) → Don't make virtual<br>
+<br>
+4. "Can I use a simple bool flag instead?"<br>
+   ✅ YES, and it's simpler → Skip virtual<br>
+   ❌ NO, need real different code → Use virtual<br>
+<br>
+EXAMPLES:<br>
+<br>
+Attack() - Should be virtual?<br>
+✅ YES: Different enemies attack differently<br>
+<br>
+GetComponent() - Should be virtual?<br>
+❌ NO: Internal helper, not meant to vary<br>
+<br>
+Awake() - Should be virtual?<br>
+✅ MAYBE: If children need custom initialization<br>
+<br>
+CalculateDistance() - Should be virtual?<br>
+❌ NO: Math is math, doesn't vary by enemy type</code>
+                </div>
+
+                <h3>Performance Note</h3>
+                <div class="example">
+                    <div class="example-header">Virtual Method Performance</div>
+                    <code>PERFORMANCE IMPACT:<br>
+<br>
+Non-virtual method call:<br>
+- Direct jump to method address<br>
+- Compiler can inline<br>
+- Extremely fast<br>
+<br>
+Virtual method call:<br>
+- Look up method in virtual table (vtable)<br>
+- Then jump to method address<br>
+- Can't inline<br>
+- Slightly slower (~1-2 nanoseconds)<br>
+<br>
+REALITY:<br>
+- Difference is TINY (nanoseconds)<br>
+- Unity has bigger performance concerns (rendering, physics)<br>
+- Premature optimization is root of all evil<br>
+<br>
+GUIDELINE:<br>
+✅ Use virtual when it makes code cleaner<br>
+❌ Only worry about performance in tight loops (Update)<br>
+❌ Don't avoid virtual for performance unless profiler proves issue</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎯 Best Practice:</strong> Default to non-virtual. When you find yourself needing to
+                    override, THEN make it virtual. It's easy to add virtual later, harder to remove it (breaks child
+                    classes). Start conservative, add as needed!
+                </div>
+            </div>
+
+            <!-- Topic 10: Virtual, Override, and Sealed Keywords -->
+            <div class="topic">
+                <h2>10. Advanced: Virtual, Override, and Sealed 🔐</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>C# has additional keywords that control inheritance further: <strong>abstract</strong>,
+                        <strong>sealed</strong>, and <strong>new</strong>. Understanding these completes your
+                        polymorphism knowledge for advanced scenarios.</p>
+                </div>
+
+                <h3>The Sealed Keyword</h3>
+                <div class="example">
+                    <div class="example-header">Preventing Further Overrides</div>
+                    <code>// Base class<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Attack() { }<br>
+}<br>
+<br>
+// Middle class - overrides and seals<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected sealed override void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base.Attack();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Child of Goblin<br>
+public class EliteGoblin : EnemyGoblin<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ ERROR: Can't override sealed method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// protected override void Attack() { }<br>
+}<br>
+<br>
+USE CASE:<br>
+- Prevent grandchildren from changing behavior<br>
+- Lock down critical logic<br>
+- Rarely needed in practice</code>
+                </div>
+
+                <h3>The Abstract Keyword</h3>
+                <div class="example">
+                    <div class="example-header">Forcing Child Classes to Implement</div>
+                    <code>// Abstract base class - can't instantiate<br>
+public abstract class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Abstract method - NO implementation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected abstract void Attack();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Can still have normal methods<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void TakeDamage(int damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Implementation here<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Child MUST implement Attack<br>
+public class EnemySkeleton : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ REQUIRED: Must override abstract method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected override void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Skeleton swings sword!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// ❌ ERROR: Can't create Enemy directly<br>
+// Enemy enemy = new Enemy();  // Compile error!<br>
+<br>
+USE CASE:<br>
+- Force all children to provide implementation<br>
+- Base class is template, not meant to be used directly<br>
+- Common in professional architectures</code>
+                </div>
+
+                <h3>The New Keyword (Hiding, Not Overriding)</h3>
+                <div class="example">
+                    <div class="example-header">Method Hiding</div>
+                    <code>// Base class<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Not virtual!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Enemy attacks");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Child class<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Hides parent method (not polymorphic!)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public new void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log("Goblin attacks differently");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Testing<br>
+EnemyGoblin goblin = new EnemyGoblin();<br>
+goblin.Attack();  // "Goblin attacks differently"<br>
+<br>
+Enemy enemy = goblin;  // Upcast to base type<br>
+enemy.Attack();  // "Enemy attacks" ← NOT POLYMORPHIC!<br>
+<br>
+DIFFERENCE:<br>
+- override: Polymorphic, changes behavior for all references<br>
+- new: Hides method, which version runs depends on reference type<br>
+<br>
+WARNING: Avoid 'new' - it's confusing and breaks polymorphism!</code>
+                </div>
+
+                <h3>Comparison Chart</h3>
+                <div class="example">
+                    <div class="example-header">Keyword Summary</div>
+                    <code>KEYWORD COMPARISON:<br>
+<br>
+virtual:<br>
+- Base class method<br>
+- CAN be overridden (optional)<br>
+- Has implementation<br>
+<br>
+abstract:<br>
+- Base class method<br>
+- MUST be overridden (required)<br>
+- NO implementation<br>
+<br>
+override:<br>
+- Child class method<br>
+- Replaces virtual/abstract parent<br>
+- Polymorphic behavior<br>
+<br>
+sealed override:<br>
+- Child class method<br>
+- Overrides parent<br>
+- Prevents grandchildren from overriding<br>
+<br>
+new:<br>
+- Child class method<br>
+- Hides parent method<br>
+- NOT polymorphic (avoid!)<br>
+<br>
+RECOMMENDATION FOR BEGINNERS:<br>
+✅ Use: virtual, override, base<br>
+⚠️ Advanced: abstract, sealed<br>
+❌ Avoid: new (confusing)</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Learning Path:</strong> Master virtual/override first. Abstract and sealed are advanced
+                    patterns you'll encounter in large projects. The 'new' keyword for hiding is generally considered
+                    bad practice—prefer proper polymorphism with virtual/override!
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="key-points">
+                    <h4>Exercise 1: Virtual Attack Method</h4>
+                    <p><strong>Task:</strong> Make Attack() method virtual and override it</p>
+                    <ul>
+                        <li>Open Enemy.cs from Lesson 11</li>
+                        <li>Change `protected void Attack()` to `protected virtual void Attack()`</li>
+                        <li>In EnemyGoblin.cs, override Attack() method</li>
+                        <li>Call base.Attack() first, then add StealMoney()</li>
+                        <li>Test with F key—Goblin should attack AND steal</li>
+                        <li>Skeleton should only attack (no override)</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 2: Archer with Completely Different Attack</h4>
+                    <p><strong>Task:</strong> Create Archer that shoots arrows instead of melee</p>
+                    <ul>
+                        <li>Create EnemyArcher.cs inheriting from Enemy</li>
+                        <li>Override Attack() WITHOUT calling base.Attack()</li>
+                        <li>Debug.Log("Archer shoots an arrow!")</li>
+                        <li>Add [SerializeField] float arrowRange = 10f</li>
+                        <li>Create GameObject with EnemyArcher script</li>
+                        <li>Test—Archer should shoot, not melee attack</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 3: Override Die() Method</h4>
+                    <p><strong>Task:</strong> Create enemy that splits into smaller enemies on death</p>
+                    <ul>
+                        <li>Make Die() method virtual in Enemy.cs</li>
+                        <li>Create EnemySplitter.cs class</li>
+                        <li>Override Die() method</li>
+                        <li>Instead of calling base.Die(), spawn two smaller enemies</li>
+                        <li>Use Debug.Log to show splitting behavior</li>
+                        <li>Bonus: Use Instantiate() to actually spawn prefabs</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 4: Polymorphic Enemy Manager</h4>
+                    <p><strong>Task:</strong> Create manager that controls all enemy types uniformly</p>
+                    <ul>
+                        <li>Create EnemyManager.cs script</li>
+                        <li>Add List&lt;Enemy&gt; allEnemies</li>
+                        <li>In Start(), find all enemies with FindObjectsOfType&lt;Enemy&gt;()</li>
+                        <li>On G key press, loop through all enemies and call Attack()</li>
+                        <li>On H key press, loop and call TakeDamage(50) on all</li>
+                        <li>Verify different enemies behave differently despite same method calls</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Challenge Exercise: Boss Multi-Phase System</h4>
+                    <p><strong>Task:</strong> Create boss that changes Attack() behavior per phase</p>
+                    <ul>
+                        <li>Create EnemyBoss.cs with int currentPhase = 1</li>
+                        <li>Override Attack() method</li>
+                        <li>Use if (currentPhase == 1) to determine attack type</li>
+                        <li>Phase 1: base.Attack() (normal melee)</li>
+                        <li>Phase 2: Debug.Log("Boss uses special attack!")</li>
+                        <li>Phase 3: Debug.Log("Boss goes berserk!")</li>
+                        <li>Override TakeDamage() to change phase at 66% and 33% health</li>
+                        <li>Test—Boss attack changes as health decreases</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white !important; border-left: none !important;">
+                <h4 style="color: white !important;">📚 Lesson 12 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95) !important;"><strong>Outstanding work!</strong> You've mastered
+                    the second pillar of Object-Oriented Programming. Here's everything you learned:</p>
+                <ul style="color: rgba(255,255,255,0.9) !important;">
+                    <li>✅ <strong>Polymorphism Definition:</strong> One interface, many implementations—same method,
+                        different behaviors</li>
+                    <li>✅ <strong>Real-World Analogy:</strong> "Dance" command—everyone dances, but in their own unique
+                        way</li>
+                    <li>✅ <strong>Virtual Keyword:</strong> Makes methods overridable by child classes</li>
+                    <li>✅ <strong>Override Keyword:</strong> Replaces parent method with child-specific implementation
+                    </li>
+                    <li>✅ <strong>base.Method():</strong> Calls parent's implementation—use to extend behavior</li>
+                    <li>✅ <strong>Extending Behavior:</strong> Goblin.Attack() calls base + adds StealMoney()</li>
+                    <li>✅ <strong>Replacing Behavior:</strong> Archer.Attack() shoots arrow without calling base</li>
+                    <li>✅ <strong>Polymorphic Loops:</strong> foreach (Enemy e in enemies) e.Attack() works for all
+                        types</li>
+                    <li>✅ <strong>Common Virtual Methods:</strong> Attack(), Die(), TakeDamage(), Move() all benefit
+                        from polymorphism</li>
+                    <li>✅ <strong>When to Use:</strong> Behavior varies by type, clear hierarchy, shared interface
+                        needed</li>
+                    <li>✅ <strong>Advanced Keywords:</strong> Sealed (prevent override), abstract (force override), new
+                        (avoid!)</li>
+                    <li>✅ <strong>Professional Pattern:</strong> Treat different types uniformly while preserving unique
+                        behaviors</li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95) !important; margin-top: 15px;"><strong>Next Up:</strong> In
+                    Lesson 13, we'll cover <strong>Encapsulation</strong>—the third and final pillar of OOP. You'll
+                    learn properties, getters/setters, and protecting your data from unwanted access! 🔒</p>
+            </div>
+        </div>
+        <footer>
+            <p>You've mastered polymorphism—one of the most powerful programming concepts! You can now create flexible,
+                scalable enemy systems where each type has unique behavior while sharing a common interface. This
+                knowledge applies to all OOP languages! 🎭✨</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>

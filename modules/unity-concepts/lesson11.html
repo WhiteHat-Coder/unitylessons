@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lesson 11: Master Object-Oriented Programming with inheritance, parent-child relationships, and code reusability">
+    <meta name="keywords"
+        content="Unity, OOP, inheritance, object-oriented programming, base class, child class, protected, encapsulation">
+    <meta name="author" content="Unity Tutorial">
+    <meta name="theme-color" content="#667eea">
+    <title>Lesson 11: Inheritance & OOP Basics | Unity Tutorial</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/lessons.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../../index.html" class="back-btn">← Back to Home</a>
+            <h1>🏛️ Lesson 11: Inheritance & Object-Oriented Programming</h1>
+            <p>Master code reusability with parent-child class relationships and OOP principles</p>
+        </header>
+        <div class="content">
+            <!-- What You'll Learn section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white !important; border-left: none !important;">
+                <h4 style="color: white !important;">🎯 What You'll Learn</h4>
+                <ul style="color: rgba(255,255,255,0.9) !important;">
+                    <li>✅ Understand Object-Oriented Programming (OOP) fundamentals</li>
+                    <li>✅ Master inheritance and parent-child class relationships</li>
+                    <li>✅ Create base classes with shared functionality</li>
+                    <li>✅ Build child classes with inherited + unique features</li>
+                    <li>✅ Use access modifiers: public, private, and protected</li>
+                    <li>✅ Combine [SerializeField] with protected for Inspector visibility</li>
+                    <li>✅ Avoid code duplication with inheritance</li>
+                    <li>✅ Design scalable enemy systems with shared behaviors</li>
+                </ul>
+            </div>
+
+            <!-- Topic 1: What is Object-Oriented Programming? -->
+            <div class="topic">
+                <h2>1. What is Object-Oriented Programming? 🏛️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Object-Oriented Programming (OOP)</strong> is a programming paradigm based on organizing
+                        code into reusable "objects" that contain data and behaviors. OOP has three main pillars:
+                        <strong>Inheritance</strong>, <strong>Polymorphism</strong>, and <strong>Encapsulation</strong>.
+                        Mastering these principles transforms messy code into clean, maintainable systems.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎮 Three Pillars of OOP</h4>
+                    <ul>
+                        <li><strong>Inheritance:</strong> Share code between classes through parent-child relationships
+                        </li>
+                        <li><strong>Polymorphism:</strong> One interface, multiple implementations (covered in next
+                            lesson)</li>
+                        <li><strong>Encapsulation:</strong> Hide internal details, expose only what's needed</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Philosophy:</strong> OOP principles are "easy to learn, hard to master." The concepts are
+                    simple, but knowing <em>when</em> and <em>how</em> to apply them separates junior from senior
+                    developers. Don't worry—we'll practice extensively!
+                </div>
+
+                <h3>Why OOP Matters in Unity</h3>
+                <div class="example">
+                    <div class="example-header">The Problem Without OOP</div>
+                    <code>SCENARIO: You have 5 enemy types<br>
+<br>
+Without OOP:<br>
+- EnemySkeleton script: 300 lines<br>
+- EnemyGoblin script: 320 lines<br>
+- EnemyArcher script: 310 lines<br>
+- EnemyMage script: 330 lines<br>
+- EnemyBoss script: 400 lines<br>
+<br>
+Total: 1,660 lines<br>
+Problem: 80% of code is DUPLICATED!<br>
+<br>
+With OOP:<br>
+- Enemy base class: 200 lines (shared)<br>
+- EnemySkeleton: 50 lines (unique)<br>
+- EnemyGoblin: 60 lines (unique)<br>
+- EnemyArcher: 55 lines (unique)<br>
+- EnemyMage: 70 lines (unique)<br>
+- EnemyBoss: 100 lines (unique)<br>
+<br>
+Total: 535 lines (67% reduction!)</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Benefits of OOP</h4>
+                    <ul>
+                        <li><strong>Code Reusability:</strong> Write once, use everywhere</li>
+                        <li><strong>Easier Maintenance:</strong> Fix bugs in one place, not five</li>
+                        <li><strong>Scalability:</strong> Add new enemies without rewriting everything</li>
+                        <li><strong>Organization:</strong> Clear structure makes teamwork easier</li>
+                        <li><strong>Professional Standard:</strong> Industry expects OOP knowledge</li>
+                    </ul>
+                </div>
+
+                <h3>This Lesson's Focus</h3>
+                <div class="tip">
+                    <strong>🎯 Today's Goal:</strong> We'll focus on <strong>Inheritance</strong>—the most fundamental
+                    OOP pillar. Once you understand inheritance, polymorphism and encapsulation become much easier to
+                    grasp!
+                </div>
+            </div>
+
+            <!-- Topic 2: Understanding Inheritance -->
+            <div class="topic">
+                <h2>2. Understanding Inheritance 🌳</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Inheritance</strong> allows one class to inherit properties and functionalities from
+                        another class. Think of it as a parent-child relationship: the parent (base class) contains
+                        general functionality, and children (derived classes) inherit that functionality while adding
+                        their own unique features.</p>
+                </div>
+
+                <h3>Real-World Analogy</h3>
+                <div class="example">
+                    <div class="example-header">Family Tree Metaphor</div>
+                    <code>PARENT: Vehicle<br>
+- Has wheels<br>
+- Has engine<br>
+- Can accelerate<br>
+- Can brake<br>
+<br>
+CHILD: Car (inherits from Vehicle)<br>
+- ✅ Has wheels (inherited)<br>
+- ✅ Has engine (inherited)<br>
+- ✅ Can accelerate (inherited)<br>
+- ✅ Can brake (inherited)<br>
+- ➕ Has 4 doors (unique)<br>
+- ➕ Can play radio (unique)<br>
+<br>
+CHILD: Motorcycle (inherits from Vehicle)<br>
+- ✅ Has wheels (inherited)<br>
+- ✅ Has engine (inherited)<br>
+- ✅ Can accelerate (inherited)<br>
+- ✅ Can brake (inherited)<br>
+- ➕ Has 2 wheels (unique)<br>
+- ➕ Can do wheelie (unique)</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Inheritance Terminology</h4>
+                    <ul>
+                        <li><strong>Base Class (Parent):</strong> Contains shared functionality</li>
+                        <li><strong>Derived Class (Child):</strong> Inherits from parent + adds unique features</li>
+                        <li><strong>Inherits:</strong> Receives functionality from parent</li>
+                        <li><strong>Extends:</strong> Adds new functionality on top of inherited features</li>
+                    </ul>
+                </div>
+
+                <h3>Inheritance in Unity</h3>
+                <div class="example">
+                    <div class="example-header">Unity Class Hierarchy</div>
+                    <code>// You've been using inheritance all along!<br>
+public class PlayerController : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Your code uses Start(), Update(), transform, gameObject<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// All inherited from MonoBehaviour!<br>
+}<br>
+<br>
+Hierarchy:<br>
+Object (C# base class)<br>
+&nbsp;&nbsp;↓<br>
+MonoBehaviour (Unity class)<br>
+&nbsp;&nbsp;↓<br>
+PlayerController (Your class)<br>
+<br>
+PlayerController inherits from MonoBehaviour,<br>
+which inherits from Object.</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Revelation:</strong> Every Unity script you've written uses inheritance! When you type
+                    <code>: MonoBehaviour</code>, you're inheriting Unity's built-in functionality like Update(),
+                    Start(), and GetComponent().
+                </div>
+            </div>
+
+            <!-- Topic 3: Creating a Base Enemy Class -->
+            <div class="topic">
+                <h2>3. Creating a Base Enemy Class 👾</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Let's build a practical example: an <strong>Enemy base class</strong> with functionality shared
+                        by all enemies. Every enemy can walk, has a name, and can attack. This shared code belongs in
+                        the base class.</p>
+                </div>
+
+                <h3>Identifying Shared Functionality</h3>
+                <div class="key-points">
+                    <h4>🧩 What Do ALL Enemies Have?</h4>
+                    <ul>
+                        <li><strong>Move Speed:</strong> Every enemy moves at some speed</li>
+                        <li><strong>Name:</strong> Every enemy has a name (Skeleton, Goblin, etc.)</li>
+                        <li><strong>Walk Behavior:</strong> Every enemy can move around</li>
+                        <li><strong>Attack Behavior:</strong> Every enemy can attack the player</li>
+                        <li><strong>Health (optional):</strong> Every enemy has HP</li>
+                        <li><strong>Damage (optional):</strong> Every enemy deals damage</li>
+                    </ul>
+                </div>
+
+                <h3>Creating Enemy.cs Script</h3>
+                <div class="example">
+                    <div class="example-header">Base Enemy Class</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Variables shared by ALL enemies<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float moveSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string enemyName;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Method shared by ALL enemies<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void MoveAround()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " moves at speed " + moveSpeed);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Another shared method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " attacks!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MoveAround();  // Always moving<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Attack on F key press<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.F))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attack();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Code Breakdown</h4>
+                    <ul>
+                        <li><strong>public float moveSpeed:</strong> Visible in Inspector, each enemy has different
+                            speed</li>
+                        <li><strong>public string enemyName:</strong> Set per enemy in Inspector</li>
+                        <li><strong>MoveAround():</strong> Simple debug message showing movement</li>
+                        <li><strong>Attack():</strong> Simple debug message showing attack</li>
+                        <li><strong>Update():</strong> Calls MoveAround() every frame, Attack() on F key</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>📝 Simplified Example:</strong> We're using Debug.Log for simplicity. In real projects,
+                    these methods would contain animations, physics movement, damage calculations, cooldowns, etc. Focus
+                    on the inheritance concept first!
+                </div>
+
+                <h3>Testing the Base Class</h3>
+                <div class="example">
+                    <div class="example-header">Using Enemy.cs</div>
+                    <code>STEPS:<br>
+1. Create Enemy.cs script<br>
+2. Attach to GameObject named "Enemy"<br>
+3. In Inspector: moveSpeed = 1.5, enemyName = "Skeleton"<br>
+4. Press Play<br>
+<br>
+RESULT:<br>
+Console: "Skeleton moves at speed 1.5" (every frame)<br>
+Press F: "Skeleton attacks!"</code>
+                </div>
+
+                <h3>Adding TakeDamage Method</h3>
+                <div class="example">
+                    <div class="example-header">Shared Damage Method</div>
+                    <code>// Add to Enemy class<br>
+public void TakeDamage()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " takes damage!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// In real project: reduce health, play animation, etc.<br>
+}</code>
+                </div>
+            </div>
+
+            <!-- Topic 4: Creating a Child Class -->
+            <div class="topic">
+                <h2>4. Creating a Child Class (EnemyGoblin) 👺</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Now let's create <strong>EnemyGoblin</strong>—a child class that inherits all Enemy functionality
+                        but also has unique abilities. Goblins can do everything enemies can do, PLUS steal gold from
+                        the player.</p>
+                </div>
+
+                <h3>The Wrong Way (Copy-Paste)</h3>
+                <div class="example">
+                    <div class="example-header">❌ BAD: Code Duplication</div>
+                    <code>// DON'T DO THIS!<br>
+public class EnemyGoblin : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Copied from Enemy class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float moveSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string enemyName;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void MoveAround() { /* copied code */ }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Attack() { /* copied code */ }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void TakeDamage() { /* copied code */ }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// New goblin-specific method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void StealMoney() { /* new code */ }<br>
+}<br>
+<br>
+PROBLEMS:<br>
+- Code duplication (messy!)<br>
+- Bug in Enemy? Fix in 5 places!<br>
+- Hard to maintain<br>
+- Not scalable</code>
+                </div>
+
+                <h3>The Right Way (Inheritance)</h3>
+                <div class="example">
+                    <div class="example-header">✅ GOOD: Using Inheritance</div>
+                    <code>// Inherit from Enemy, not MonoBehaviour!<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// NO variables needed - inherited from Enemy!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// NO MoveAround() needed - inherited!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// NO Attack() needed - inherited!<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Only add NEW functionality<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void StealMoney()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " steals gold from player!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[ContextMenu("Steal Gold")]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void StealGold_Test()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 How Inheritance Works Here</h4>
+                    <ul>
+                        <li><strong>: Enemy</strong> means "inherit from Enemy class"</li>
+                        <li><strong>moveSpeed, enemyName:</strong> Available automatically (inherited)</li>
+                        <li><strong>MoveAround(), Attack():</strong> Available automatically (inherited)</li>
+                        <li><strong>StealMoney():</strong> New method, only Goblins have this</li>
+                        <li><strong>Enemy → MonoBehaviour:</strong> Goblin inherits from Enemy, which inherits from
+                            MonoBehaviour</li>
+                    </ul>
+                </div>
+
+                <h3>Inheritance Chain</h3>
+                <div class="example">
+                    <div class="example-header">Class Hierarchy</div>
+                    <code>MonoBehaviour (Unity base class)<br>
+&nbsp;&nbsp;↓ inherits<br>
+Enemy (your base class)<br>
+- moveSpeed<br>
+- enemyName<br>
+- MoveAround()<br>
+- Attack()<br>
+- TakeDamage()<br>
+&nbsp;&nbsp;↓ inherits<br>
+EnemyGoblin (your child class)<br>
+- ✅ moveSpeed (inherited)<br>
+- ✅ enemyName (inherited)<br>
+- ✅ MoveAround() (inherited)<br>
+- ✅ Attack() (inherited)<br>
+- ✅ TakeDamage() (inherited)<br>
+- ✅ Update() (inherited)<br>
+- ✅ Start(), Awake() (inherited from MonoBehaviour)<br>
+- ➕ StealMoney() (unique to Goblin)</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎓 Key Insight:</strong> Even though EnemyGoblin.cs looks empty except for StealMoney(), it
+                    has ALL the functionality of Enemy AND MonoBehaviour. That's the power of inheritance!
+                </div>
+
+                <h3>Testing EnemyGoblin</h3>
+                <div class="example">
+                    <div class="example-header">Using the Child Class</div>
+                    <code>STEPS:<br>
+1. Create EnemyGoblin.cs script<br>
+2. Attach to GameObject named "EnemyGoblin"<br>
+3. In Inspector: moveSpeed = 4, enemyName = "Goblin"<br>
+4. Press Play<br>
+<br>
+RESULT:<br>
+Console: "Goblin moves at speed 4" (every frame)<br>
+Press F: "Goblin attacks!"<br>
+Right-click EnemyGoblin component → Steal Gold: "Goblin steals gold from player!"<br>
+<br>
+COMPARISON:<br>
+- Skeleton (Enemy): Can move, attack<br>
+- Goblin (EnemyGoblin): Can move, attack, PLUS steal gold</code>
+                </div>
+            </div>
+
+            <!-- Topic 5: Access Modifiers Explained -->
+            <div class="topic">
+                <h2>5. Access Modifiers: Public, Private, Protected 🔒</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p><strong>Access modifiers</strong> control who can see and use your variables and methods. There
+                        are three main types: <strong>public</strong> (everyone can access), <strong>private</strong>
+                        (only this class can access), and <strong>protected</strong> (this class + child classes can
+                        access).</p>
+                </div>
+
+                <h3>Understanding Access Levels</h3>
+                <div class="example">
+                    <div class="example-header">Access Modifier Comparison</div>
+                    <code>public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// PUBLIC: Anyone can access<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float moveSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ Visible in Inspector<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ Other scripts can access: enemy.moveSpeed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ Child classes can access<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// PRIVATE: Only Enemy class can access<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private string enemyName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ Hidden in Inspector<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ Other scripts CANNOT access<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ Child classes CANNOT access<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// PROTECTED: This class + children can access<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected int health;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ Hidden in Inspector (unless SerializeField)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ❌ Other scripts CANNOT access<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ Child classes CAN access<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Access Modifier Rules</h4>
+                    <ul>
+                        <li><strong>public:</strong> Accessible everywhere (Inspector, other scripts, child classes)
+                        </li>
+                        <li><strong>private:</strong> Only accessible in the class where it's declared</li>
+                        <li><strong>protected:</strong> Accessible in declaring class + child classes</li>
+                        <li><strong>Default:</strong> If you don't specify, it's private by default</li>
+                    </ul>
+                </div>
+
+                <h3>The Problem with Public</h3>
+                <div class="example">
+                    <div class="example-header">Why Not Make Everything Public?</div>
+                    <code>// BAD: Everything public<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float moveSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public string enemyName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public int currentHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public bool isDead;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public float attackTimer;<br>
+}<br>
+<br>
+PROBLEMS:<br>
+- Any script can change any value: enemy.isDead = true<br>
+- No control over how data is modified<br>
+- Hard to track bugs (who changed what?)<br>
+- Cluttered Inspector with 20+ fields<br>
+- Not professional practice</code>
+                </div>
+
+                <div class="tip">
+                    <strong>💼 Professional Rule:</strong> Make everything <strong>private by default</strong>, then
+                    selectively make things public/protected only when needed. This is called
+                    <strong>encapsulation</strong>—one of the OOP pillars!
+                </div>
+
+                <h3>The Problem with Private for Inheritance</h3>
+                <div class="example">
+                    <div class="example-header">Private Variables Break Inheritance</div>
+                    <code>// In Enemy.cs<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private float moveSpeed;<br>
+}<br>
+<br>
+// In EnemyGoblin.cs<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;moveSpeed = 5f;  // ❌ ERROR!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// "moveSpeed is inaccessible due to its protection level"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <h3>The Solution: Protected</h3>
+                <div class="example">
+                    <div class="example-header">✅ Protected Allows Inheritance</div>
+                    <code>// In Enemy.cs<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected float moveSpeed;  // Protected instead of private<br>
+}<br>
+<br>
+// In EnemyGoblin.cs<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;moveSpeed = 5f;  // ✅ Works! Protected allows child access<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName);  // ✅ Works if enemyName is also protected<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>✨ Protected Benefits</h4>
+                    <ul>
+                        <li><strong>Private to Outside:</strong> Other scripts can't access protected members</li>
+                        <li><strong>Accessible to Children:</strong> Child classes can read/modify protected members
+                        </li>
+                        <li><strong>Better Than Public:</strong> More controlled than public access</li>
+                        <li><strong>Better Than Private:</strong> Allows inheritance without full exposure</li>
+                        <li><strong>Professional Standard:</strong> Used extensively in real game projects</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic 6: SerializeField with Protected -->
+            <div class="topic">
+                <h2>6. Combining [SerializeField] with Protected 🎛️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>There's a problem: <strong>protected variables are hidden in the Inspector</strong>. We want
+                        Inspector visibility for designers to tune values, but we also want protection from outside
+                        scripts. The solution: <strong>[SerializeField]</strong> + <strong>protected</strong>!</p>
+                </div>
+
+                <h3>The Inspector Problem</h3>
+                <div class="example">
+                    <div class="example-header">Protected Hides from Inspector</div>
+                    <code>public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected float moveSpeed = 3f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected string enemyName = "Enemy";<br>
+}<br>
+<br>
+RESULT IN INSPECTOR:<br>
+❌ moveSpeed not visible<br>
+❌ enemyName not visible<br>
+❌ Can't tune values per enemy<br>
+<br>
+PROBLEM:<br>
+- Every enemy stuck with same moveSpeed (3f)<br>
+- Can't customize in Inspector<br>
+- Designers can't adjust without editing code</code>
+                </div>
+
+                <h3>The SerializeField Solution</h3>
+                <div class="example">
+                    <div class="example-header">✅ Best of Both Worlds</div>
+                    <code>public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected float moveSpeed = 3f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected string enemyName = "Enemy";<br>
+}<br>
+<br>
+RESULT:<br>
+✅ Visible in Inspector (designers can tune)<br>
+✅ Protected from outside scripts (other scripts can't access)<br>
+✅ Accessible in child classes (EnemyGoblin can use/modify)<br>
+✅ Professional and flexible</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 [SerializeField] Behavior</h4>
+                    <ul>
+                        <li><strong>Makes Private/Protected Visible:</strong> Shows in Inspector despite access modifier
+                        </li>
+                        <li><strong>Doesn't Change Access:</strong> Still protected, just serialized for Unity</li>
+                        <li><strong>Unity-Specific:</strong> Only works in Unity Engine</li>
+                        <li><strong>Common Pattern:</strong> Used extensively in professional Unity projects</li>
+                    </ul>
+                </div>
+
+                <h3>Complete Base Class with SerializeField</h3>
+                <div class="example">
+                    <div class="example-header">Professional Enemy Base Class</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected float moveSpeed = 3f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected string enemyName = "Enemy";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected int maxHealth = 100;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected int currentHealth;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentHealth = maxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected void MoveAround()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " moves at speed " + moveSpeed);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " attacks!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void TakeDamage(int damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentHealth -= damage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " takes " + damage + " damage!");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (currentHealth <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Die();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected void Die()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " dies!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Play death animation, drop loot, etc.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected void Update()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MoveAround();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Input.GetKeyDown(KeyCode.F))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attack();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎨 Design Note:</strong> Notice methods are also <code>protected</code>. This lets child
+                    classes call or modify these methods (polymorphism—next lesson topic!). Public methods like
+                    TakeDamage() are interfaces for outside scripts to interact with enemies.
+                </div>
+            </div>
+
+            <!-- Topic 7: Adding Unique Child Functionality -->
+            <div class="topic">
+                <h2>7. Adding Unique Child Functionality 🎭</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Child classes shine when they add <strong>unique functionality</strong> that parent doesn't have.
+                        EnemyGoblin inherits all Enemy features, but ONLY Goblins can steal gold. This is how you build
+                        diverse enemy types without code duplication.</p>
+                </div>
+
+                <h3>Goblin-Specific Behavior</h3>
+                <div class="example">
+                    <div class="example-header">EnemyGoblin with Unique Ability</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private int goldStealAmount = 10;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Unique method only Goblins have<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void StealMoney()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Can use enemyName even though not declared here<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// because it's inherited (protected) from Enemy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " steals " + goldStealAmount + " gold from player!");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// In real game: PlayerInventory.gold -= goldStealAmount;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[ContextMenu("Steal Gold")]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void StealGold_Menu()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Can also access inherited methods<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void OnTriggerEnter2D(Collider2D collision)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (collision.CompareTag("Player"))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StealMoney();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attack();  // Inherited from Enemy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 What EnemyGoblin Has</h4>
+                    <ul>
+                        <li><strong>✅ moveSpeed:</strong> Inherited from Enemy</li>
+                        <li><strong>✅ enemyName:</strong> Inherited from Enemy</li>
+                        <li><strong>✅ maxHealth, currentHealth:</strong> Inherited from Enemy</li>
+                        <li><strong>✅ MoveAround():</strong> Inherited from Enemy</li>
+                        <li><strong>✅ Attack():</strong> Inherited from Enemy</li>
+                        <li><strong>✅ TakeDamage():</strong> Inherited from Enemy</li>
+                        <li><strong>✅ Die():</strong> Inherited from Enemy</li>
+                        <li><strong>➕ StealMoney():</strong> UNIQUE to EnemyGoblin</li>
+                        <li><strong>➕ goldStealAmount:</strong> UNIQUE to EnemyGoblin</li>
+                    </ul>
+                </div>
+
+                <h3>Multiple Child Classes</h3>
+                <div class="example">
+                    <div class="example-header">Creating More Enemy Types</div>
+                    <code>// EnemyArcher.cs - Ranged enemy<br>
+public class EnemyArcher : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private GameObject arrowPrefab;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float shootRange = 10f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void ShootArrow()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " shoots an arrow!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Instantiate arrow, aim at player, etc.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// EnemyMage.cs - Magic caster<br>
+public class EnemyMage : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float mana = 100f;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private float spellCooldown = 3f;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void CastFireball()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (mana >= 20)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mana -= 20;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " casts Fireball!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// EnemyBoss.cs - Powerful boss<br>
+public class EnemyBoss : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] private int phase = 1;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void EnterPhase2()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;phase = 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;moveSpeed *= 1.5f;  // Speed up!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug.Log(enemyName + " enters Phase 2!");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🎮 Scalability:</strong> With one 50-line Enemy base class, you can create 20 different
+                    enemy types by writing 20-30 lines each. Without inheritance, each enemy would be 200+ lines of
+                    duplicated code!
+                </div>
+            </div>
+
+            <!-- Topic 8: Real-World Example from a Full Project -->
+            <div class="topic">
+                <h2>8. Real-World Example: Entity Base Class 🎪</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>In professional Unity projects, you often create an even higher base class called
+                        <strong>Entity</strong> that covers ALL characters—players, enemies, NPCs. This maximizes code
+                        reuse across your entire game.</p>
+                </div>
+
+                <h3>Entity Base Class Pattern</h3>
+                <div class="example">
+                    <div class="example-header">Professional Architecture</div>
+                    <code>HIERARCHY:<br>
+<br>
+Entity (base for ALL characters)<br>
+├─ Player (inherits from Entity)<br>
+├─ Enemy (inherits from Entity)<br>
+│  ├─ EnemySkeleton (inherits from Enemy)<br>
+│  ├─ EnemyGoblin (inherits from Enemy)<br>
+│  ├─ EnemyArcher (inherits from Enemy)<br>
+│  └─ EnemyBoss (inherits from Enemy)<br>
+└─ NPC (inherits from Entity)<br>
+   ├─ Shopkeeper (inherits from NPC)<br>
+   └─ QuestGiver (inherits from NPC)<br>
+<br>
+SHARED IN ENTITY:<br>
+- Health system<br>
+- Animator component reference<br>
+- Sprite flipping<br>
+- Collision detection<br>
+- Ground checking<br>
+- Movement physics</code>
+                </div>
+
+                <h3>Entity Base Class Example</h3>
+                <div class="example">
+                    <div class="example-header">Entity.cs</div>
+                    <code>using UnityEngine;<br>
+<br>
+public class Entity : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Components ALL entities have<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected Animator animator;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected Rigidbody2D rb;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected SpriteRenderer sr;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Stats ALL entities have<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected int maxHealth = 100;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected int currentHealth;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Ground detection (from Lesson 7)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected Transform groundCheck;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected float groundCheckDistance;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected LayerMask groundLayer;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected bool isGrounded;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Awake()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Get components (shared by all)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animator = GetComponent&lt;Animator&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rb = GetComponent&lt;Rigidbody2D&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sr = GetComponent&lt;SpriteRenderer&gt;();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentHealth = maxHealth;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Flip method (from Lesson 6)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected void Flip()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vector3 scale = transform.localScale;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scale.x *= -1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform.localScale = scale;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Ground check (from Lesson 7)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected void CheckGround()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isGrounded = Physics2D.Raycast(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groundCheck.position,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vector2.down,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groundCheckDistance,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groundLayer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Health system (all can take damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public virtual void TakeDamage(int damage)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentHealth -= damage;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (currentHealth <= 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Die();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected virtual void Die()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Base death logic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Why Entity Base Class?</h4>
+                    <ul>
+                        <li><strong>Player Needs It:</strong> Health, animator, ground check, flipping</li>
+                        <li><strong>Enemies Need It:</strong> Health, animator, ground check, flipping</li>
+                        <li><strong>NPCs Need It:</strong> Health, animator, ground check (maybe not flipping)</li>
+                        <li><strong>Write Once:</strong> GetComponent logic in one place</li>
+                        <li><strong>Fix Once:</strong> Bug in ground check? Fix in Entity, affects all characters</li>
+                    </ul>
+                </div>
+
+                <h3>Then Enemy Inherits from Entity</h3>
+                <div class="example">
+                    <div class="example-header">Enemy.cs (Simplified)</div>
+                    <code>public class Enemy : Entity  // Inherits from Entity, not MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Enemy-specific stuff<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected float moveSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected int damage;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected void Attack()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Enemy attack logic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Still has ALL Entity functionality:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// - animator, rb, sr<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// - maxHealth, currentHealth<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// - Flip(), CheckGround(), TakeDamage(), Die()<br>
+}</code>
+                </div>
+
+                <div class="tip">
+                    <strong>🏗️ Architecture Insight:</strong> Professional Unity projects often have 3-4 levels of
+                    inheritance: MonoBehaviour → Entity → Enemy → EnemySkeleton. Each level adds more specific
+                    functionality. This creates clean, maintainable code.
+                </div>
+            </div>
+
+            <!-- Topic 9: When NOT to Use Inheritance -->
+            <div class="topic">
+                <h2>9. When NOT to Use Inheritance ⚠️</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Inheritance is powerful, but it's not always the answer. Sometimes <strong>composition</strong>
+                        (using components) is better than inheritance. Knowing when to use each approach is a
+                        senior-level skill.</p>
+                </div>
+
+                <h3>Inheritance Problems</h3>
+                <div class="example">
+                    <div class="example-header">The Gorilla-Banana Problem</div>
+                    <code>FAMOUS QUOTE:<br>
+"The problem with object-oriented languages is they've<br>
+got all this implicit environment that they carry around<br>
+with them. You wanted a banana but what you got was a<br>
+gorilla holding the banana and the entire jungle."<br>
+- Joe Armstrong<br>
+<br>
+TRANSLATION:<br>
+- You need ONE method from a class<br>
+- You inherit from that class<br>
+- Now you have 50 methods and 20 variables<br>
+- Your child class is bloated with stuff it doesn't need</code>
+                </div>
+
+                <h3>When Inheritance Gets Messy</h3>
+                <div class="example">
+                    <div class="example-header">The Diamond Problem</div>
+                    <code>FlyingEnemy<br>
+├─ Can fly<br>
+└─ Can attack<br>
+<br>
+SwimmingEnemy<br>
+├─ Can swim<br>
+└─ Can attack<br>
+<br>
+QUESTION: What if you want FlyingSwimmingEnemy?<br>
+<br>
+❌ Can't inherit from both in C#<br>
+❌ Copy-paste code from both? (code duplication)<br>
+❌ Make FlyingSwimmingEnemy base class? (doesn't make sense)<br>
+<br>
+SOLUTION: Use composition (components) instead!</code>
+                </div>
+
+                <h3>Composition Alternative</h3>
+                <div class="example">
+                    <div class="example-header">Component-Based Design</div>
+                    <code>// Instead of inheritance, use components:<br>
+<br>
+public class FlyingComponent : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void Fly() { /* flying logic */ }<br>
+}<br>
+<br>
+public class SwimmingComponent : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void Swim() { /* swimming logic */ }<br>
+}<br>
+<br>
+public class AttackComponent : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void Attack() { /* attack logic */ }<br>
+}<br>
+<br>
+// Mix and match components:<br>
+FlyingEnemy: FlyingComponent + AttackComponent<br>
+SwimmingEnemy: SwimmingComponent + AttackComponent<br>
+FlyingSwimmingEnemy: FlyingComponent + SwimmingComponent + AttackComponent<br>
+<br>
+Flexible and no inheritance needed!</code>
+                </div>
+
+                <div class="key-points">
+                    <h4>🎯 Inheritance vs Composition</h4>
+                    <ul>
+                        <li><strong>Use Inheritance When:</strong> Clear "is-a" relationship (Goblin IS-A Enemy)</li>
+                        <li><strong>Use Inheritance When:</strong> Child needs most/all parent functionality</li>
+                        <li><strong>Use Inheritance When:</strong> Hierarchy is shallow (2-3 levels max)</li>
+                        <li><strong>Use Composition When:</strong> "Has-a" relationship (Enemy HAS-A flying ability)
+                        </li>
+                        <li><strong>Use Composition When:</strong> Need mix-and-match behaviors</li>
+                        <li><strong>Use Composition When:</strong> Deep inheritance trees (4+ levels)</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💼 Professional Balance:</strong> Real projects use BOTH. Inheritance for core character
+                    hierarchies (Entity → Player/Enemy), composition for abilities and behaviors (flying, swimming,
+                    invisible). Master both approaches!
+                </div>
+            </div>
+
+            <!-- Topic 10: Best Practices for Inheritance -->
+            <div class="topic">
+                <h2>10. Inheritance Best Practices 🎯</h2>
+                <div class="concept">
+                    <h3>Concept:</h3>
+                    <p>Following best practices ensures your inheritance hierarchies stay clean, maintainable, and
+                        scalable. Here are the rules professionals follow when designing class hierarchies.</p>
+                </div>
+
+                <h3>Rule 1: Keep Hierarchies Shallow</h3>
+                <div class="example">
+                    <div class="example-header">Depth Guidelines</div>
+                    <code>✅ GOOD: Shallow (2-3 levels)<br>
+MonoBehaviour → Enemy → EnemyGoblin<br>
+<br>
+⚠️ ACCEPTABLE: Medium (3-4 levels)<br>
+MonoBehaviour → Entity → Enemy → EnemyMelee → EnemySkeleton<br>
+<br>
+❌ BAD: Deep (5+ levels)<br>
+MonoBehaviour → Entity → LivingEntity → Enemy →<br>
+MeleeEnemy → HumanoidEnemy → SkeletonEnemy → EliteSkeleton<br>
+<br>
+WHY DEEP IS BAD:<br>
+- Hard to understand<br>
+- Hard to debug<br>
+- Hard to modify<br>
+- Tight coupling</code>
+                </div>
+
+                <h3>Rule 2: Use Protected for Shared Members</h3>
+                <div class="example">
+                    <div class="example-header">Access Modifier Strategy</div>
+                    <code>public class Enemy : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ GOOD: Protected for child access<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected float moveSpeed;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[SerializeField] protected int maxHealth;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ GOOD: Public for outside interface<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public void TakeDamage(int damage) { }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ GOOD: Protected for inheritance<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected void Die() { }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ✅ GOOD: Private for internal only<br>
+&nbsp;&nbsp;&nbsp;&nbsp;private void CalculatePathfinding() { }<br>
+}<br>
+<br>
+GUIDELINE:<br>
+- Public: External interface (TakeDamage, GetHealth)<br>
+- Protected: Shared with children (Die, Attack)<br>
+- Private: Internal implementation (helper methods)</code>
+                </div>
+
+                <h3>Rule 3: Favor Composition Over Inheritance</h3>
+                <div class="key-points">
+                    <h4>🎯 Decision Framework</h4>
+                    <ul>
+                        <li><strong>Ask "Is-A":</strong> If Goblin IS-A Enemy → Use inheritance</li>
+                        <li><strong>Ask "Has-A":</strong> If Enemy HAS-A flying ability → Use composition</li>
+                        <li><strong>Ask "Needs Most":</strong> Does child need 80%+ of parent? → Inheritance</li>
+                        <li><strong>Ask "Mix-Match":</strong> Need different combinations? → Composition</li>
+                    </ul>
+                </div>
+
+                <h3>Rule 4: Don't Inherit to Reuse One Method</h3>
+                <div class="example">
+                    <div class="example-header">Wrong Reason to Inherit</div>
+                    <code>// ❌ BAD: Inheriting for one utility method<br>
+public class MathUtils : MonoBehaviour<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;protected float CalculateDistance(Vector3 a, Vector3 b)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return Vector3.Distance(a, b);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+public class Enemy : MathUtils  // ❌ Wrong!<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Now Enemy is tied to MathUtils for one method<br>
+}<br>
+<br>
+// ✅ BETTER: Static utility class<br>
+public static class MathUtils<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;public static float CalculateDistance(Vector3 a, Vector3 b)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return Vector3.Distance(a, b);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+// Use it anywhere without inheritance<br>
+float distance = MathUtils.CalculateDistance(pos1, pos2);</code>
+                </div>
+
+                <h3>Rule 5: Document Your Hierarchy</h3>
+                <div class="example">
+                    <div class="example-header">Clear Comments</div>
+                    <code>/// &lt;summary&gt;<br>
+/// Base class for all enemy types.<br>
+/// Contains shared movement, attack, and health systems.<br>
+/// Inherit from this for new enemy types.<br>
+/// &lt;/summary&gt;<br>
+public class Enemy : Entity<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Clear structure<br>
+}<br>
+<br>
+/// &lt;summary&gt;<br>
+/// Goblin enemy with unique gold-stealing ability.<br>
+/// Inherits standard enemy behavior from Enemy class.<br>
+/// &lt;/summary&gt;<br>
+public class EnemyGoblin : Enemy<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Goblin-specific code<br>
+}</code>
+                </div>
+
+                <div class="tip">
+                    <strong>📚 Team Tip:</strong> When working in teams, document your class hierarchies with comments
+                    or diagrams. New team members need to understand the inheritance structure quickly!
+                </div>
+            </div>
+
+            <!-- Practice Exercises -->
+            <div class="topic">
+                <h2>📝 Practice Exercises</h2>
+
+                <div class="key-points">
+                    <h4>Exercise 1: Create Enemy Base Class</h4>
+                    <p><strong>Task:</strong> Build a complete Enemy base class with core functionality</p>
+                    <ul>
+                        <li>Create Enemy.cs inheriting from MonoBehaviour</li>
+                        <li>Add [SerializeField] protected: moveSpeed, enemyName, maxHealth</li>
+                        <li>Create protected int currentHealth</li>
+                        <li>Add protected void MoveAround() with Debug.Log</li>
+                        <li>Add public void TakeDamage(int damage)</li>
+                        <li>Add protected void Die() that logs death message</li>
+                        <li>Test with GameObject named "TestEnemy"</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 2: Create Three Enemy Types</h4>
+                    <p><strong>Task:</strong> Build Skeleton, Goblin, and Archer child classes</p>
+                    <ul>
+                        <li>EnemySkeleton: inherits Enemy, adds ShieldBlock() method</li>
+                        <li>EnemyGoblin: inherits Enemy, adds StealGold() method</li>
+                        <li>EnemyArcher: inherits Enemy, adds ShootArrow() method with [SerializeField] range</li>
+                        <li>Each should have unique behavior but share Enemy base functionality</li>
+                        <li>Test all three in scene with different moveSpeed and enemyName values</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 3: Entity Base Class Challenge</h4>
+                    <p><strong>Task:</strong> Create Entity base class for ALL characters</p>
+                    <ul>
+                        <li>Create Entity.cs with Animator, Rigidbody2D, SpriteRenderer references</li>
+                        <li>Add [SerializeField] protected maxHealth</li>
+                        <li>Create protected virtual void Awake() that gets components</li>
+                        <li>Add protected void Flip() method (from Lesson 6)</li>
+                        <li>Add public virtual void TakeDamage(int damage)</li>
+                        <li>Make Enemy inherit from Entity instead of MonoBehaviour</li>
+                        <li>Verify Enemy still works but now has Flip() functionality</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Exercise 4: Protected vs Private Practice</h4>
+                    <p><strong>Task:</strong> Experiment with access modifiers</p>
+                    <ul>
+                        <li>In Enemy.cs, make moveSpeed private instead of protected</li>
+                        <li>Try to access moveSpeed in EnemyGoblin.cs</li>
+                        <li>Observe the error message</li>
+                        <li>Change moveSpeed to protected</li>
+                        <li>Verify child class can now access it</li>
+                        <li>Add [SerializeField] and confirm Inspector visibility</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Challenge Exercise: Boss Enemy with Phases</h4>
+                    <p><strong>Task:</strong> Create multi-phase boss fight system</p>
+                    <ul>
+                        <li>Create EnemyBoss : Enemy class</li>
+                        <li>Add [SerializeField] private int currentPhase = 1</li>
+                        <li>Add method EnterPhase2() that increases moveSpeed and changes attack pattern</li>
+                        <li>Override TakeDamage() to check health percentage</li>
+                        <li>When health drops below 50%, automatically call EnterPhase2()</li>
+                        <li>Add Debug.Log messages showing phase transitions</li>
+                        <li>Bonus: Add Phase 3 at 25% health</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="key-points"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white !important; border-left: none !important;">
+                <h4 style="color: white !important;">📚 Lesson 11 Summary</h4>
+                <p style="color: rgba(255,255,255,0.95) !important;"><strong>Excellent work!</strong> You've mastered
+                    one of the three pillars of Object-Oriented Programming. Here's everything you learned:</p>
+                <ul style="color: rgba(255,255,255,0.9) !important;">
+                    <li>✅ <strong>OOP Foundations:</strong> Understood the three pillars (Inheritance, Polymorphism,
+                        Encapsulation)</li>
+                    <li>✅ <strong>Inheritance Concept:</strong> Parent-child relationships allow code sharing and
+                        reusability</li>
+                    <li>✅ <strong>Base Class Design:</strong> Created Enemy base class with shared functionality for
+                        all enemies</li>
+                    <li>✅ <strong>Child Classes:</strong> Built EnemyGoblin inheriting from Enemy with unique
+                        StealMoney() ability</li>
+                    <li>✅ <strong>Syntax Mastery:</strong> Used <code>public class EnemyGoblin : Enemy</code> to
+                        inherit functionality</li>
+                    <li>✅ <strong>Access Modifiers:</strong> Understood public (everyone), private (this class only),
+                        protected (this + children)</li>
+                    <li>✅ <strong>[SerializeField] + Protected:</strong> Combined for Inspector visibility while
+                        maintaining encapsulation</li>
+                    <li>✅ <strong>Code Reusability:</strong> Avoided duplication by sharing common code in base class
+                    </li>
+                    <li>✅ <strong>Inheritance Chains:</strong> MonoBehaviour → Entity → Enemy → EnemyGoblin hierarchy
+                    </li>
+                    <li>✅ <strong>Real-World Architecture:</strong> Saw professional Entity base class pattern from
+                        actual projects</li>
+                    <li>✅ <strong>When NOT to Inherit:</strong> Learned composition alternative for mix-and-match
+                        behaviors</li>
+                    <li>✅ <strong>Best Practices:</strong> Keep hierarchies shallow, use protected wisely, document
+                        structure</li>
+                </ul>
+                <p style="color: rgba(255,255,255,0.95) !important; margin-top: 15px;"><strong>Next Up:</strong> In
+                    Lesson 12, we'll cover <strong>Polymorphism</strong>—the second pillar of OOP. You'll learn method
+                    overriding, virtual methods, and how to change inherited behavior in child classes! 🎭</p>
+            </div>
+        </div>
+        <footer>
+            <p>You've unlocked the power of inheritance—one of the most important programming concepts! This knowledge
+                applies to ALL object-oriented languages (C#, Java, C++, Python). Practice building hierarchies and
+                you'll write professional, maintainable code! 🏛️✨</p>
+            <p><a href="../../index.html" style="color: #667eea; text-decoration: none;">← Back to Home</a></p>
+        </footer>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+</body>
+
+</html>
